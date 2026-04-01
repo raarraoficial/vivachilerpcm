@@ -1,11 +1,12 @@
-/*
-  Produccion:
-  window.VCRP_CONFIG = {
+window.VCRP_CONFIG = Object.assign(
+  {
     appBase: "https://vivachilerpcm.netlify.app",
-    apiBase: "https://TU-BACKEND.com",
-    authBase: "https://TU-BACKEND.com"
-  };
-*/
+    apiBase: "https://vivachile-backend.onrender.com",
+    authBase: "https://vivachile-backend.onrender.com",
+  },
+  window.VCRP_CONFIG || {}
+);
+
 (function () {
   const config = Object.assign(
     {
