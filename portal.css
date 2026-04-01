@@ -1417,9 +1417,7 @@ body {
   .casino-grid,
   .store-grid,
   .portal-form,
-  .bank-form,
-  .dni-card,
-  .dni-grid {
+  .bank-form {
     grid-template-columns: 1fr;
   }
 
@@ -1435,6 +1433,16 @@ body {
 
   .portal-sidebar-actions {
     flex-direction: row;
+  }
+
+  .dni-card {
+    grid-template-columns: 220px minmax(0, 1fr);
+    gap: 20px;
+    align-items: start;
+  }
+
+  .dni-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -1530,41 +1538,73 @@ body {
   }
 
   .dni-card {
-    gap: 18px;
+    grid-template-columns: 132px minmax(0, 1fr);
+    gap: 14px;
     padding: 16px;
     border-radius: 22px;
+    align-items: start;
+  }
+
+  .dni-left {
+    gap: 12px;
   }
 
   .dni-left-head {
-    gap: 10px;
+    gap: 8px;
+    align-items: flex-start;
   }
 
   .dni-title-small {
-    font-size: 1.35rem;
+    font-size: 1.05rem;
+    line-height: 0.95;
   }
 
   .dni-country {
-    font-size: 1.8rem;
+    font-size: 1.3rem;
   }
 
   .dni-service {
-    font-size: 0.84rem;
-    line-height: 1.45;
+    font-size: 0.7rem;
+    line-height: 1.35;
   }
 
   .dni-photo {
     width: 100%;
-    max-width: 180px;
-    height: 210px;
+    max-width: none;
+    height: 168px;
     margin: 0 auto;
+    border-radius: 16px;
   }
 
   .dni-grid {
-    gap: 12px 14px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px 12px;
   }
 
   .dni-grid strong {
-    font-size: 1.02rem;
+    font-size: 0.88rem;
+    margin-top: 4px;
+  }
+
+  .dni-grid span {
+    font-size: 0.66rem;
+  }
+
+  .dni-header {
+    gap: 10px;
+  }
+
+  .dni-emblem {
+    width: 36px;
+    height: 36px;
+  }
+
+  .dni-run-label {
+    font-size: 0.92rem;
+  }
+
+  .bank-overview-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .bank-subnav {
@@ -1691,5 +1731,57 @@ body {
     width: min(100%, calc(100vw - 20px));
     padding: 18px;
     border-radius: 22px;
+  }
+}
+
+@media (max-width: 480px) {
+  .portal-content {
+    gap: 18px;
+  }
+
+  .portal-home-head {
+    padding-bottom: 4px;
+  }
+
+  .dni-card {
+    grid-template-columns: 118px minmax(0, 1fr);
+    gap: 12px;
+    padding: 14px;
+  }
+
+  .dni-photo {
+    height: 154px;
+    border-radius: 14px;
+  }
+
+  .dni-grid {
+    gap: 8px 10px;
+  }
+
+  .dni-grid span {
+    font-size: 0.62rem;
+  }
+
+  .dni-grid strong {
+    font-size: 0.82rem;
+  }
+
+  .dni-run-label {
+    font-size: 0.84rem;
+  }
+
+  .bank-overview-grid,
+  .bank-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .bank-card-wrap {
+    gap: 14px;
+  }
+
+  .portal-button,
+  .bank-action-button {
+    min-height: 46px;
   }
 }

@@ -20,7 +20,9 @@
     .staff-stat-grid,
     .staff-detail-grid,
     .staff-history-list,
-    .staff-pill-row {
+    .staff-pill-row,
+    .staff-inventory-grid,
+    .staff-inventory-meta {
       display: grid;
       gap: 24px;
     }
@@ -224,6 +226,74 @@
       font-size: 1.2rem;
     }
 
+    .staff-inventory-grid {
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .staff-inventory-item {
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .staff-inventory-media {
+      height: 140px;
+      background: linear-gradient(180deg, rgba(28, 40, 55, 0.8), rgba(15, 24, 34, 0.96));
+      overflow: hidden;
+    }
+
+    .staff-inventory-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .staff-inventory-body {
+      display: grid;
+      gap: 12px;
+      padding: 16px;
+    }
+
+    .staff-inventory-body h4 {
+      margin: 0;
+      font-family: "Oswald", sans-serif;
+      font-size: 1.35rem;
+      line-height: 0.98;
+    }
+
+    .staff-inventory-type {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      min-height: 28px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: rgba(93, 184, 255, 0.12);
+      color: #8fcbff;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .staff-inventory-meta {
+      gap: 8px;
+    }
+
+    .staff-inventory-meta p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .staff-inventory-empty {
+      margin-top: 12px;
+    }
+
     @media (max-width: 1080px) {
       .staff-top,
       .staff-main {
@@ -245,7 +315,8 @@
       }
 
       .staff-stat-grid,
-      .staff-detail-grid {
+      .staff-detail-grid,
+      .staff-inventory-grid {
         grid-template-columns: 1fr;
       }
     }
@@ -445,6 +516,44 @@
       const unpaidFines = fines.filter((item) => !item.paid).length;
       const backgrounds = Array.isArray(person.police?.backgrounds) ? person.police.backgrounds : [];
       const wanted = Array.isArray(person.police?.wanted_orders) ? person.police.wanted_orders : [];
+      const inventory = Array.isArray(person.bank?.inventory) ? person.bank.inventory : [];
+
+      const inventoryMarkup = inventory.length
+        ? `
+          <div class="staff-inventory-grid">
+            ${inventory.map((item) => {
+              const category = String(item.category || "Articulo");
+              const isVehicle = category.toLowerCase() === "vehiculos";
+              const impounded = Boolean(item.impounded?.active);
+              const legalState = isVehicle
+                ? `${item.registered ? "Inscrito" : "Pendiente de inscripcion"}${impounded ? " · En corrales" : ""}`
+                : "Articulo registrado en inventario";
+              const image = escapeHtml(item.image || "assets/tienda/placeholder-auto.svg");
+              const title = escapeHtml(item.name || "Sin nombre");
+              const badge = escapeHtml(category);
+              const plate = escapeHtml(item.plate || "Sin patente");
+              const color = escapeHtml(item.color || "Sin color");
+              const detail = escapeHtml(legalState);
+              return `
+                <article class="staff-inventory-item">
+                  <div class="staff-inventory-media">
+                    <img src="${image}" alt="${title}" onerror="this.onerror=null;this.src='assets/tienda/placeholder-auto.svg';">
+                  </div>
+                  <div class="staff-inventory-body">
+                    <span class="staff-inventory-type">${badge}</span>
+                    <h4>${title}</h4>
+                    <div class="staff-inventory-meta">
+                      ${isVehicle ? `<p><strong>Patente:</strong> ${plate}</p>` : ""}
+                      ${isVehicle ? `<p><strong>Color:</strong> ${color}</p>` : ""}
+                      <p>${detail}</p>
+                    </div>
+                  </div>
+                </article>
+              `;
+            }).join("")}
+          </div>
+        `
+        : '<p class="transaction-empty staff-inventory-empty">No tiene articulos registrados.</p>';
 
       personResultNode.innerHTML = `
         <div class="staff-stat-grid">
@@ -472,6 +581,10 @@
             <span class="staff-pill ${unpaidFines ? "alert" : "ok"}">${unpaidFines} multas impagas</span>
             <span class="staff-pill ${backgrounds.length ? "alert" : "ok"}">${backgrounds.length} antecedentes</span>
           </div>
+        </div>
+        <div class="staff-list-block" style="margin-top:16px;">
+          <strong>Inventario registrado</strong>
+          ${inventoryMarkup}
         </div>
       `;
     }
