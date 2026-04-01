@@ -1,0 +1,65 @@
+{
+  "inicio": {
+    "enabled": false,
+    "label": "Inicio",
+    "title": "Inicio en mantenimiento",
+    "message": "Estamos realizando ajustes internos. Intenta entrar nuevamente en unos minutos.",
+    "updated_at": ""
+  },
+  "portal": {
+    "enabled": false,
+    "label": "Portal de identidad",
+    "title": "Portal de identidad en mantenimiento",
+    "message": "Estamos realizando ajustes internos. Intenta entrar nuevamente en unos minutos.",
+    "updated_at": "01-04-2026, 1:53:44 a. m."
+  },
+  "tienda": {
+    "enabled": false,
+    "label": "Tienda oficial",
+    "title": "Tienda oficial en mantenimiento",
+    "message": "Estamos realizando ajustes internos. Intenta entrar nuevamente en unos minutos.",
+    "updated_at": ""
+  },
+  "comisaria": {
+    "enabled": false,
+    "label": "Comisaria virtual",
+    "title": "Comisaria virtual en mantenimiento",
+    "message": "Estamos realizando ajustes internos. Intenta entrar nuevamente en unos minutos.",
+    "updated_at": ""
+  },
+  "casino": {
+    "enabled": false,
+    "label": "Casino",
+    "title": "Casino en mantenimiento",
+    "message": "Estamos realizando ajustes internos. Intenta entrar nuevamente en unos minutos.",
+    "updated_at": ""
+  },
+  "kame": {
+    "enabled": false,
+    "label": "Kame Motors",
+    "title": "Kame Motors en mantenimiento",
+    "message": "Estamos realizando ajustes internos. Intenta entrar nuevamente en unos minutos.",
+    "updated_at": ""
+  },
+  "staff": {
+    "enabled": false,
+    "label": "Panel de staff",
+    "title": "Panel de staff en mantenimiento",
+    "message": "Estamos realizando ajustes internos. Intenta entrar nuevamente en unos minutos.",
+    "updated_at": ""
+  },
+  "policial": {
+    "enabled": false,
+    "label": "Portal policial",
+    "title": "Portal policial en mantenimiento",
+    "message": "Estamos realizando ajustes internos. Intenta entrar nuevamente en unos minutos.",
+    "updated_at": ""
+  },
+  "banco_funcionarios": {
+    "enabled": false,
+    "label": "Banco funcionarios",
+    "title": "Banco funcionarios en mantenimiento",
+    "message": "Estamos realizando ajustes internos. Intenta entrar nuevamente en unos minutos.",
+    "updated_at": ""
+  }
+}

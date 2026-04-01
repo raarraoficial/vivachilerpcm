@@ -1,0 +1,312 @@
+:root {
+  --paper: #ffffff;
+  --ink: #111111;
+  --line: #141414;
+  --line-soft: #8b8b8b;
+  --bg: #dfe6eb;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: "Outfit", sans-serif;
+  background: linear-gradient(180deg, #e8edf1 0%, #d7e0e7 100%);
+  color: var(--ink);
+}
+
+.doc-shell {
+  width: min(100%, 1120px);
+  margin: 0 auto;
+  padding: 32px 20px 56px;
+}
+
+.doc-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.doc-capture-banner {
+  flex: 1 1 420px;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  padding: 0 18px;
+  border-radius: 14px;
+  background: rgba(28, 143, 71, 0.14);
+  color: #123321;
+  font-weight: 700;
+}
+
+.doc-action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 0 22px;
+  border: 0;
+  border-radius: 14px;
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.doc-action-button.primary {
+  background: #1c8f47;
+  color: #ffffff;
+}
+
+.doc-action-button.secondary {
+  background: rgba(17, 17, 17, 0.08);
+  color: #1b2c35;
+}
+
+.doc-page {
+  background: var(--paper);
+  border-radius: 18px;
+  box-shadow: 0 28px 80px rgba(15, 28, 37, 0.18);
+  padding: 42px 48px 48px;
+}
+
+.doc-header {
+  display: grid;
+  grid-template-columns: 150px 1fr 210px;
+  gap: 20px;
+  align-items: start;
+}
+
+.doc-logo-wrap {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.doc-logo {
+  width: 112px;
+  height: 112px;
+  object-fit: contain;
+}
+
+.doc-title-block {
+  text-align: center;
+}
+
+.doc-title-block h1 {
+  margin: 18px 0 12px;
+  font-family: "Outfit", sans-serif;
+  font-size: 2.45rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.doc-title-block p,
+.doc-meta p,
+.doc-body p,
+.doc-footer p {
+  margin: 0;
+}
+
+.doc-title-block p {
+  font-size: 1.08rem;
+}
+
+.doc-meta {
+  text-align: left;
+  font-size: 1rem;
+  line-height: 1.45;
+}
+
+.doc-folio-large {
+  margin: 12px 0 6px;
+  font-family: "Oswald", sans-serif;
+  font-size: 2.3rem;
+  letter-spacing: 0.22em;
+}
+
+.doc-divider {
+  width: 100%;
+  height: 4px;
+  margin: 20px 0 22px;
+  background: var(--line);
+}
+
+.doc-divider.light {
+  height: 1px;
+  margin: 18px 0 26px;
+  background: var(--line-soft);
+}
+
+.doc-heading {
+  text-align: center;
+}
+
+.doc-heading h2 {
+  margin: 0;
+  font-size: 2.35rem;
+  font-weight: 500;
+}
+
+.doc-heading p {
+  margin-top: 8px;
+  font-size: 1.4rem;
+}
+
+.doc-body {
+  font-size: 1.14rem;
+  line-height: 1.7;
+}
+
+.doc-section {
+  margin-top: 24px;
+}
+
+.doc-label {
+  margin-bottom: 10px;
+}
+
+.doc-strong {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.doc-footer {
+  margin-top: 54px;
+}
+
+.doc-footer-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  font-size: 1rem;
+}
+
+.doc-footer-grid {
+  display: grid;
+  grid-template-columns: 1fr 220px 1fr;
+  gap: 26px;
+  align-items: end;
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line-soft);
+}
+
+.doc-small {
+  margin-top: 10px;
+  font-size: 0.92rem;
+  color: #4c4c4c;
+}
+
+.doc-stamp {
+  display: flex;
+  justify-content: center;
+}
+
+.doc-stamp-circle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 180px;
+  height: 180px;
+  border: 4px solid #111111;
+  border-radius: 50%;
+  text-align: center;
+  font-family: "Oswald", sans-serif;
+  font-size: 1.15rem;
+  line-height: 1.2;
+}
+
+.doc-signature {
+  text-align: center;
+}
+
+.doc-signature-line {
+  width: 100%;
+  height: 3px;
+  margin-bottom: 14px;
+  background: #111111;
+}
+
+.doc-empty {
+  max-width: 720px;
+  margin: 80px auto;
+  padding: 34px;
+  border-radius: 24px;
+  background: #ffffff;
+  box-shadow: 0 24px 72px rgba(15, 28, 37, 0.14);
+  text-align: center;
+}
+
+.doc-empty h2 {
+  margin: 0 0 12px;
+  font-size: 2rem;
+}
+
+.doc-empty p {
+  margin: 0 0 22px;
+  color: #425662;
+  line-height: 1.7;
+}
+
+.doc-back-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 0 22px;
+  border-radius: 14px;
+  background: #1c8f47;
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+@media (max-width: 860px) {
+  .doc-page {
+    padding: 28px 22px 32px;
+  }
+
+  .doc-actions {
+    justify-content: center;
+  }
+
+  .doc-capture-banner {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .doc-header,
+  .doc-footer-grid,
+  .doc-footer-top {
+    grid-template-columns: 1fr;
+  }
+
+  .doc-footer-top {
+    display: grid;
+  }
+
+  .doc-logo-wrap,
+  .doc-meta,
+  .doc-title-block,
+  .doc-signature {
+    text-align: center;
+    justify-content: center;
+  }
+
+  .doc-folio-large {
+    letter-spacing: 0.12em;
+    font-size: 1.9rem;
+  }
+}

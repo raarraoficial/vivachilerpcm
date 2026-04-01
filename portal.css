@@ -1,0 +1,1695 @@
+:root {
+  --bg: #060b10;
+  --bg-deep: #0e1720;
+  --card: rgba(12, 20, 29, 0.84);
+  --line: rgba(255, 255, 255, 0.08);
+  --text: #ecf4fb;
+  --muted: #98adbc;
+  --accent: #5db8ff;
+  --accent-deep: #257bc5;
+  --green: #26bf66;
+  --green-deep: #188d4a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: "Outfit", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top left, rgba(93, 184, 255, 0.12), transparent 22%),
+    radial-gradient(circle at right top, rgba(26, 50, 73, 0.2), transparent 26%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg-deep) 100%);
+}
+
+.portal-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(6, 11, 16, 0.96);
+  transition: opacity 220ms ease, visibility 220ms ease;
+}
+
+.portal-loader.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.portal-loader-card {
+  display: grid;
+  justify-items: center;
+  gap: 26px;
+}
+
+.portal-loader-logo {
+  width: 124px;
+  height: 124px;
+  object-fit: contain;
+  filter: drop-shadow(0 18px 34px rgba(0, 0, 0, 0.36));
+}
+
+.portal-loader-bar {
+  width: 220px;
+  height: 4px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.portal-loader-bar span {
+  display: block;
+  width: 42%;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(93, 184, 255, 0.2), #5db8ff, rgba(99, 216, 141, 0.2));
+  animation: portalLoaderSlide 1.25s ease-in-out infinite;
+}
+
+@keyframes portalLoaderSlide {
+  0% {
+    transform: translateX(-110%);
+  }
+
+  100% {
+    transform: translateX(260%);
+  }
+}
+
+.portal-topbar {
+  width: min(100%, 1240px);
+  margin: 0 auto;
+  padding: 24px 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 18px;
+}
+
+.portal-notifications {
+  position: fixed;
+  top: 110px;
+  right: 20px;
+  z-index: 50;
+  width: min(420px, calc(100vw - 32px));
+  max-height: calc(100vh - 140px);
+  overflow: auto;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: rgba(8, 18, 27, 0.96);
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.34);
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.portal-notifications.is-open {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.portal-notifications-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.portal-brand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 84px;
+  height: 84px;
+  border-radius: 24px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(14px);
+}
+
+.portal-brand-logo {
+  width: 58px;
+  height: 58px;
+  object-fit: cover;
+  border-radius: 18px;
+}
+
+.portal-nav,
+.portal-top-actions,
+.portal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.portal-top-actions {
+  margin-left: auto;
+}
+
+.portal-notification-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  min-width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.portal-notification-icon {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.portal-notification-dot {
+  position: absolute;
+  top: 8px;
+  right: 9px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ef4b4b;
+  box-shadow: 0 0 0 3px rgba(8, 18, 27, 0.95);
+}
+
+.portal-nav-button,
+.portal-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font: inherit;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.portal-nav-button {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--muted);
+  border-color: var(--line);
+  width: 100%;
+  justify-content: flex-start;
+}
+
+.portal-nav-button.is-active,
+.portal-button.primary {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 100%);
+  color: #ffffff;
+}
+
+.portal-button.danger {
+  background: linear-gradient(135deg, #ef6b6b 0%, #b93535 100%);
+  color: #ffffff;
+  border: 1px solid transparent;
+}
+
+.portal-button.secondary {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.portal-shell {
+  width: min(100%, 1240px);
+  margin: 0 auto;
+  padding: 28px 20px 64px;
+}
+
+.portal-app-layout {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: 24px;
+}
+
+.portal-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding-right: 10px;
+}
+
+.portal-sidebar-meta {
+  margin-top: auto;
+}
+
+.portal-role-bar {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.portal-sidebar-actions {
+  flex-direction: column;
+}
+
+.portal-nav-button-compact {
+  min-height: 42px;
+  padding: 0 14px;
+  font-size: 0.94rem;
+}
+
+.portal-content {
+  min-width: 0;
+}
+
+.portal-content.is-switching {
+  animation: portalContentSwitch 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes portalContentSwitch {
+  0% {
+    opacity: 0.55;
+    transform: translateX(28px);
+    filter: blur(8px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+    filter: blur(0);
+  }
+}
+
+.portal-card,
+.portal-login,
+.portal-create,
+.portal-app {
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background: var(--card);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.22);
+  padding: 30px;
+}
+
+.portal-kicker {
+  margin: 0 0 10px;
+  color: var(--accent);
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.portal-login h1,
+.portal-section-head h2,
+.portal-home-head h2,
+.portal-card h3 {
+  margin: 0;
+  font-family: "Oswald", sans-serif;
+  line-height: 0.95;
+}
+
+.portal-login h1 {
+  font-size: clamp(2.8rem, 6vw, 4.8rem);
+}
+
+.portal-login p,
+.portal-user,
+.portal-feedback,
+.portal-card p {
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.portal-form,
+.bank-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.portal-form label,
+.bank-form label {
+  display: grid;
+  gap: 10px;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.portal-form input,
+.portal-form select,
+.portal-form textarea,
+.bank-form input,
+.bank-form select,
+.bank-form textarea {
+  width: 100%;
+  min-height: 52px;
+  padding: 0 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  background: rgba(4, 10, 15, 0.9);
+  color: var(--text);
+  font: inherit;
+}
+
+.portal-form textarea,
+.bank-form textarea {
+  min-height: 128px;
+  padding: 14px 16px;
+  resize: vertical;
+  line-height: 1.55;
+}
+
+.portal-form select,
+.bank-form select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 44px;
+  background-image:
+    linear-gradient(45deg, transparent 50%, rgba(255, 255, 255, 0.72) 50%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.72) 50%, transparent 50%);
+  background-position:
+    calc(100% - 22px) 50%,
+    calc(100% - 16px) 50%;
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+}
+
+.portal-form .portal-actions,
+.bank-form .portal-actions {
+  grid-column: 1 / -1;
+  margin-top: 6px;
+}
+
+.portal-home-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.portal-tab {
+  display: none;
+}
+
+.portal-tab.is-active {
+  display: block;
+  transform-origin: top left;
+}
+
+.portal-tab.is-active.is-animating {
+  animation: portalTabEnter 460ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes portalTabEnter {
+  0% {
+    opacity: 0;
+    transform: translateX(34px) translateY(12px) scale(0.985);
+    filter: blur(10px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0) translateY(0);
+    filter: blur(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portal-tab.is-active.is-animating {
+    animation: none;
+  }
+
+  .portal-content.is-switching {
+    animation: none;
+  }
+}
+
+.dni-card {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 24px;
+  padding: 24px;
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 18% 38%, rgba(255, 230, 204, 0.65) 0%, rgba(255, 230, 204, 0) 28%),
+    linear-gradient(135deg, #edf6fb 0%, #f4efe7 44%, #dcecf8 100%);
+  border: 1px solid rgba(92, 123, 150, 0.18);
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.18);
+}
+
+.dni-card::before {
+  content: "";
+  position: absolute;
+  inset: auto -40px -20px auto;
+  width: 420px;
+  height: 260px;
+  background:
+    radial-gradient(circle at 30% 40%, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0)),
+    linear-gradient(180deg, rgba(154, 190, 214, 0.3), rgba(154, 190, 214, 0));
+  clip-path: polygon(28% 0, 100% 0, 100% 100%, 0 100%);
+  opacity: 0.75;
+  pointer-events: none;
+}
+
+.dni-card::after {
+  content: "";
+  position: absolute;
+  right: 76px;
+  top: 38px;
+  width: 260px;
+  height: 210px;
+  background: linear-gradient(180deg, rgba(138, 164, 189, 0.18), rgba(138, 164, 189, 0));
+  opacity: 0.55;
+  clip-path: polygon(52% 0, 62% 16%, 76% 8%, 69% 30%, 86% 42%, 66% 42%, 68% 62%, 52% 50%, 36% 62%, 38% 42%, 18% 42%, 35% 30%, 28% 8%, 42% 16%);
+  pointer-events: none;
+}
+
+.dni-left {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  position: relative;
+  z-index: 1;
+}
+
+.dni-left-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.dni-title-small {
+  margin: 0;
+  color: #1c5d95;
+  font-family: "Oswald", sans-serif;
+  font-size: 1.8rem;
+  line-height: 0.9;
+  text-transform: uppercase;
+}
+
+.dni-flag {
+  display: flex;
+  flex-direction: column;
+  width: 40px;
+  height: 28px;
+  border-radius: 3px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+  flex: 0 0 auto;
+  margin-top: 4px;
+}
+
+.dni-flag-top,
+.dni-flag-blue,
+.dni-flag-white,
+.dni-flag-red {
+  display: block;
+}
+
+.dni-flag-top {
+  display: grid;
+  grid-template-columns: 13px 27px;
+  width: 100%;
+  height: 14px;
+}
+
+.dni-flag-blue {
+  background: #174e97;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.dni-flag-white {
+  background: #ffffff;
+  width: 100%;
+  height: 100%;
+}
+
+.dni-flag-red {
+  background: #d52b1e;
+  width: 100%;
+  height: 14px;
+}
+
+.dni-flag-star {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 0.55rem;
+  line-height: 1;
+}
+
+.dni-photo {
+  width: 188px;
+  height: 220px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.68) 0%, rgba(214, 229, 239, 0.92) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(95, 125, 151, 0.18);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.55);
+}
+
+.dni-photo-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(1) contrast(1.05);
+  display: none;
+}
+
+.dni-photo-image.is-visible {
+  display: block;
+}
+
+.dni-photo-fallback {
+  font-family: "Oswald", sans-serif;
+  font-size: 4rem;
+  color: rgba(36, 76, 109, 0.45);
+}
+
+.dni-photo-fallback.is-hidden {
+  display: none;
+}
+
+.dni-run-label {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #244b6a;
+}
+
+.dni-right {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  position: relative;
+  z-index: 1;
+}
+
+.dni-country {
+  margin: 0;
+  font-family: "Oswald", sans-serif;
+  font-size: 2.35rem;
+  line-height: 0.9;
+  color: #1a5a90;
+  text-transform: uppercase;
+}
+
+.dni-service {
+  margin: 8px 0 0;
+  color: #57728d;
+  font-size: 0.98rem;
+  letter-spacing: 0.04em;
+}
+
+.dni-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.dni-emblem {
+  width: 58px;
+  height: 58px;
+  flex: 0 0 auto;
+  opacity: 0.7;
+  background: linear-gradient(180deg, #8c8a5a, #6c6a3f);
+  clip-path: polygon(50% 0, 58% 22%, 78% 10%, 68% 32%, 92% 34%, 72% 48%, 88% 68%, 62% 64%, 64% 92%, 50% 74%, 36% 92%, 38% 64%, 12% 68%, 28% 48%, 8% 34%, 32% 32%, 22% 10%, 42% 22%);
+}
+
+.dni-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 22px;
+}
+
+.dni-grid span {
+  display: block;
+  color: #4e6c87;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dni-grid strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 1.28rem;
+  line-height: 1.2;
+  color: #21384c;
+  text-transform: uppercase;
+}
+
+.bank-layout,
+.bank-tools-grid {
+  display: grid;
+  gap: 20px;
+}
+
+.bank-subnav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.bank-subnav-button {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 10px 16px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 180ms ease;
+}
+
+.bank-subnav-button.is-active,
+.bank-subnav-button:hover {
+  background: linear-gradient(135deg, #64c6ff 0%, #2f88d9 100%);
+  color: #041826;
+  border-color: transparent;
+}
+
+.bank-subtab {
+  display: none;
+}
+
+.bank-subtab.is-active {
+  display: block;
+  animation: portalTabEnter 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bank-summary-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.bank-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.bank-card-wrap {
+  display: grid;
+  gap: 14px;
+}
+
+.bank-card-visual {
+  position: relative;
+  min-height: 300px;
+  border-radius: 28px;
+  border: 1px solid rgba(147, 212, 255, 0.2);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  transform: none;
+  aspect-ratio: 1.52 / 1;
+  perspective: 1000px;
+}
+
+.bank-card-visual::before,
+.bank-card-visual::after {
+  display: none;
+}
+
+.bank-card-face {
+  position: absolute;
+  inset: 0;
+  padding: 30px 34px 28px;
+  backface-visibility: hidden;
+  transition: transform 500ms ease;
+  background:
+    linear-gradient(135deg, rgba(19, 91, 157, 0.98) 0%, rgba(10, 54, 99, 0.98) 38%, rgba(8, 33, 60, 0.98) 100%);
+}
+
+.bank-card-front {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 10px;
+  position: relative;
+}
+
+.bank-card-front::before,
+.bank-card-front::after {
+  content: "";
+  position: absolute;
+  inset: auto;
+  pointer-events: none;
+}
+
+.bank-card-front::before {
+  width: 260px;
+  height: 260px;
+  right: -40px;
+  top: -40px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), transparent 70%);
+  clip-path: polygon(38% 0, 100% 0, 100% 100%, 0 52%);
+}
+
+.bank-card-front::after {
+  width: 360px;
+  height: 360px;
+  right: 40px;
+  top: 10px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 80%);
+  clip-path: polygon(38% 0, 58% 0, 32% 100%, 12% 100%);
+  opacity: 0.8;
+}
+
+.bank-card-back {
+  transform: rotateY(180deg);
+}
+
+.bank-card-visual.is-flipped .bank-card-front {
+  transform: rotateY(180deg);
+}
+
+.bank-card-visual.is-flipped .bank-card-back {
+  transform: rotateY(360deg);
+}
+
+.bank-card-bank,
+.bank-card-bank-sub,
+.bank-card-small,
+.bank-card-number,
+.bank-card-expiry,
+.bank-card-holder,
+.bank-card-visa {
+  position: relative;
+  z-index: 1;
+}
+
+.bank-card-bank {
+  margin: 0;
+  font-family: "Oswald", sans-serif;
+  font-size: 1.78rem;
+  line-height: 0.9;
+  color: #f6fbff;
+}
+
+.bank-card-bank-sub {
+  margin: 6px 0 0;
+  color: rgba(246, 251, 255, 0.78);
+  font-size: 0.78rem;
+  letter-spacing: 0.2em;
+}
+
+.bank-card-title-wrap {
+  z-index: 2;
+}
+
+.bank-card-front > div:last-child {
+  display: grid;
+  gap: 8px;
+  align-self: end;
+}
+
+.bank-card-chip {
+  width: 52px;
+  height: 38px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #ece4d5 0%, #a9987c 100%);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+  z-index: 2;
+}
+
+.bank-card-number {
+  z-index: 2;
+  font-family: "Oswald", sans-serif;
+  margin: 0;
+  font-size: clamp(1.14rem, 1.75vw, 1.62rem);
+  letter-spacing: 0.065em;
+  line-height: 1;
+  color: #f8fbff;
+}
+
+.bank-card-small {
+  margin: 0;
+  color: rgba(246, 251, 255, 0.62);
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.bank-card-expiry,
+.bank-card-holder {
+  display: block;
+  margin-top: 3px;
+  color: #f7fbff;
+  font-family: "Oswald", sans-serif;
+  line-height: 1;
+  font-size: 0.8rem;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+}
+
+.bank-card-middle-row {
+  display: flex;
+  align-items: flex-start;
+  min-height: 48px;
+  padding-top: 0;
+}
+
+.bank-card-bottom-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  z-index: 2;
+}
+
+.bank-card-meta-stack {
+  display: grid;
+  gap: 6px;
+}
+
+.bank-card-visa {
+  font-family: "Oswald", sans-serif;
+  font-size: 1.65rem;
+  color: #ffffff;
+  letter-spacing: 0.08em;
+  z-index: 2;
+  align-self: end;
+}
+
+.bank-card-strip {
+  height: 42px;
+  margin: 18px -24px 22px;
+  background: #111111;
+}
+
+.bank-card-cvv-row {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.bank-card-cvv-box {
+  width: 110px;
+  height: 42px;
+  border-radius: 8px;
+  background: #f1f4f7;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 14px;
+  color: #1a2730;
+  font-family: "Oswald", sans-serif;
+  font-size: 1.35rem;
+  letter-spacing: 0.12em;
+}
+
+.bank-card-cvv-box span {
+  margin-top: 0;
+  color: #14212a;
+  font-family: "Oswald", sans-serif;
+  font-size: 1.35rem;
+  letter-spacing: 0.12em;
+}
+
+.bank-card-back-footer {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 22px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.bank-card-back-footer p,
+.bank-card-back-footer strong {
+  margin: 0;
+  color: rgba(236, 244, 251, 0.78);
+}
+
+.bank-card-back-footer strong {
+  font-family: "Oswald", sans-serif;
+  font-size: 1.6rem;
+  color: #ffffff;
+}
+
+.bank-balance-card h3 {
+  margin-top: 18px;
+  font-size: clamp(2.2rem, 4vw, 3.4rem);
+}
+
+.bank-tools-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 20px;
+}
+
+.salary-breakdown {
+  display: grid;
+  gap: 12px;
+}
+
+.salary-breakdown div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.salary-breakdown span {
+  color: var(--muted);
+}
+
+.salary-breakdown strong {
+  font-family: "Oswald", sans-serif;
+  font-size: 1.15rem;
+}
+
+.salary-breakdown .salary-tax-value {
+  color: #ef6b6b;
+}
+
+.transaction-history {
+  display: grid;
+  gap: 12px;
+}
+
+.transaction-item {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.transaction-item-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 4px;
+}
+
+.transaction-item-title {
+  margin: 0;
+  font-weight: 700;
+}
+
+.transaction-item-amount {
+  font-family: "Oswald", sans-serif;
+  font-size: 1.2rem;
+}
+
+.transaction-item-meta,
+.transaction-item-description,
+.transaction-empty {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.94rem;
+}
+
+.transaction-item.income .transaction-item-amount {
+  color: #63d88d;
+}
+
+.transaction-item.expense .transaction-item-amount {
+  color: #ef5a5a;
+}
+
+.transaction-item.admin .transaction-item-amount {
+  color: #ffcf6e;
+}
+
+.store-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.store-panel-head {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.store-claims {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.store-panel-head .portal-kicker {
+  margin: 0;
+}
+
+.store-panel-head h3 {
+  margin: 0;
+  line-height: 1;
+}
+
+.store-panel-filters {
+  margin-bottom: 6px;
+}
+
+.market-subnav {
+  margin-top: 16px;
+  margin-bottom: 10px;
+}
+
+.store-item-card {
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 22px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02)),
+    rgba(255, 255, 255, 0.03);
+  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.18);
+  position: relative;
+}
+
+.store-item-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 4px;
+  background: linear-gradient(90deg, rgba(93, 184, 255, 0.95), rgba(99, 216, 141, 0.95));
+  opacity: 0.9;
+}
+
+.store-item-image {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  display: block;
+  background: linear-gradient(135deg, rgba(43, 86, 122, 0.8), rgba(16, 32, 47, 0.9));
+}
+
+.store-item-media {
+  position: relative;
+  overflow: hidden;
+}
+
+.store-item-fallback {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  display: grid;
+  place-items: center;
+  gap: 8px;
+  background:
+    radial-gradient(circle at top right, rgba(93, 184, 255, 0.18), transparent 22%),
+    linear-gradient(135deg, rgba(16, 32, 47, 0.96), rgba(11, 23, 34, 0.96));
+  color: #dcecf8;
+  text-align: center;
+  padding: 20px;
+}
+
+.store-item-fallback[hidden],
+.store-item-image[hidden] {
+  display: none !important;
+}
+
+.store-item-fallback strong {
+  font-family: "Oswald", sans-serif;
+  font-size: 1.2rem;
+  letter-spacing: 0.08em;
+}
+
+.store-item-fallback span {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.store-item-body {
+  display: grid;
+  gap: 12px;
+  padding: 20px;
+}
+
+.store-item-body h3 {
+  font-family: "Oswald", sans-serif;
+  font-size: 1.55rem;
+  line-height: 0.95;
+}
+
+.store-item-body h3,
+.store-item-body p {
+  margin: 0;
+}
+
+.store-item-price {
+  font-family: "Oswald", sans-serif;
+  font-size: 1.5rem;
+  color: var(--accent);
+}
+
+.store-item-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.vehicle-meta-box {
+  display: grid;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.03));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.vehicle-meta-box .transaction-item-meta {
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.vehicle-alert-box {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(239, 90, 90, 0.3);
+  background:
+    radial-gradient(circle at right top, rgba(239, 90, 90, 0.16), transparent 35%),
+    linear-gradient(180deg, rgba(70, 17, 17, 0.88), rgba(42, 11, 11, 0.9));
+  box-shadow: inset 0 0 0 1px rgba(255, 110, 110, 0.05);
+}
+
+.vehicle-alert-kicker {
+  margin: 0;
+  color: #ff9797;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.vehicle-alert-box strong {
+  font-family: "Oswald", sans-serif;
+  font-size: 1.35rem;
+  line-height: 1;
+  color: #ffe1e1;
+}
+
+.vehicle-alert-box .transaction-item-meta {
+  margin: 0;
+  color: #f0b4b4;
+}
+
+.casino-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.casino-card {
+  background:
+    radial-gradient(circle at top right, rgba(255, 208, 85, 0.1), transparent 26%),
+    radial-gradient(circle at bottom left, rgba(93, 184, 255, 0.1), transparent 22%),
+    rgba(255, 255, 255, 0.03);
+}
+
+.casino-reel {
+  margin-top: 18px;
+  min-height: 64px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(4, 10, 15, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Oswald", sans-serif;
+  font-size: 1.6rem;
+  letter-spacing: 0.1em;
+  color: #ffe8a1;
+}
+
+.store-empty {
+  margin: 0;
+  color: var(--muted);
+}
+
+.store-confirmation {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(2, 7, 12, 0.68);
+  backdrop-filter: blur(10px);
+  z-index: 30;
+}
+
+.store-confirmation[hidden] {
+  display: none !important;
+}
+
+.store-confirmation-card {
+  width: min(100%, 520px);
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background: rgba(11, 19, 28, 0.96);
+  box-shadow: 0 26px 80px rgba(0, 0, 0, 0.38);
+  padding: 28px;
+}
+
+.store-confirmation-card h3,
+.store-confirmation-card p {
+  margin-top: 0;
+}
+
+.store-confirmation-label {
+  display: grid;
+  gap: 10px;
+  color: var(--text);
+  font-weight: 500;
+  margin: 18px 0;
+}
+
+.store-confirmation-label input {
+  width: 100%;
+  min-height: 52px;
+  padding: 0 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  background: rgba(4, 10, 15, 0.9);
+  color: var(--text);
+  font: inherit;
+}
+
+.store-confirmation-vehicle {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.store-confirmation-vehicle[hidden] {
+  display: none !important;
+}
+
+.bank-subtab[data-bank-subtab="credito"] .bank-tools-grid {
+  align-items: start;
+}
+
+.bank-subtab[data-bank-subtab="credito"] .portal-card {
+  background:
+    radial-gradient(circle at top right, rgba(93, 184, 255, 0.1), transparent 24%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.02)),
+    rgba(255, 255, 255, 0.03);
+}
+
+.bank-subtab[data-bank-subtab="credito"] .portal-actions .portal-button {
+  min-width: 220px;
+}
+
+.purchase-ticket {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 40;
+}
+
+.purchase-ticket[hidden] {
+  display: none !important;
+}
+
+.purchase-ticket-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 320px;
+  max-width: 420px;
+  padding: 16px 18px;
+  border-radius: 22px;
+  border: 1px solid rgba(72, 211, 129, 0.3);
+  background: linear-gradient(135deg, rgba(18, 74, 44, 0.96) 0%, rgba(10, 45, 29, 0.96) 100%);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.3);
+  animation: purchaseTicketIn 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.purchase-ticket-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #63d88d 0%, #2db767 100%);
+  color: #062012;
+  font-family: "Oswald", sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  flex: 0 0 auto;
+}
+
+.purchase-ticket-title,
+.purchase-ticket-text {
+  margin: 0;
+}
+
+.purchase-ticket-title {
+  color: #dffbe9;
+  font-family: "Oswald", sans-serif;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.purchase-ticket-text {
+  color: rgba(223, 251, 233, 0.82);
+  margin-top: 4px;
+}
+
+@keyframes purchaseTicketIn {
+  0% {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 980px) {
+  .portal-topbar,
+  .portal-home-head,
+  .portal-app-layout,
+  .bank-summary-grid,
+  .bank-overview-grid,
+  .bank-tools-grid,
+  .casino-grid,
+  .store-grid,
+  .portal-form,
+  .bank-form,
+  .dni-card,
+  .dni-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .portal-topbar,
+  .portal-home-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .portal-sidebar {
+    padding-right: 0;
+  }
+
+  .portal-sidebar-actions {
+    flex-direction: row;
+  }
+}
+
+@media (max-width: 640px) {
+  .portal-loader-logo {
+    width: 96px;
+    height: 96px;
+  }
+
+  .portal-loader-bar {
+    width: 170px;
+  }
+
+  .portal-shell {
+    padding: 16px 12px 44px;
+  }
+
+  .portal-topbar {
+    padding: 16px 12px 0;
+    gap: 12px;
+  }
+
+  .portal-notifications {
+    top: 88px;
+    right: 10px;
+    left: 10px;
+    width: auto;
+    max-height: calc(100vh - 110px);
+    padding: 16px;
+  }
+
+  .portal-brand {
+    width: 68px;
+    height: 68px;
+    border-radius: 18px;
+  }
+
+  .portal-brand-logo {
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+  }
+
+  .portal-top-actions,
+  .portal-nav,
+  .portal-actions {
+    width: 100%;
+  }
+
+  .portal-top-actions {
+    align-items: stretch;
+  }
+
+  .portal-nav-button,
+  .portal-button {
+    width: 100%;
+  }
+
+  .portal-notification-button {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .store-confirmation-vehicle {
+    grid-template-columns: 1fr;
+  }
+
+  .portal-card,
+  .portal-login,
+  .portal-create,
+  .portal-app {
+    padding: 18px;
+    border-radius: 22px;
+  }
+
+  .portal-login h1,
+  .portal-section-head h2,
+  .portal-home-head h2,
+  .portal-card h3 {
+    line-height: 1;
+  }
+
+  .portal-home-head {
+    margin-bottom: 16px;
+  }
+
+  .portal-sidebar {
+    gap: 14px;
+  }
+
+  .portal-sidebar-actions {
+    flex-direction: column;
+  }
+
+  .dni-card {
+    gap: 18px;
+    padding: 16px;
+    border-radius: 22px;
+  }
+
+  .dni-left-head {
+    gap: 10px;
+  }
+
+  .dni-title-small {
+    font-size: 1.35rem;
+  }
+
+  .dni-country {
+    font-size: 1.8rem;
+  }
+
+  .dni-service {
+    font-size: 0.84rem;
+    line-height: 1.45;
+  }
+
+  .dni-photo {
+    width: 100%;
+    max-width: 180px;
+    height: 210px;
+    margin: 0 auto;
+  }
+
+  .dni-grid {
+    gap: 12px 14px;
+  }
+
+  .dni-grid strong {
+    font-size: 1.02rem;
+  }
+
+  .bank-subnav {
+    gap: 8px;
+  }
+
+  .bank-subnav-button {
+    width: 100%;
+    text-align: center;
+  }
+
+  .bank-card-visual {
+    min-height: 0;
+  }
+
+  .bank-card-face {
+    padding: 18px 18px 16px;
+  }
+
+  .bank-card-bank {
+    font-size: 1.42rem;
+  }
+
+  .bank-card-bank-sub {
+    font-size: 0.66rem;
+    letter-spacing: 0.16em;
+  }
+
+  .bank-card-chip {
+    width: 42px;
+    height: 30px;
+    border-radius: 8px;
+  }
+
+  .bank-card-number {
+    font-size: 1.3rem;
+    letter-spacing: 0.04em;
+  }
+
+  .bank-card-small {
+    font-size: 0.54rem;
+  }
+
+  .bank-card-expiry,
+  .bank-card-holder {
+    font-size: 0.68rem;
+  }
+
+  .bank-card-visa {
+    font-size: 1.3rem;
+  }
+
+  .bank-card-strip {
+    margin: 14px -18px 18px;
+    height: 34px;
+  }
+
+  .bank-card-cvv-box {
+    width: 92px;
+    height: 36px;
+    font-size: 1.08rem;
+  }
+
+  .bank-card-cvv-box span {
+    font-size: 1.08rem;
+  }
+
+  .transaction-item {
+    padding: 12px 14px;
+  }
+
+  .transaction-item-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .transaction-item-amount {
+    font-size: 1.05rem;
+  }
+
+  .store-grid {
+    gap: 14px;
+  }
+
+  .store-panel-head {
+    margin-bottom: 14px;
+  }
+
+  .store-panel-filters {
+    margin-bottom: 2px;
+  }
+
+  .store-item-body {
+    padding: 14px;
+  }
+
+  .store-item-body h3 {
+    font-size: 1.28rem;
+  }
+
+  .store-item-actions {
+    flex-direction: column;
+  }
+
+  .store-item-actions .portal-button {
+    width: 100%;
+  }
+
+  .store-item-price {
+    font-size: 1.18rem;
+  }
+
+  .casino-grid {
+    gap: 14px;
+  }
+
+  .casino-reel {
+    font-size: 1.1rem;
+    padding: 14px;
+  }
+
+  .portal-modal-card {
+    width: min(100%, calc(100vw - 20px));
+    padding: 18px;
+    border-radius: 22px;
+  }
+}

@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comisaria Virtual | Viva Chile Roleplay</title>
+  <link rel="icon" type="image/png" href="../assets/logo.png">
+  <link rel="apple-touch-icon" href="../assets/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="cv-intro-pending">
+  <div class="cv-loader" data-cv-loader>
+    <div class="cv-loader-card">
+      <img class="cv-loader-logo" src="../assets/logo.png" alt="Logo Viva Chile Roleplay">
+      <div class="cv-loader-bar"><span></span></div>
+    </div>
+  </div>
+  <img id="carabineros-logo-source" src="../assets/logo-carabineros.png" alt="" hidden>
+  <div class="cv-page">
+    <div class="cv-backdrop cv-intro-item cv-intro-delay-1"></div>
+
+    <header class="cv-topbar cv-intro-item cv-intro-delay-2">
+      <a class="cv-brand" href="../index.html" aria-label="Volver al inicio">
+        <img class="cv-brand-logo" src="../assets/logo.png" alt="Logo de Viva Chile Roleplay">
+        <span>Comisaria Virtual</span>
+      </a>
+
+      <nav class="cv-nav" aria-label="Navegacion principal">
+        <a href="#tramites">Tramites</a>
+        <a href="#servicios">Servicios</a>
+        <a href="#ayuda">Ayuda</a>
+      </nav>
+    </header>
+
+    <main class="cv-hero">
+      <section class="cv-copy cv-intro-item cv-intro-delay-3">
+        <p class="cv-kicker">Gobierno Digital RP</p>
+        <h1>Comisaria Virtual de Viva Chile</h1>
+        <p class="cv-lead">
+          Accede a denuncias, constancias, controles y solicitudes desde un solo lugar. Una experiencia clara,
+          moderna y pensada para que el rol institucional se sienta rapido, serio y conectado con el servidor.
+        </p>
+
+        <div class="cv-actions">
+          <a class="cv-button primary" href="#app">Ingresar a tramites</a>
+          <a class="cv-button secondary" href="../index.html">Volver al inicio</a>
+        </div>
+
+        <div class="cv-stats">
+          <article class="cv-stat">
+            <strong>24/7</strong>
+            <span>Atencion digital</span>
+          </article>
+          <article class="cv-stat">
+            <strong>5</strong>
+            <span>Servicios iniciales</span>
+          </article>
+          <article class="cv-stat">
+            <strong>RP</strong>
+            <span>Enfoque institucional</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="cv-device-wrap cv-intro-item cv-intro-delay-4" aria-label="Vista previa de la plataforma">
+        <div class="cv-device-shadow"></div>
+        <div class="cv-device">
+          <div class="cv-device-notch"></div>
+          <div class="cv-screen">
+            <div class="cv-appbar">
+              <img class="cv-status-logo" src="../assets/logo-carabineros.png" alt="Logo de Carabineros">
+              <span>Comisaria Virtual</span>
+            </div>
+
+            <div class="cv-screen-body">
+              <div class="cv-badge">Disponible ahora</div>
+              <h2>Bienvenido/a</h2>
+              <p>Selecciona un tramite para comenzar tu gestion digital.</p>
+
+              <div class="cv-mini-panel">
+                <button type="button" data-open-service="constancia">Constancia simple</button>
+                <button type="button" data-open-service="denuncia">Denuncia</button>
+                <button type="button" data-open-service="permiso">Salvoconducto</button>
+                <button type="button" data-open-service="consulta">Consulta de estado</button>
+              </div>
+
+              <div class="cv-mini-card">
+                <span>Estado del sistema</span>
+                <strong>Operativo</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <section class="cv-services cv-intro-item cv-intro-delay-5" id="tramites">
+      <div class="cv-section-head">
+        <p class="cv-kicker">Servicios disponibles</p>
+        <h2>Elige tu tramite</h2>
+      </div>
+
+      <div class="cv-service-grid">
+        <article class="cv-service-card" data-open-service="constancia">
+          <h3>Constancias</h3>
+          <p>Solicita comprobantes y registros para respaldar situaciones dentro del rol.</p>
+          <button type="button" class="cv-inline-button">Abrir tramite</button>
+        </article>
+        <article class="cv-service-card" data-open-service="denuncia">
+          <h3>Denuncias</h3>
+          <p>Ingresa reportes formales para dejar antecedentes y activar procedimientos.</p>
+          <button type="button" class="cv-inline-button">Abrir tramite</button>
+        </article>
+        <article class="cv-service-card" data-open-service="permiso">
+          <h3>Salvoconducto</h3>
+          <p>Solicita un documento para circular durante toque de queda por un motivo justificado.</p>
+          <button type="button" class="cv-inline-button">Abrir tramite</button>
+        </article>
+        <article class="cv-service-card" data-open-service="consulta">
+          <h3>Consultas</h3>
+          <p>Revisa el estado de solicitudes o verifica si tu documento ya fue emitido.</p>
+          <button type="button" class="cv-inline-button">Abrir tramite</button>
+        </article>
+      </div>
+    </section>
+
+    <section class="cv-app cv-intro-item cv-intro-delay-6" id="app">
+      <div class="cv-section-head">
+        <p class="cv-kicker">Sistema en linea</p>
+        <h2>Portal de tramites</h2>
+      </div>
+
+      <div class="cv-app-shell">
+        <aside class="cv-app-sidebar" aria-label="Tipos de tramite">
+          <button type="button" class="cv-app-tab is-active" data-service="constancia">Constancia simple</button>
+          <button type="button" class="cv-app-tab" data-service="denuncia">Denuncia</button>
+          <button type="button" class="cv-app-tab" data-service="permiso">Salvoconducto</button>
+          <button type="button" class="cv-app-tab" data-service="consulta">Consulta de estado</button>
+        </aside>
+
+        <div class="cv-app-content">
+          <section class="cv-form-panel is-active" data-panel="constancia">
+            <div class="cv-panel-head">
+              <h3>Constancia simple</h3>
+              <p>Emite una constancia RP con folio automatico y registro local.</p>
+            </div>
+
+            <form class="cv-form" data-form-type="constancia">
+              <div class="cv-field-grid">
+                <label>
+                  Nombre completo
+                  <input type="text" name="nombre" placeholder="Ej: Pepito Fernando Rojas Vargas" required>
+                </label>
+                <label>
+                  RUT o identificacion
+                  <input type="text" name="rut" inputmode="numeric" autocomplete="off" placeholder="Ej: 12.345.678-K" data-rut-input required>
+                </label>
+              </div>
+
+              <label>
+                Tipo de constancia
+                <select name="tipo" required>
+                  <option value="Residencia">Residencia</option>
+                  <option value="Perdida de documentos">Perdida de documentos</option>
+                  <option value="Hecho simple">Hecho simple</option>
+                </select>
+              </label>
+
+              <label>
+                Descripcion
+                <textarea name="detalle" rows="5" placeholder="Ej: Declaro la perdida de mi cedula de identidad en sector centro." required></textarea>
+              </label>
+
+              <button type="submit" class="cv-button primary">Emitir constancia</button>
+            </form>
+          </section>
+
+          <section class="cv-form-panel" data-panel="denuncia">
+            <div class="cv-panel-head">
+              <h3>Denuncia</h3>
+              <p>Registra una denuncia con detalle del hecho, involucrados y ubicacion.</p>
+            </div>
+
+            <form class="cv-form" data-form-type="denuncia">
+              <div class="cv-field-grid">
+                <label>
+                  Nombre denunciante
+                  <input type="text" name="nombre" placeholder="Ej: Pepito Fernando Rojas Vargas" required>
+                </label>
+                <label>
+                  Contacto
+                  <input type="text" name="contacto" placeholder="Ej: Discord pepito_123" required>
+                </label>
+              </div>
+
+              <div class="cv-field-grid">
+                <label>
+                  Fecha del hecho
+                  <input type="date" name="fecha" required>
+                </label>
+                <label>
+                  Ubicacion
+                  <input type="text" name="ubicacion" placeholder="Ej: Avenida Central con Pasaje Norte" required>
+                </label>
+              </div>
+
+              <label>
+                Relato de los hechos
+                <textarea name="detalle" rows="6" placeholder="Ej: Un vehiculo me cerro el paso y se dio a la fuga en direccion al norte." required></textarea>
+              </label>
+
+              <button type="submit" class="cv-button primary">Ingresar denuncia</button>
+            </form>
+          </section>
+
+          <section class="cv-form-panel" data-panel="permiso">
+            <div class="cv-panel-head">
+              <h3>Salvoconducto</h3>
+              <p>Solicita autorizacion para circular durante toque de queda con origen, destino y franja horaria.</p>
+            </div>
+
+            <form class="cv-form" data-form-type="permiso">
+              <div class="cv-field-grid">
+                <label>
+                  Nombre solicitante
+                  <input type="text" name="nombre" placeholder="Ej: Pepito Fernando Rojas Vargas" required>
+                </label>
+                <label>
+                  RUT o identificacion
+                  <input type="text" name="rut" inputmode="numeric" autocomplete="off" placeholder="Ej: 12.345.678-K" data-rut-input required>
+                </label>
+              </div>
+
+              <div class="cv-field-grid">
+                <label>
+                  Motivo del traslado
+                  <input type="text" name="motivo" placeholder="Ej: Traslado de emergencia familiar" required>
+                </label>
+                <label>
+                  Fecha de circulacion
+                  <input type="date" name="fecha" required>
+                </label>
+              </div>
+
+              <div class="cv-field-grid">
+                <label>
+                  Origen
+                  <input type="text" name="origen" placeholder="Ej: Pasaje Los Robles 145, Puente Alto" required>
+                </label>
+                <label>
+                  Destino
+                  <input type="text" name="destino" placeholder="Ej: Hospital Central de Santiago" required>
+                </label>
+              </div>
+
+              <div class="cv-field-grid">
+                <label>
+                  Hora de salida
+                  <input type="time" name="salida" required>
+                </label>
+                <label>
+                  Hora de termino
+                  <input type="time" name="termino" required>
+                </label>
+              </div>
+
+              <label>
+                Observaciones
+                <textarea name="detalle" rows="5" placeholder="Ej: Debo trasladar a un familiar a urgencias durante el horario de restriccion." required></textarea>
+              </label>
+
+              <button type="submit" class="cv-button primary">Emitir salvoconducto</button>
+            </form>
+          </section>
+
+          <section class="cv-form-panel" data-panel="consulta">
+            <div class="cv-panel-head">
+              <h3>Consulta de estado</h3>
+              <p>Ingresa tu folio para revisar el estado del tramite guardado en este navegador.</p>
+            </div>
+
+            <form class="cv-form" data-form-type="consulta">
+              <label>
+                Folio
+                <input type="text" name="folio" placeholder="Ej: CV-123456" required>
+              </label>
+
+              <button type="submit" class="cv-button primary">Consultar estado</button>
+            </form>
+
+            <div class="cv-query-result" data-query-result hidden></div>
+          </section>
+
+          <section class="cv-result-card" data-result-card hidden>
+            <p class="cv-kicker">Resultado</p>
+            <h3>Tramite registrado con exito</h3>
+            <div class="cv-result-body" data-result-body></div>
+            <div class="cv-download-actions" data-download-actions hidden>
+              <a href="#" class="cv-button primary" data-download-button download>Descargar documento PNG</a>
+              <button type="button" class="cv-button secondary" data-preview-button>Mostrar vista previa</button>
+            </div>
+            <div class="cv-document-preview" data-document-preview hidden>
+              <img data-preview-image alt="Vista previa del documento generado">
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section class="cv-flow cv-intro-item cv-intro-delay-7" id="servicios">
+      <div class="cv-section-head">
+        <p class="cv-kicker">Proceso</p>
+        <h2>Como funciona</h2>
+      </div>
+
+      <div class="cv-flow-list">
+        <article class="cv-flow-step">
+          <span>01</span>
+          <div>
+            <h3>Selecciona el tramite</h3>
+            <p>Escoge la gestion que necesitas desde la pagina principal del sistema.</p>
+          </div>
+        </article>
+        <article class="cv-flow-step">
+          <span>02</span>
+          <div>
+            <h3>Completa los datos</h3>
+            <p>Ingresa la informacion requerida para que la solicitud quede correctamente registrada.</p>
+          </div>
+        </article>
+        <article class="cv-flow-step">
+          <span>03</span>
+          <div>
+            <h3>Recibe respuesta</h3>
+            <p>El sistema o la institucion correspondiente procesara tu requerimiento segun el contexto RP.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="cv-help cv-intro-item cv-intro-delay-8" id="ayuda">
+      <div class="cv-help-card">
+        <p class="cv-kicker">Soporte</p>
+        <h2>Necesitas asistencia?</h2>
+        <p>
+          Si tienes dudas sobre el uso de la comisaria virtual o quieres reportar un problema con un tramite,
+          contacta al equipo administrativo desde el Discord oficial.
+        </p>
+        <a class="cv-button primary" href="https://discord.gg/vrcrp" target="_blank" rel="noreferrer">Ir a Discord</a>
+      </div>
+    </section>
+  </div>
+  <script src="app.js"></script>
+  <script>
+    const cvLoader = document.querySelector('[data-cv-loader]');
+    const showCvLoader = () => {
+      if (!cvLoader) return;
+      cvLoader.hidden = false;
+      cvLoader.classList.remove('is-hidden');
+    };
+    const hideCvLoader = (delay = 950) => {
+      if (!cvLoader) return;
+      window.setTimeout(() => {
+        cvLoader.classList.add('is-hidden');
+      }, delay);
+    };
+
+    showCvLoader();
+    window.addEventListener('load', () => hideCvLoader());
+
+    document.querySelectorAll('a[href]').forEach((link) => {
+      const href = link.getAttribute('href') || '';
+      const isInternalPage = href && !href.startsWith('#') && !href.startsWith('http') && !link.target;
+      if (!isInternalPage) return;
+      link.addEventListener('click', () => showCvLoader());
+    });
+  </script>
+</body>
+</html>

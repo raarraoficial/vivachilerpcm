@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel admin | Viva Chile Roleplay</title>
+  <link rel="icon" type="image/png" href="assets/logo.png">
+  <link rel="apple-touch-icon" href="assets/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+  <script src="app-config.js"></script>
+</head>
+<body>
+  <main class="admin-shell">
+    <section class="admin-card admin-login" data-login-view>
+      <p class="admin-kicker">Panel oculto</p>
+      <h1>Acceso administrativo</h1>
+      <p>
+        Para entrar debes verificarte con Discord y tener uno de los roles permitidos:
+        <strong>CEO</strong> o <strong>Fundador</strong>.
+      </p>
+      <a class="admin-button primary" data-auth-path="/auth/discord/login" href="/auth/discord/login">Entrar con Discord</a>
+      <a class="admin-button secondary" href="portal.html">Ir al portal</a>
+      <a class="admin-button secondary" href="index.html">Volver al inicio</a>
+    </section>
+
+    <section class="admin-card admin-panel" data-panel-view hidden>
+      <div class="admin-head">
+        <div>
+          <p class="admin-kicker">Panel oculto</p>
+          <h1>Panel administrativo</h1>
+          <p class="admin-user" data-admin-user></p>
+        </div>
+
+        <div class="admin-actions">
+          <a class="admin-button secondary" href="portal.html">Ir al portal</a>
+          <button type="button" class="admin-button secondary" data-refresh-session>Recargar</button>
+          <button type="button" class="admin-button secondary" data-logout>Salir</button>
+        </div>
+      </div>
+
+      <div class="admin-workspace">
+        <aside class="admin-sidebar">
+          <p class="admin-kicker">Modulos</p>
+          <button type="button" class="admin-nav-button is-active" data-admin-tab-button="stats">Stats y portada</button>
+          <button type="button" class="admin-nav-button" data-admin-tab-button="mantenimiento">Mantenimiento</button>
+          <button type="button" class="admin-nav-button" data-admin-tab-button="anuncios">Anuncios</button>
+          <button type="button" class="admin-nav-button" data-admin-tab-button="economia">Economia</button>
+          <button type="button" class="admin-nav-button" data-admin-tab-button="identidad">Identidad</button>
+          <button type="button" class="admin-nav-button" data-admin-tab-button="tienda">Tienda</button>
+        </aside>
+
+        <div class="admin-content">
+      <section class="admin-block is-active" data-admin-tab="stats">
+        <p class="admin-kicker">Stats</p>
+        <h2 class="admin-block-title">Portada y estado general</h2>
+        <form class="admin-form" data-admin-form>
+          <label>
+            Usuarios totales en Discord
+            <input type="number" name="discord_members" min="0" required>
+          </label>
+
+          <label>
+            Staffs del servidor
+            <input type="number" name="server_staff" min="0" required>
+          </label>
+
+          <label>
+            Estado del servidor
+            <input type="text" name="server_status" required>
+          </label>
+
+          <label>
+            Estado general
+            <input type="text" name="general_status" required>
+          </label>
+
+          <label>
+            Ultima actualizacion
+            <input type="text" name="updated_at" required>
+          </label>
+
+          <div class="admin-submit-row">
+            <button type="submit" class="admin-button primary">Guardar stats</button>
+            <a class="admin-button secondary" href="index.html">Ver portada</a>
+          </div>
+        </form>
+      </section>
+
+      <section class="admin-block" data-admin-tab="mantenimiento">
+        <p class="admin-kicker">Mantenimiento</p>
+        <h2 class="admin-block-title">Bloquear secciones del sitio</h2>
+        <form class="admin-form" data-admin-maintenance-form>
+          <label>
+            Seccion
+            <select name="section" required>
+              <option value="inicio">Inicio</option>
+              <option value="portal">Portal de identidad</option>
+              <option value="tienda">Tienda oficial</option>
+              <option value="comisaria">Comisaria virtual</option>
+              <option value="casino">Casino</option>
+              <option value="kame">Kame Motors</option>
+              <option value="staff">Panel de staff</option>
+              <option value="policial">Portal policial</option>
+              <option value="banco_funcionarios">Banco funcionarios</option>
+            </select>
+          </label>
+          <label>
+            Estado
+            <select name="enabled" required>
+              <option value="false">Disponible</option>
+              <option value="true">En mantenimiento</option>
+            </select>
+          </label>
+          <label class="admin-form-span">
+            Titulo de la pantalla
+            <input type="text" name="title" placeholder="Ej: Portal de identidad en mantenimiento">
+          </label>
+          <label class="admin-form-span">
+            Mensaje
+            <textarea name="message" rows="4" placeholder="Mensaje que vera el usuario mientras la seccion este cerrada."></textarea>
+          </label>
+          <div class="admin-submit-row">
+            <button type="submit" class="admin-button primary">Guardar mantenimiento</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="admin-block" data-admin-tab="anuncios">
+        <p class="admin-kicker">Anuncios</p>
+        <h2 class="admin-block-title">Comunicacion interna</h2>
+        <form class="admin-form" data-admin-announcement-form>
+          <label>
+            Titulo
+            <input type="text" name="title" placeholder="Ej: Actualizacion del portal" required>
+          </label>
+          <label class="admin-form-span">
+            Mensaje
+            <textarea name="message" rows="4" placeholder="Escribe el anuncio para todos los usuarios." required></textarea>
+          </label>
+          <div class="admin-submit-row">
+            <button type="submit" class="admin-button primary">Enviar anuncio</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="admin-block" data-admin-tab="economia">
+        <p class="admin-kicker">Dinero</p>
+        <h2 class="admin-block-title">Ajustes economicos</h2>
+        <form class="admin-form" data-admin-balance-form>
+          <label>
+            Nombre completo o RUT
+            <input type="text" name="identifier" placeholder="Ej: Marcela Carolina Fredez Vidal o 12.345.678-K" required>
+          </label>
+          <label>
+            Monto
+            <input type="number" name="amount" min="1" required>
+          </label>
+          <label>
+            Accion
+            <select name="mode" required>
+              <option value="add">Dar dinero</option>
+              <option value="remove">Quitar dinero</option>
+            </select>
+          </label>
+          <div class="admin-submit-row">
+            <button type="submit" class="admin-button primary">Aplicar balance</button>
+          </div>
+        </form>
+
+        <div class="admin-divider"></div>
+        <p class="admin-kicker">Abono masivo</p>
+        <h2 class="admin-block-title">Enviar dinero a todos los registrados</h2>
+        <form class="admin-form" data-admin-bulk-balance-form>
+          <label>
+            Monto por jugador
+            <input type="number" name="amount" min="1" placeholder="Ej: 50000" required>
+          </label>
+          <label class="admin-form-span">
+            Motivo
+            <textarea name="reason" rows="3" placeholder="Ej: Compensacion por mantenimiento del servidor" required></textarea>
+          </label>
+          <div class="admin-submit-row">
+            <button type="submit" class="admin-button primary">Enviar a todos</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="admin-block" data-admin-tab="identidad">
+        <p class="admin-kicker">Identidad</p>
+        <h2 class="admin-block-title">Gestion de personas</h2>
+        <form class="admin-form" data-admin-identity-form>
+          <label>
+            Nombre completo o RUT actual
+            <input type="text" name="identifier" placeholder="Buscador del DNI" required>
+          </label>
+          <label>
+            Nombres
+            <input type="text" name="nombres" placeholder="Opcional">
+          </label>
+          <label>
+            Apellidos
+            <input type="text" name="apellidos" placeholder="Opcional">
+          </label>
+          <label>
+            RUT
+            <input type="text" name="rut" placeholder="Opcional">
+          </label>
+          <label>
+            Fecha de nacimiento
+            <input type="text" name="birth_date" placeholder="Opcional">
+          </label>
+          <label>
+            Sexo
+            <input type="text" name="sex" placeholder="Opcional">
+          </label>
+          <label>
+            Nacionalidad
+            <input type="text" name="nationality" placeholder="Opcional">
+          </label>
+          <div class="admin-submit-row">
+            <button type="submit" class="admin-button primary">Actualizar DNI</button>
+          </div>
+        </form>
+
+        <div class="admin-divider"></div>
+        <p class="admin-kicker">Borrado</p>
+        <h2 class="admin-block-title">Eliminar registros</h2>
+        <form class="admin-form" data-admin-delete-form>
+          <label>
+            Nombre completo o RUT
+            <input type="text" name="identifier" placeholder="DNI a borrar" required>
+          </label>
+          <div class="admin-submit-row">
+            <button type="submit" class="admin-button primary">Borrar DNI</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="admin-block" data-admin-tab="tienda">
+        <p class="admin-kicker">Tienda</p>
+        <h2 class="admin-block-title">Articulos e importacion</h2>
+        <form class="admin-form" data-admin-store-form>
+          <label>
+            Nombre del item
+            <input type="text" name="name" placeholder="Ej: Vip Bronce" required>
+          </label>
+          <label>
+            Precio
+            <input type="number" name="price" min="0" placeholder="Ej: 1100" required>
+          </label>
+          <label>
+            Categoria
+            <select name="category" required>
+              <option value="vehiculos">Vehiculos</option>
+              <option value="armamento">Armamento</option>
+              <option value="licencias">Licencias</option>
+              <option value="casino">Casino</option>
+            </select>
+          </label>
+          <label class="admin-form-span">
+            Descripcion
+            <textarea name="description" rows="4" placeholder="Describe el item" required></textarea>
+          </label>
+          <label class="admin-form-span">
+            Foto
+            <input type="text" name="image" placeholder="Ruta o URL, ej: assets/tienda/vip-bronce.png o https://media.discordapp.net/..." required>
+            <div class="admin-dropzone" data-image-dropzone>
+              <input class="admin-dropzone-input" type="file" accept="image/png,image/jpeg,image/webp" data-image-file-input hidden>
+              <strong>Sueltala aqui o haz click</strong>
+              <span>La imagen se guardara dentro de `assets/tienda/uploads`.</span>
+            </div>
+            <img class="admin-image-preview" data-image-preview src="" alt="Vista previa de imagen" hidden>
+          </label>
+          <div class="admin-submit-row">
+            <button type="submit" class="admin-button primary">Agregar item</button>
+          </div>
+        </form>
+
+        <div class="admin-store-list" data-admin-store-list></div>
+
+        <div class="admin-divider"></div>
+        <p class="admin-kicker">Entregas pendientes</p>
+        <h2 class="admin-block-title">Asignar item a jugador</h2>
+        <form class="admin-form" data-admin-store-grant-form>
+          <label>
+            Jugador por nombre o RUT
+            <input type="text" name="identifier" placeholder="Ej: Rafael Gustavo Fernandez Prat o 12.345.678-K" required>
+          </label>
+          <label>
+            Item a entregar
+            <select name="item_id" data-admin-store-grant-select required>
+              <option value="">Selecciona un item</option>
+            </select>
+          </label>
+          <div class="admin-submit-row">
+            <button type="submit" class="admin-button primary">Asignar entrega</button>
+          </div>
+        </form>
+
+        <div class="admin-divider"></div>
+        <p class="admin-kicker">Importacion masiva</p>
+        <h2 class="admin-block-title">Carga rapida</h2>
+        <form class="admin-form" data-admin-store-import-form>
+          <label class="admin-form-span">
+            Pega lineas en formato `nombre|precio|descripcion|imagen`
+            <textarea name="raw" rows="10" placeholder="Chevlon Camioneta|3500000|Vehiculo importado ERLC|https://media.discordapp.net/...&#10;Falcon Prime Eques|4200000|Vehiculo importado ERLC|assets/tienda/placeholder-auto.svg&#10;Chevlon Captain 1992"></textarea>
+          </label>
+          <p class="admin-help-text">Tambien puedes pegar solo nombres. El importador ignora lineas como `Imagen`, horas o `GAMA ALTA`, deja el precio como pendiente y genera la imagen automaticamente en `assets/tienda/autos/nombre-del-auto.png`.</p>
+          <div class="admin-submit-row">
+            <button type="submit" class="admin-button primary">Importar articulos</button>
+          </div>
+        </form>
+      </section>
+
+      <p class="admin-feedback" data-admin-feedback></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="admin.js"></script>
+</body>
+</html>

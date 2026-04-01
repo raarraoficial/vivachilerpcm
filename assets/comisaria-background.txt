@@ -1,0 +1,6 @@
+Pon aqui la imagen de fondo para la comisaria virtual.
+
+Nombre esperado:
+- `comisaria-background.jpg`
+
+Cuando agregues esa imagen en `assets`, la pagina `comisaria-virtual` la va a usar automaticamente como fondo.

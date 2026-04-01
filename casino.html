@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Casino Viva Chile | Viva Chile RP</title>
+  <link rel="icon" type="image/png" href="assets/logo.png">
+  <link rel="apple-touch-icon" href="assets/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="portal.css">
+  <link rel="stylesheet" href="casino.css">
+  <script src="app-config.js"></script>
+</head>
+<body>
+  <div class="portal-loader" data-casino-loader>
+    <div class="portal-loader-card">
+      <img class="portal-loader-logo" src="assets/logo.png" alt="Viva Chile RP">
+      <div class="portal-loader-bar"><span></span></div>
+    </div>
+  </div>
+
+  <header class="casino-topbar">
+    <a class="casino-brand" href="portal.html">
+      <img src="assets/logo.png" alt="Viva Chile RP">
+      <div>
+        <span>Viva Chile RP</span>
+        <strong>Casino</strong>
+      </div>
+    </a>
+    <div class="casino-top-actions">
+      <a class="portal-button secondary" href="portal.html">Volver al portal</a>
+    </div>
+  </header>
+
+  <main class="casino-shell" data-casino-app hidden>
+    <section class="casino-hero">
+      <article class="casino-hero-card">
+        <p class="portal-kicker">Salon principal</p>
+        <h1 class="casino-title">Casino Viva Chile</h1>
+        <p class="casino-copy">Deposita fondos, juega con saldo casino real y administra tus ganancias desde una sala separada del banco principal. Todo lo apostado sale solo desde tu saldo casino.</p>
+        <div class="casino-marquee">
+          <span data-casino-marquee>Publicidad no disponible</span>
+        </div>
+      </article>
+
+      <aside class="casino-balance-grid">
+        <article class="casino-balance-card">
+          <span>Caja principal</span>
+          <strong data-bank-balance>$0</strong>
+          <small>Disponible en tu cuenta bancaria.</small>
+        </article>
+        <article class="casino-balance-card is-accent">
+          <span>Saldo casino</span>
+          <strong data-casino-balance>$0</strong>
+          <small>Es el unico saldo que se usa para apostar.</small>
+        </article>
+        <article class="casino-balance-card">
+          <span>Ultimo resultado</span>
+          <strong data-casino-last-result>Esperando jugada</strong>
+          <small data-casino-last-copy>Sin movimiento reciente.</small>
+        </article>
+      </aside>
+    </section>
+
+    <section class="casino-grid">
+      <section class="casino-main">
+        <article class="casino-panel">
+          <div class="casino-panel-head">
+            <div>
+              <p class="portal-kicker">Caja</p>
+              <h2>Mover fondos</h2>
+            </div>
+            <p class="casino-note">Deposita desde tu banco al casino o retira todo de vuelta a tu cuenta principal.</p>
+          </div>
+          <div class="casino-cashier-grid">
+            <form class="casino-form" data-casino-deposit-form>
+              <label>
+                Monto a depositar
+                <input type="number" name="amount" min="1" step="1" placeholder="Ej: 250000" required>
+              </label>
+              <div class="portal-actions">
+                <button class="portal-button primary" type="submit">Depositar al casino</button>
+              </div>
+            </form>
+            <div class="casino-withdraw-card">
+              <span>Retiro directo</span>
+              <strong>Retira todo tu saldo casino</strong>
+              <p>Cuando retires, el total acumulado vuelve a tu cuenta bancaria principal.</p>
+              <button class="portal-button secondary" type="button" data-casino-withdraw>Retirar saldo casino</button>
+            </div>
+          </div>
+          <p class="portal-feedback" data-casino-feedback></p>
+        </article>
+
+        <article class="casino-panel">
+          <div class="casino-panel-head">
+            <div>
+              <p class="portal-kicker">Juegos</p>
+              <h2>Mesas y maquinas</h2>
+            </div>
+            <p class="casino-note">Tres juegos activos, pagos instantaneos y resultado visible al momento.</p>
+          </div>
+
+          <div class="casino-games-grid">
+            <section class="casino-game-card">
+              <div class="casino-game-top">
+                <div>
+                  <span class="casino-game-kicker">Coinflip</span>
+                  <h3>Cara o sello</h3>
+                </div>
+                <span class="casino-game-pill">Pago x2</span>
+              </div>
+              <p>Elige un lado, apuesta tu saldo casino y resuelve la moneda al instante.</p>
+              <div class="casino-stage casino-stage-coinflip">
+                <div class="casino-coin" data-coinflip-coin>
+                  <span class="coin-face coin-front">C</span>
+                  <span class="coin-face coin-back">S</span>
+                </div>
+                <p class="casino-stage-copy" data-coinflip-result-copy>La moneda esta lista para el siguiente lanzamiento.</p>
+              </div>
+              <form class="casino-form" data-coinflip-form>
+                <label>
+                  Monto
+                  <input type="number" name="amount" min="1" step="1" placeholder="Ej: 100000" required>
+                </label>
+                <label>
+                  Lado
+                  <select name="side" required>
+                    <option value="cara">Cara</option>
+                    <option value="sello">Sello</option>
+                  </select>
+                </label>
+                <div class="portal-actions">
+                  <button class="portal-button primary" type="submit">Jugar coinflip</button>
+                </div>
+              </form>
+            </section>
+
+            <section class="casino-game-card">
+              <div class="casino-game-top">
+                <div>
+                  <span class="casino-game-kicker">Slots</span>
+                  <h3>Tragamonedas</h3>
+                </div>
+                <span class="casino-game-pill">Pago x1.6 / x4</span>
+              </div>
+              <p>Haz girar la maquina. Dos simbolos iguales pagan y tres iguales multiplican fuerte.</p>
+              <div class="casino-stage casino-stage-slots">
+                <div class="casino-slots-header">
+                  <span>Linea central</span>
+                  <strong>Jackpot rapido</strong>
+                </div>
+                <div class="casino-slots-reel" data-slots-reel>
+                  <span>?</span><span>?</span><span>?</span>
+                </div>
+              </div>
+              <form class="casino-form" data-slots-form>
+                <label>
+                  Monto
+                  <input type="number" name="amount" min="1" step="1" placeholder="Ej: 50000" required>
+                </label>
+                <div class="portal-actions">
+                  <button class="portal-button primary" type="submit">Girar slots</button>
+                </div>
+              </form>
+            </section>
+
+            <section class="casino-game-card">
+              <div class="casino-game-top">
+                <div>
+                  <span class="casino-game-kicker">Ruleta</span>
+                  <h3>Color rapido</h3>
+                </div>
+                <span class="casino-game-pill">Pago x2 / x14</span>
+              </div>
+              <p>Apuesta a rojo, negro o verde. Verde paga mucho, pero sale poco.</p>
+              <div class="casino-stage casino-stage-roulette">
+                <div class="casino-wheel-wrap">
+                  <span class="casino-wheel-pointer" aria-hidden="true"></span>
+                  <div class="casino-wheel" data-roulette-wheel>
+                    <span class="wheel-center"></span>
+                  </div>
+                </div>
+                <div class="casino-roulette-result" data-roulette-result>
+                  <span class="roulette-chip is-red"></span>
+                  <strong>Sin giro aun</strong>
+                </div>
+              </div>
+              <form class="casino-form" data-roulette-form>
+                <label>
+                  Monto
+                  <input type="number" name="amount" min="1" step="1" placeholder="Ej: 75000" required>
+                </label>
+                <label>
+                  Color
+                  <select name="color" required>
+                    <option value="rojo">Rojo</option>
+                    <option value="negro">Negro</option>
+                    <option value="verde">Verde</option>
+                  </select>
+                </label>
+                <div class="portal-actions">
+                  <button class="portal-button primary" type="submit">Lanzar ruleta</button>
+                </div>
+              </form>
+            </section>
+          </div>
+        </article>
+      </section>
+
+      <aside class="casino-side">
+        <article class="casino-panel">
+          <div class="casino-panel-head">
+            <div>
+              <p class="portal-kicker">Publicidad interna</p>
+              <h2>Panel comercial</h2>
+            </div>
+          </div>
+          <div class="casino-ad-card">
+            <strong>Publicidad no disponible</strong>
+            <p>Cuando administracion habilite anuncios internos del servidor, apareceran en este bloque.</p>
+          </div>
+        </article>
+
+        <article class="casino-panel">
+          <div class="casino-panel-head">
+            <div>
+              <p class="portal-kicker">Registro de sala</p>
+              <h2>Actividad reciente</h2>
+            </div>
+          </div>
+          <div class="casino-activity-list" data-casino-activity-list>
+            <p class="transaction-empty">Todavia no hay jugadas ni movimientos registrados en esta sesion.</p>
+          </div>
+        </article>
+      </aside>
+    </section>
+  </main>
+
+  <section class="casino-denied" data-casino-denied hidden>
+    <article class="portal-card">
+      <p class="portal-kicker">Acceso requerido</p>
+      <h2 style="margin:0;font-family:'Oswald',sans-serif;">Debes entrar desde tu portal</h2>
+      <p class="portal-user">Inicia sesion en el portal de identidad para acceder al casino y usar tu saldo.</p>
+      <div class="portal-actions">
+        <a class="portal-button primary" href="portal.html">Ir al portal</a>
+      </div>
+    </article>
+  </section>
+
+  <script src="casino.js"></script>
+</body>
+</html>

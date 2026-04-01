@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staff | Viva Chile RP</title>
+  <link rel="icon" type="image/png" href="assets/logo.png">
+  <link rel="apple-touch-icon" href="assets/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="portal.css">
+  <script src="app-config.js"></script>
+  <style>
+    .staff-shell,
+    .staff-top,
+    .staff-main,
+    .staff-search-grid,
+    .staff-results,
+    .staff-stat-grid,
+    .staff-detail-grid,
+    .staff-history-list,
+    .staff-pill-row {
+      display: grid;
+      gap: 24px;
+    }
+
+    .staff-shell {
+      width: min(100%, 1280px);
+      margin: 0 auto;
+      padding: 34px 20px 56px;
+    }
+
+    .staff-top {
+      grid-template-columns: minmax(0, 1.15fr) minmax(320px, 420px);
+      align-items: start;
+    }
+
+    .staff-main {
+      grid-template-columns: minmax(340px, 420px) minmax(0, 1fr);
+      align-items: start;
+    }
+
+    .staff-panel,
+    .staff-search-card,
+    .staff-result-card,
+    .staff-shift-card {
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 28px;
+      background: rgba(9, 18, 27, 0.9);
+      box-shadow: 0 26px 70px rgba(0, 0, 0, 0.24);
+      backdrop-filter: blur(14px);
+      padding: 26px;
+    }
+
+    .staff-search-card,
+    .staff-result-card,
+    .staff-shift-card {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .staff-kicker {
+      margin: 0 0 8px;
+      color: #8bf1b2;
+      font-size: 0.84rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .staff-title {
+      margin: 0;
+      font-family: "Oswald", sans-serif;
+      font-size: clamp(2.6rem, 6vw, 4.8rem);
+      line-height: 0.96;
+    }
+
+    .staff-subtitle,
+    .staff-search-card p,
+    .staff-result-card p,
+    .staff-shift-card p {
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .staff-top-actions,
+    .staff-shift-head,
+    .staff-section-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .staff-search-grid {
+      align-content: start;
+    }
+
+    .staff-form {
+      display: grid;
+      gap: 14px;
+    }
+
+    .staff-form label {
+      display: grid;
+      gap: 10px;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .staff-form input {
+      width: 100%;
+      min-height: 52px;
+      padding: 0 16px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      background: rgba(4, 10, 15, 0.9);
+      color: var(--text);
+      font: inherit;
+    }
+
+    .staff-form input:focus {
+      outline: none;
+      border-color: rgba(75, 171, 255, 0.8);
+      box-shadow: 0 0 0 1px rgba(75, 171, 255, 0.2);
+    }
+
+    .staff-stat-grid,
+    .staff-detail-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .staff-stat-grid article,
+    .staff-detail-grid article,
+    .staff-list-block {
+      padding: 16px 18px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .staff-stat-grid span,
+    .staff-detail-grid span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .staff-stat-grid strong,
+    .staff-detail-grid strong {
+      display: block;
+      margin-top: 6px;
+      font-family: "Oswald", sans-serif;
+      font-size: 1.3rem;
+      line-height: 1.08;
+      word-break: break-word;
+    }
+
+    .staff-pill-row {
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+    }
+
+    .staff-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 0 12px;
+      border-radius: 999px;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .staff-pill.ok {
+      color: #7ef0a8;
+      background: rgba(99, 216, 141, 0.16);
+    }
+
+    .staff-pill.alert {
+      color: #ff9797;
+      background: rgba(239, 90, 90, 0.16);
+    }
+
+    .staff-hours {
+      margin: 0;
+      font-family: "Oswald", sans-serif;
+      font-size: 2.8rem;
+      line-height: 0.95;
+    }
+
+    .staff-feedback.is-error {
+      color: #ef8b8b;
+    }
+
+    .staff-feedback.is-ok {
+      color: #7ef0a8;
+    }
+
+    .staff-history-list article {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .staff-history-list article:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .staff-history-list small {
+      color: var(--muted);
+    }
+
+    .staff-history-list strong {
+      font-family: "Oswald", sans-serif;
+      font-size: 1.2rem;
+    }
+
+    @media (max-width: 1080px) {
+      .staff-top,
+      .staff-main {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .staff-shell {
+        padding: 20px 16px 48px;
+      }
+
+      .staff-panel,
+      .staff-search-card,
+      .staff-result-card,
+      .staff-shift-card {
+        padding: 22px;
+        border-radius: 24px;
+      }
+
+      .staff-stat-grid,
+      .staff-detail-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="staff-shell">
+    <section class="portal-card" data-staff-denied hidden>
+      <p class="portal-kicker">Acceso restringido</p>
+      <h2 style="margin:0;font-family:'Oswald',sans-serif;">No autorizado</h2>
+      <p class="portal-user">Necesitas el rol Departamento Administrativo para entrar a este panel.</p>
+      <a class="portal-button secondary" href="portal.html">Volver al portal</a>
+    </section>
+
+    <section data-staff-view hidden>
+      <section class="staff-top">
+        <article class="staff-panel">
+          <p class="staff-kicker">Departamento Administrativo</p>
+          <h1 class="staff-title">Panel de staff</h1>
+          <p class="staff-subtitle">Revisa personas por nombre, RUT o documento. Valida vehiculos por patente y consulta su estado legal, propietario e informacion de circulacion desde un solo lugar.</p>
+          <div class="staff-top-actions">
+            <a class="portal-button secondary" href="portal.html">Volver al portal</a>
+          </div>
+        </article>
+
+        <aside class="staff-shift-card">
+          <div class="staff-shift-head">
+            <div>
+              <p class="staff-kicker">Registro de horas</p>
+              <h2 class="staff-hours" data-shift-total>00:00:00</h2>
+            </div>
+            <button class="portal-button primary" type="button" data-shift-toggle>Iniciar turno</button>
+          </div>
+          <p class="portal-feedback staff-feedback" data-shift-feedback>Sin turno activo por ahora.</p>
+          <div class="staff-history-list" data-shift-history>
+            <p class="transaction-empty">Todavia no hay horas registradas.</p>
+          </div>
+        </aside>
+      </section>
+
+      <section class="staff-main">
+        <div class="staff-search-grid">
+          <article class="staff-search-card">
+            <p class="staff-kicker">Busqueda de personas</p>
+            <h2 style="margin:0;font-family:'Oswald',sans-serif;">Consulta civil</h2>
+            <p>Usa nombre, RUT o numero de documento para traer la ficha del jugador y revisar su situacion general.</p>
+            <form class="staff-form" data-staff-person-form>
+              <label>
+                Nombre, RUT o documento
+                <input type="text" name="identifier" placeholder="Ej: 12.345.678-K o Marcela Carolina" required>
+              </label>
+              <div class="portal-actions">
+                <button class="portal-button primary" type="submit">Buscar persona</button>
+              </div>
+            </form>
+            <p class="portal-feedback staff-feedback" data-staff-feedback>Esperando una consulta.</p>
+          </article>
+
+          <article class="staff-search-card">
+            <p class="staff-kicker">Busqueda vehicular</p>
+            <h2 style="margin:0;font-family:'Oswald',sans-serif;">Control por patente</h2>
+            <p>Valida rapidamente si un vehiculo esta inscrito, si tiene permiso vigente y si su revision tecnica esta al dia.</p>
+            <form class="staff-form" data-staff-vehicle-form>
+              <label>
+                Patente
+                <input type="text" name="plate" placeholder="Ej: ABC-123" required>
+              </label>
+              <div class="portal-actions">
+                <button class="portal-button primary" type="submit">Buscar vehiculo</button>
+              </div>
+            </form>
+          </article>
+        </div>
+
+        <div class="staff-results">
+          <article class="staff-result-card">
+            <div class="staff-section-head">
+              <div>
+                <p class="staff-kicker">Resultado persona</p>
+                <h2 style="margin:0;font-family:'Oswald',sans-serif;">Ficha general</h2>
+              </div>
+            </div>
+            <div data-staff-person-result>
+              <p class="transaction-empty">Todavia no se ha consultado ninguna persona.</p>
+            </div>
+          </article>
+
+          <article class="staff-result-card">
+            <div class="staff-section-head">
+              <div>
+                <p class="staff-kicker">Resultado vehiculo</p>
+                <h2 style="margin:0;font-family:'Oswald',sans-serif;">Ficha vehicular</h2>
+              </div>
+            </div>
+            <div data-staff-vehicle-result>
+              <p class="transaction-empty">Todavia no se ha consultado ninguna patente.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const allowedView = document.querySelector("[data-staff-view]");
+    const deniedView = document.querySelector("[data-staff-denied]");
+    const shiftTotal = document.querySelector("[data-shift-total]");
+    const shiftToggle = document.querySelector("[data-shift-toggle]");
+    const shiftFeedback = document.querySelector("[data-shift-feedback]");
+    const shiftHistory = document.querySelector("[data-shift-history]");
+    const staffFeedback = document.querySelector("[data-staff-feedback]");
+    const personResultNode = document.querySelector("[data-staff-person-result]");
+    const vehicleResultNode = document.querySelector("[data-staff-vehicle-result]");
+
+    const formatDate = (value) => {
+      if (!value) return "Sin registro";
+      const date = new Date(value);
+      return Number.isNaN(date.getTime()) ? String(value) : date.toLocaleString("es-CL");
+    };
+
+    const formatDuration = (value) => {
+      const total = Math.max(0, Math.floor(Number(value || 0) / 1000));
+      const hours = String(Math.floor(total / 3600)).padStart(2, "0");
+      const minutes = String(Math.floor((total % 3600) / 60)).padStart(2, "0");
+      const seconds = String(total % 60).padStart(2, "0");
+      return `${hours}:${minutes}:${seconds}`;
+    };
+
+    const formatMoney = (value) =>
+      new Intl.NumberFormat("es-CL", {
+        style: "currency",
+        currency: "CLP",
+        maximumFractionDigits: 0,
+      }).format(Number(value || 0));
+
+    const escapeHtml = (value) =>
+      String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+
+    function setFeedback(node, message, isError = false) {
+      if (!node) return;
+      node.textContent = message;
+      node.classList.toggle("is-error", Boolean(isError));
+      node.classList.toggle("is-ok", !isError && Boolean(message));
+    }
+
+    function renderShift(summary) {
+      if (!summary) {
+        shiftTotal.textContent = "00:00:00";
+        shiftToggle.textContent = "Iniciar turno";
+        setFeedback(shiftFeedback, "Sin turno activo por ahora.");
+        shiftHistory.innerHTML = '<p class="transaction-empty">Todavia no hay horas registradas.</p>';
+        return;
+      }
+
+      shiftTotal.textContent = formatDuration(summary.total_ms);
+      const active = Boolean(summary.active_shift);
+      shiftToggle.textContent = active ? "Finalizar turno" : "Iniciar turno";
+      setFeedback(
+        shiftFeedback,
+        active ? `Turno activo desde ${formatDate(summary.active_shift.started_at)}.` : "Sin turno activo por ahora."
+      );
+
+      const sessions = Array.isArray(summary.sessions) ? summary.sessions : [];
+      shiftHistory.innerHTML = sessions.length
+        ? sessions.slice(0, 6).map((item) => `
+            <article>
+              <small>${escapeHtml(formatDate(item.started_at))}</small>
+              <strong>${escapeHtml(formatDuration(item.duration_ms))}</strong>
+            </article>
+          `).join("")
+        : '<p class="transaction-empty">Todavia no hay horas registradas.</p>';
+    }
+
+    async function loadShift() {
+      const response = await fetch("/api/service-hours?panel=staff", { cache: "no-store" });
+      if (!response.ok) {
+        renderShift(null);
+        return;
+      }
+      const data = await response.json();
+      renderShift(data.summary || null);
+    }
+
+    function renderPerson(person) {
+      if (!person) {
+        personResultNode.innerHTML = '<p class="transaction-empty">Todavia no se ha consultado ninguna persona.</p>';
+        return;
+      }
+
+      const fullName = `${person.identity?.nombres || ""} ${person.identity?.apellidos || ""}`.trim();
+      const fines = Array.isArray(person.police?.fines) ? person.police.fines : [];
+      const unpaidFines = fines.filter((item) => !item.paid).length;
+      const backgrounds = Array.isArray(person.police?.backgrounds) ? person.police.backgrounds : [];
+      const wanted = Array.isArray(person.police?.wanted_orders) ? person.police.wanted_orders : [];
+
+      personResultNode.innerHTML = `
+        <div class="staff-stat-grid">
+          <article>
+            <span>Nombre</span>
+            <strong>${escapeHtml(fullName || "Sin nombre")}</strong>
+          </article>
+          <article>
+            <span>RUT</span>
+            <strong>${escapeHtml(person.identity?.rut || "Sin rut")}</strong>
+          </article>
+          <article>
+            <span>Documento</span>
+            <strong>${escapeHtml(person.identity?.document_number || "Sin documento")}</strong>
+          </article>
+          <article>
+            <span>Saldo banco</span>
+            <strong>${person.bank ? escapeHtml(formatMoney(person.bank.balance || 0)) : "Sin cuenta bancaria"}</strong>
+          </article>
+        </div>
+        <div class="staff-list-block" style="margin-top:16px;">
+          <strong>Estado general</strong>
+          <div class="staff-pill-row">
+            <span class="staff-pill ${wanted.length ? "alert" : "ok"}">${wanted.length ? "Con orden activa" : "Sin orden de busqueda"}</span>
+            <span class="staff-pill ${unpaidFines ? "alert" : "ok"}">${unpaidFines} multas impagas</span>
+            <span class="staff-pill ${backgrounds.length ? "alert" : "ok"}">${backgrounds.length} antecedentes</span>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderVehicle(vehicle) {
+      if (!vehicle) {
+        vehicleResultNode.innerHTML = '<p class="transaction-empty">Todavia no se ha consultado ninguna patente.</p>';
+        return;
+      }
+
+      vehicleResultNode.innerHTML = `
+        <div class="staff-detail-grid">
+          <article>
+            <span>Vehiculo</span>
+            <strong>${escapeHtml(vehicle.item_name || "Sin nombre")}</strong>
+          </article>
+          <article>
+            <span>Patente</span>
+            <strong>${escapeHtml(vehicle.plate || "Sin patente")}</strong>
+          </article>
+          <article>
+            <span>Dueno</span>
+            <strong>${escapeHtml(vehicle.owner_name || "Sin dueno")}</strong>
+          </article>
+          <article>
+            <span>RUT dueno</span>
+            <strong>${escapeHtml(vehicle.owner_identity?.rut || "Sin rut")}</strong>
+          </article>
+          <article>
+            <span>Color</span>
+            <strong>${escapeHtml(vehicle.color || "Sin registro")}</strong>
+          </article>
+          <article>
+            <span>Inscripcion</span>
+            <strong>${escapeHtml(vehicle.registration_number || "Pendiente")}</strong>
+          </article>
+        </div>
+        <div class="staff-list-block" style="margin-top:16px;">
+          <strong>Estado legal</strong>
+          <div class="staff-pill-row">
+            <span class="staff-pill ${vehicle.registered ? "ok" : "alert"}">${vehicle.registered ? "Inscrito" : "No inscrito"}</span>
+            <span class="staff-pill ${vehicle.circulation_up_to_date ? "ok" : "alert"}">${vehicle.circulation_up_to_date ? "Permiso al dia" : "Permiso vencido"}</span>
+            <span class="staff-pill ${vehicle.technical_review_up_to_date ? "ok" : "alert"}">${vehicle.technical_review_up_to_date ? "Revision al dia" : "Revision vencida"}</span>
+            <span class="staff-pill ${vehicle.impounded?.active ? "alert" : "ok"}">${vehicle.impounded?.active ? "En corrales" : "Libre"}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    document.querySelector("[data-staff-person-form]")?.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const identifier = String(new FormData(event.currentTarget).get("identifier") || "").trim();
+      try {
+        const response = await fetch(`/api/staff/search/person?identifier=${encodeURIComponent(identifier)}`, {
+          cache: "no-store",
+        });
+        if (!response.ok) throw new Error("person_not_found");
+        const data = await response.json();
+        renderPerson(data.person);
+        setFeedback(staffFeedback, "Consulta de persona completada.");
+      } catch {
+        renderPerson(null);
+        setFeedback(staffFeedback, "No se encontro una persona con ese nombre, RUT o documento.", true);
+      }
+    });
+
+    document.querySelector("[data-staff-vehicle-form]")?.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const plate = String(new FormData(event.currentTarget).get("plate") || "").trim();
+      try {
+        const response = await fetch(`/api/staff/search/vehicle?plate=${encodeURIComponent(plate)}`, {
+          cache: "no-store",
+        });
+        if (!response.ok) throw new Error("vehicle_not_found");
+        const data = await response.json();
+        renderVehicle(data.vehicle);
+        setFeedback(staffFeedback, "Consulta vehicular completada.");
+      } catch {
+        renderVehicle(null);
+        setFeedback(staffFeedback, "No se encontro un vehiculo con esa patente.", true);
+      }
+    });
+
+    shiftToggle?.addEventListener("click", async () => {
+      const starting = shiftToggle.textContent.includes("Iniciar");
+      const response = await fetch(starting ? "/api/service-hours/start" : "/api/service-hours/stop", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ panel: "staff" }),
+      });
+      if (!response.ok) {
+        setFeedback(shiftFeedback, "No se pudo actualizar el turno.", true);
+        return;
+      }
+      const data = await response.json();
+      renderShift(data.summary || null);
+    });
+
+    (async () => {
+      const response = await fetch("/api/portal/session", { cache: "no-store" });
+      if (!response.ok) {
+        location.href = "/portal.html";
+        return;
+      }
+      const session = await response.json();
+      if (!session.permissions?.canAccessStaff) {
+        deniedView.hidden = false;
+        return;
+      }
+      allowedView.hidden = false;
+      await loadShift();
+      setInterval(loadShift, 10000);
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal de identidad | Viva Chile Roleplay</title>
+  <link rel="icon" type="image/png" href="assets/logo.png">
+  <link rel="apple-touch-icon" href="assets/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="portal.css">
+  <script src="app-config.js"></script>
+</head>
+<body>
+  <div class="portal-loader" data-portal-loader>
+    <div class="portal-loader-card">
+      <img class="portal-loader-logo" src="assets/logo.png" alt="Logo Viva Chile Roleplay">
+      <div class="portal-loader-bar"><span></span></div>
+    </div>
+  </div>
+
+  <header class="portal-topbar">
+    <a class="portal-brand" href="index.html" aria-label="Volver al inicio">
+      <img class="portal-brand-logo" src="assets/logo.png" alt="Logo de Viva Chile Roleplay">
+    </a>
+
+    <div class="portal-top-actions">
+      <a class="portal-button secondary" href="staff.html" data-requires-permission="canAccessStaff" hidden>Staff</a>
+      <a class="portal-button secondary" href="https://discord.gg/vrcrp" target="_blank" rel="noreferrer">Soporte</a>
+      <a class="portal-button secondary" href="admin.html">Panel administrativo</a>
+    </div>
+
+    <button type="button" class="portal-notification-button" data-notifications-toggle aria-label="Abrir notificaciones">
+      <span class="portal-notification-icon">🔔</span>
+      <span class="portal-notification-dot" data-notifications-dot hidden></span>
+    </button>
+  </header>
+
+  <main class="portal-shell">
+    <section class="portal-login portal-card" data-portal-login>
+      <p class="portal-kicker">Registro civil RP</p>
+      <h1>Portal de identidad</h1>
+      <p>Inicia sesion con Discord para crear tu DNI, revisar tus datos y manejar tu cuenta bancaria del servidor.</p>
+      <div class="portal-actions">
+          <a class="portal-button primary" data-auth-path="/auth/discord/portal-login" href="/auth/discord/portal-login">Entrar con Discord</a>
+        <a class="portal-button secondary" href="index.html">Volver al inicio</a>
+      </div>
+    </section>
+
+    <section class="portal-create portal-card" data-portal-create hidden>
+      <div class="portal-section-head">
+        <p class="portal-kicker">Primer ingreso</p>
+        <h2>Crea tu DNI</h2>
+      </div>
+
+      <form class="portal-form" data-identity-form>
+        <label>
+          Nombres
+          <input type="text" name="nombres" placeholder="Ej: Marcela Carolina" required>
+        </label>
+        <label>
+          Apellidos
+          <input type="text" name="apellidos" placeholder="Ej: Fredez Vidal" required>
+        </label>
+        <label>
+          Fecha de nacimiento
+          <input type="date" name="birth_date" required>
+        </label>
+        <label>
+          Sexo
+          <select name="sex" required>
+            <option value="">Selecciona</option>
+            <option value="F">F</option>
+            <option value="M">M</option>
+            <option value="X">X</option>
+          </select>
+        </label>
+        <label>
+          Nacionalidad
+          <input type="text" name="nationality" value="Chilena" required>
+        </label>
+
+        <div class="portal-actions">
+          <button type="submit" class="portal-button primary">Generar DNI</button>
+          <button type="button" class="portal-button secondary" data-portal-logout>Salir</button>
+        </div>
+      </form>
+      <p class="portal-feedback" data-portal-feedback></p>
+    </section>
+
+    <section class="portal-app portal-card" data-portal-app hidden>
+      <div class="portal-app-layout">
+        <aside class="portal-sidebar">
+          <p class="portal-kicker">Menu</p>
+          <nav class="portal-nav" data-portal-nav hidden>
+            <button type="button" class="portal-nav-button is-active" data-portal-tab-button="inicio">Inicio</button>
+            <button type="button" class="portal-nav-button" data-portal-tab-button="banco">Banco</button>
+            <button type="button" class="portal-nav-button" data-portal-tab-button="tienda">Tienda</button>
+            <button type="button" class="portal-nav-button" data-portal-tab-button="inventario">Inventario</button>
+            <button type="button" class="portal-nav-button" data-portal-tab-button="mercado">Mercado de 2da mano</button>
+            <button type="button" class="portal-nav-button" data-portal-tab-button="municipalidad">Municipalidad</button>
+            <button type="button" class="portal-nav-button" data-portal-open-page="casino.html">Casino</button>
+            <button type="button" class="portal-nav-button" data-portal-open-page="kame-motors.html">Kame Motors</button>
+          </nav>
+
+          <div class="portal-sidebar-meta">
+            <p class="portal-user" data-portal-user></p>
+            <div class="portal-role-bar">
+              <button type="button" class="portal-nav-button portal-nav-button-compact" data-portal-open-page="policial.html" data-requires-any-permission="isCarabineros,isPdi" hidden>Portal policial</button>
+              <button type="button" class="portal-nav-button portal-nav-button-compact" data-portal-open-page="banco-funcionarios.html" data-requires-permission="canManageBank" hidden>Banco funcionarios</button>
+            </div>
+            <div class="portal-actions portal-sidebar-actions">
+              <button type="button" class="portal-button secondary" data-portal-logout>Salir</button>
+            </div>
+          </div>
+        </aside>
+
+        <div class="portal-content">
+          <div class="portal-home-head">
+            <div>
+              <p class="portal-kicker">Portal activo</p>
+              <h2 data-portal-section-title>Inicio</h2>
+            </div>
+          </div>
+
+          <section class="portal-tab is-active" data-portal-tab="inicio">
+            <section class="dni-card" data-dni-card>
+              <div class="dni-left">
+                <div class="dni-left-head">
+                  <p class="dni-title-small">Cedula de<br>Identidad</p>
+                  <div class="dni-flag" aria-hidden="true">
+                    <span class="dni-flag-top">
+                      <span class="dni-flag-blue"><span class="dni-flag-star">★</span></span>
+                      <span class="dni-flag-white"></span>
+                    </span>
+                    <span class="dni-flag-red"></span>
+                  </div>
+                </div>
+                <div class="dni-photo">
+                  <img class="dni-photo-image" data-dni-avatar alt="Foto de perfil de Discord">
+                  <span class="dni-photo-fallback" data-dni-initials>VC</span>
+                </div>
+                <p class="dni-run-label">RUN <strong data-dni-rut></strong></p>
+              </div>
+
+              <div class="dni-right">
+                <div class="dni-header">
+                  <div>
+                    <p class="dni-country">Republica de Chile</p>
+                    <p class="dni-service">SERVICIO DE REGISTRO CIVIL E IDENTIFICACION</p>
+                  </div>
+                  <div class="dni-emblem" aria-hidden="true"></div>
+                </div>
+
+                <div class="dni-grid">
+                  <div>
+                    <span>Apellidos</span>
+                    <strong data-dni-apellidos></strong>
+                  </div>
+                  <div>
+                    <span>Nombres</span>
+                    <strong data-dni-nombres></strong>
+                  </div>
+                  <div>
+                    <span>Nacionalidad</span>
+                    <strong data-dni-nacionalidad></strong>
+                  </div>
+                  <div>
+                    <span>Sexo</span>
+                    <strong data-dni-sexo></strong>
+                  </div>
+                  <div>
+                    <span>Fecha de nacimiento</span>
+                    <strong data-dni-nacimiento></strong>
+                  </div>
+                  <div>
+                    <span>Numero documento</span>
+                    <strong data-dni-documento></strong>
+                  </div>
+                  <div>
+                    <span>Fecha de emision</span>
+                    <strong data-dni-emision></strong>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </section>
+
+          <section class="portal-tab" data-portal-tab="banco">
+            <div class="bank-layout">
+              <section class="portal-card bank-create" data-bank-create hidden>
+                <p class="portal-kicker">Primer acceso bancario</p>
+                <h3>Crea tu cuenta bancaria</h3>
+                <p>Tu cuenta empezara con $5.000.000. Define una clave para autorizar transferencias.</p>
+
+                <form class="bank-form" data-bank-create-form>
+                  <label>
+                    Clave bancaria
+                    <input type="password" name="password" minlength="4" placeholder="Minimo 4 caracteres" required>
+                  </label>
+
+                  <div class="portal-actions">
+                    <button type="submit" class="portal-button primary">Crear cuenta</button>
+                  </div>
+                </form>
+                <p class="portal-feedback" data-bank-feedback></p>
+              </section>
+
+              <section class="bank-dashboard" data-bank-dashboard hidden>
+                <div class="bank-subnav" data-bank-subnav>
+                  <button type="button" class="bank-subnav-button is-active" data-bank-subtab-button="resumen">Resumen</button>
+                  <button type="button" class="bank-subnav-button" data-bank-subtab-button="transferencias">Transferencias</button>
+                  <button type="button" class="bank-subnav-button" data-bank-subtab-button="credito">Credito</button>
+                  <button type="button" class="bank-subnav-button" data-bank-subtab-button="sueldo">Sueldo</button>
+                  <button type="button" class="bank-subnav-button" data-bank-subtab-button="historial">Historial</button>
+                </div>
+
+                <section class="bank-subtab is-active" data-bank-subtab="resumen">
+                  <div class="bank-summary-grid">
+                    <article class="bank-card-wrap">
+                      <div class="bank-card-visual" data-bank-card>
+                        <div class="bank-card-face bank-card-front">
+                          <div class="bank-card-title-wrap">
+                            <p class="bank-card-bank">Banco de Chile</p>
+                            <p class="bank-card-bank-sub">CORPORATE RP</p>
+                          </div>
+
+                          <div class="bank-card-middle-row">
+                            <div class="bank-card-chip"></div>
+                          </div>
+
+                          <div>
+                            <strong class="bank-card-number" data-bank-card-number>5281 0000 0000 0000</strong>
+                            <div class="bank-card-bottom-row">
+                              <div class="bank-card-meta-stack">
+                                <div>
+                                  <p class="bank-card-small">Valida hasta</p>
+                                  <span class="bank-card-expiry" data-bank-expiry>09 / 29</span>
+                                </div>
+                                <div>
+                                  <p class="bank-card-small">Titular</p>
+                                  <span class="bank-card-holder" data-bank-holder>Sin titular</span>
+                                </div>
+                              </div>
+                              <div class="bank-card-visa">VISA</div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="bank-card-face bank-card-back">
+                          <div class="bank-card-strip"></div>
+                          <div class="bank-card-cvv-row">
+                            <div class="bank-card-cvv-box">
+                              <span data-bank-cvv>000</span>
+                            </div>
+                          </div>
+                          <div class="bank-card-back-footer">
+                            <p>Tarjeta de uso interno RP</p>
+                            <strong>VCRP</strong>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="portal-actions">
+                        <button type="button" class="portal-button secondary" data-bank-card-toggle>Voltear tarjeta</button>
+                      </div>
+                    </article>
+
+                    <article class="portal-card bank-balance-card">
+                      <p class="portal-kicker">Saldo disponible</p>
+                      <h3 data-bank-balance>$0</h3>
+                      <p class="portal-user">Cuenta bancaria principal del personaje.</p>
+                    </article>
+                  </div>
+
+                  <div class="bank-overview-grid">
+                    <section class="portal-card">
+                      <p class="portal-kicker">Cuenta de inversion</p>
+                      <h3 data-bank-investment-balance>$0</h3>
+                      <p class="portal-user" data-bank-investment-status>No disponible todavia.</p>
+                      <div class="portal-actions">
+                        <button type="button" class="portal-button primary" data-bank-investment-create>Crear cuenta de inversion</button>
+                      </div>
+                    </section>
+
+                    <section class="portal-card">
+                      <p class="portal-kicker">Proximo sueldo</p>
+                      <h3 data-bank-next-salary>Disponible ahora</h3>
+                      <p class="portal-user">Sueldo base de personaje y descuentos legales RP.</p>
+                    </section>
+                  </div>
+                </section>
+
+                <section class="bank-subtab" data-bank-subtab="transferencias">
+                  <div class="bank-tools-grid">
+                    <section class="portal-card">
+                      <p class="portal-kicker">Transferencia a terceros</p>
+                      <h3>Enviar dinero</h3>
+                      <form class="bank-form" data-bank-transfer-form>
+                        <label>
+                          Nombre completo o RUT del destinatario
+                          <input type="text" name="target" placeholder="Ej: Marcela Carolina Fredez Vidal o 12.345.678-K" required>
+                        </label>
+                        <label>
+                          Monto
+                          <input type="number" name="amount" min="1" step="1" placeholder="Ej: 500000" required>
+                        </label>
+                        <label>
+                          Clave bancaria
+                          <input type="password" name="password" placeholder="Tu clave para confirmar" required>
+                        </label>
+                        <div class="portal-actions">
+                          <button type="submit" class="portal-button primary">Transferir a tercero</button>
+                        </div>
+                      </form>
+                    </section>
+
+                    <section class="portal-card">
+                      <p class="portal-kicker">Entre tus cuentas</p>
+                      <h3>Mover fondos</h3>
+                      <form class="bank-form" data-bank-internal-transfer-form>
+                        <label>
+                          Cuenta origen
+                          <select name="from_account" required>
+                            <option value="main">Cuenta principal</option>
+                            <option value="investment">Cuenta de inversion</option>
+                          </select>
+                        </label>
+                        <label>
+                          Cuenta destino
+                          <select name="to_account" required>
+                            <option value="investment">Cuenta de inversion</option>
+                            <option value="main">Cuenta principal</option>
+                          </select>
+                        </label>
+                        <label>
+                          Monto
+                          <input type="number" name="amount" min="1" step="1" placeholder="Ej: 250000" required>
+                        </label>
+                        <label>
+                          Clave bancaria
+                          <input type="password" name="password" placeholder="Tu clave para confirmar" required>
+                        </label>
+                        <div class="portal-actions">
+                          <button type="submit" class="portal-button primary">Transferir entre cuentas</button>
+                        </div>
+                      </form>
+                    </section>
+                  </div>
+                </section>
+
+                <section class="bank-subtab" data-bank-subtab="credito">
+                  <div class="bank-tools-grid">
+                    <section class="portal-card">
+                      <p class="portal-kicker">Solicitud de credito</p>
+                      <h3>Financiamiento personal</h3>
+                      <form class="bank-form" data-credit-form>
+                        <label>
+                          Monto solicitado
+                          <input type="number" name="amount" min="1" placeholder="Ej: 3000000" required>
+                        </label>
+                        <label>
+                          Plazo en meses
+                          <input type="number" name="months" min="1" max="48" placeholder="Ej: 12" required>
+                        </label>
+                        <label class="admin-form-span">
+                          Motivo
+                          <textarea name="reason" rows="4" placeholder="Explica para que necesitas el credito." required></textarea>
+                        </label>
+                        <div class="portal-actions">
+                          <button type="submit" class="portal-button primary">Solicitar credito</button>
+                        </div>
+                      </form>
+                      <p class="portal-feedback" data-credit-feedback></p>
+                    </section>
+
+                    <section class="portal-card">
+                      <p class="portal-kicker">Creditos activos</p>
+                      <h3>Estado financiero</h3>
+                      <div class="transaction-history" data-loans-list></div>
+                    </section>
+                  </div>
+                </section>
+
+                <section class="bank-subtab" data-bank-subtab="sueldo">
+                  <div class="bank-overview-grid">
+                    <section class="portal-card">
+                      <p class="portal-kicker">Cobro de sueldo</p>
+                      <h3>Sueldo base</h3>
+                      <div class="salary-breakdown">
+                        <div><span>Rango activo</span><strong data-salary-rank>Sin cargo asignado</strong></div>
+                        <div><span>Sueldo base</span><strong data-salary-base>$250.000</strong></div>
+                        <div><span>Impuesto</span><strong class="salary-tax-value" data-salary-tax>$35.000</strong></div>
+                        <div><span>Total liquido</span><strong data-salary-net>$215.000</strong></div>
+                        <div><span>Frecuencia</span><strong>Cada 15 dias</strong></div>
+                      </div>
+                      <div class="portal-actions">
+                        <button type="button" class="portal-button primary" data-claim-salary>Cobrar sueldo</button>
+                      </div>
+                    </section>
+
+                    <section class="portal-card">
+                      <p class="portal-kicker">Estado del cobro</p>
+                      <h3 data-bank-next-salary-panel>Disponible ahora</h3>
+                      <p class="portal-user">Cuando cobres, el deposito llegara directo a tu cuenta principal.</p>
+                    </section>
+                  </div>
+                </section>
+
+                <section class="bank-subtab" data-bank-subtab="historial">
+                  <section class="portal-card">
+                    <p class="portal-kicker">Historial de transacciones</p>
+                    <h3>Movimientos recientes</h3>
+                    <div class="transaction-history" data-transaction-history></div>
+                  </section>
+                </section>
+
+                <p class="portal-feedback" data-bank-action-feedback></p>
+              </section>
+            </div>
+          </section>
+
+          <section class="portal-tab" data-portal-tab="tienda">
+            <section class="portal-card store-panel">
+              <div class="store-panel-head">
+                <p class="portal-kicker">Tienda oficial</p>
+                <h3>Productos disponibles</h3>
+              </div>
+              <section class="store-claims" data-store-claims hidden>
+                <div class="store-panel-head">
+                  <div>
+                    <p class="portal-kicker">Entregas pendientes</p>
+                    <h3>Reclamos disponibles</h3>
+                  </div>
+                </div>
+                <div class="store-grid" data-store-claims-grid></div>
+              </section>
+              <div class="bank-subnav store-panel-filters" data-store-filters>
+                <button type="button" class="bank-subnav-button is-active" data-store-filter="all">Todo</button>
+                <button type="button" class="bank-subnav-button" data-store-filter="vehiculos">Vehiculos</button>
+                <button type="button" class="bank-subnav-button" data-store-filter="armamento">Armamento</button>
+                <button type="button" class="bank-subnav-button" data-store-filter="licencias">Licencias</button>
+              </div>
+              <div class="store-grid" data-store-grid></div>
+            </section>
+          </section>
+
+          <section class="portal-tab" data-portal-tab="inventario">
+            <section class="portal-card">
+              <p class="portal-kicker">Inventario</p>
+              <h3>Articulos comprados</h3>
+              <div class="store-grid" data-inventory-grid></div>
+            </section>
+          </section>
+
+          <section class="portal-tab" data-portal-tab="mercado">
+            <section class="portal-card">
+              <p class="portal-kicker">Mercado de 2da mano</p>
+              <h3>Articulos publicados por jugadores</h3>
+              <div class="bank-subnav market-subnav" data-market-filters>
+                <button type="button" class="bank-subnav-button is-active" data-market-filter="mercado">Mercado</button>
+                <button type="button" class="bank-subnav-button" data-market-filter="yapo">Yapo.cl</button>
+              </div>
+              <div class="store-grid" data-market-grid></div>
+            </section>
+          </section>
+
+          <section class="portal-tab" data-portal-tab="municipalidad">
+            <section class="portal-card">
+              <p class="portal-kicker">Municipalidad de Providencia</p>
+              <h3>Multas y antecedentes</h3>
+              <div class="transaction-history" data-municipality-list>
+                <p class="transaction-empty">Todavia no tienes cobros municipales asociados.</p>
+              </div>
+            </section>
+          </section>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <aside class="portal-notifications" data-notifications-panel hidden>
+    <div class="portal-notifications-head">
+      <div>
+        <p class="portal-kicker">Centro de avisos</p>
+        <h3>Notificaciones</h3>
+      </div>
+      <button type="button" class="portal-button secondary" data-notifications-close>Cerrar</button>
+    </div>
+    <div class="transaction-history" data-notifications-list></div>
+  </aside>
+
+  <div class="store-confirmation" data-store-confirmation hidden>
+    <div class="store-confirmation-card">
+      <p class="portal-kicker">Confirmar compra</p>
+      <h3 data-store-confirmation-title>Comprar item</h3>
+      <p data-store-confirmation-description></p>
+      <div class="salary-breakdown">
+        <div><span>Precio</span><strong data-store-confirmation-price>$0</strong></div>
+        <div><span>Saldo actual</span><strong data-store-confirmation-balance>$0</strong></div>
+      </div>
+      <div class="store-confirmation-vehicle" data-store-confirmation-vehicle hidden>
+        <label class="store-confirmation-label">
+          Color del vehiculo
+          <input type="text" data-store-confirmation-color placeholder="Ej: Blanco perla">
+        </label>
+        <label class="store-confirmation-label">
+          Patente solicitada
+          <input type="text" data-store-confirmation-plate placeholder="ABC-123" maxlength="7">
+        </label>
+      </div>
+      <div class="portal-actions">
+        <button type="button" class="portal-button secondary" data-store-cancel>Cancelar</button>
+        <button type="button" class="portal-button primary" data-store-confirm>Confirmar compra</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="store-confirmation" data-sell-confirmation hidden>
+    <div class="store-confirmation-card">
+      <p class="portal-kicker">Publicar articulo</p>
+      <h3 data-sell-confirmation-title>Vender item</h3>
+      <p data-sell-confirmation-description></p>
+      <label class="store-confirmation-label">
+        Precio de publicacion
+        <input type="number" min="1" step="1" data-sell-confirmation-price-input placeholder="Ej: 350000">
+      </label>
+      <div class="portal-actions">
+        <button type="button" class="portal-button secondary" data-sell-cancel>Cancelar</button>
+        <button type="button" class="portal-button danger" data-sell-confirm>Publicar en mercado</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="purchase-ticket" data-purchase-ticket hidden>
+    <div class="purchase-ticket-card">
+      <div class="purchase-ticket-icon">✓</div>
+      <div>
+        <p class="purchase-ticket-title">Compra confirmada</p>
+        <p class="purchase-ticket-text" data-purchase-ticket-text>La transaccion se realizo correctamente.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="portal.js"></script>
+</body>
+</html>

@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kame Motors | Viva Chile RP</title>
+  <link rel="icon" type="image/png" href="assets/logo.png">
+  <link rel="apple-touch-icon" href="assets/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="portal.css">
+  <script src="app-config.js"></script>
+  <style>
+    :root {
+      --kame-accent: #cc5e1c;
+      --kame-accent-soft: rgba(204, 94, 28, 0.12);
+      --kame-panel: rgba(255, 255, 255, 0.96);
+      --kame-panel-2: rgba(250, 249, 246, 0.98);
+      --kame-border: rgba(25, 37, 50, 0.12);
+      --kame-text: #1a2631;
+      --kame-muted: #5f6d79;
+      --kame-bg: #f4f0e8;
+      --kame-bg-soft: #fbf8f2;
+      --kame-navy: #23486b;
+    }
+    body{background:
+      radial-gradient(circle at top left, rgba(204,94,28,.08), transparent 28%),
+      radial-gradient(circle at top right, rgba(35,72,107,.09), transparent 26%),
+      linear-gradient(180deg, #f9f6ef 0%, #f2ede3 100%);
+      color:var(--kame-text)}
+    .kame-shell,.kame-choice-grid,.kame-citizen-layout,.kame-employee-layout,.kame-grid,.kame-rental-grid,.kame-request-list,.kame-request-actions,.kame-fleet-grid,.kame-topbar,.kame-stat-grid,.kame-stage-intro{display:grid;gap:24px}
+    .kame-shell{width:min(100%,1360px);margin:0 auto;padding:28px 20px 64px}
+    .kame-topbar{grid-template-columns:auto 1fr auto;align-items:center;gap:18px;margin-bottom:6px;padding-inline:4px}
+    .kame-logo{display:inline-flex;align-items:center;justify-content:center;width:64px;height:64px;border-radius:18px;border:1px solid var(--kame-border);background:rgba(255,255,255,.88);box-shadow:0 16px 30px rgba(87,72,46,.08)}
+    .kame-logo img{width:42px;height:42px;object-fit:contain}
+    .kame-return{justify-self:end}
+    .kame-stage,.kame-panel,.kame-request-item,.kame-fleet-card,.kame-stat{border:1px solid var(--kame-border);border-radius:28px;background:var(--kame-panel);box-shadow:0 22px 52px rgba(104,86,56,.10);backdrop-filter:blur(14px)}
+    .kame-stage,.kame-panel{padding:28px}
+    .kame-stage[data-kame-mode-stage]{background:
+      radial-gradient(circle at top right, rgba(204,94,28,.10), transparent 28%),
+      radial-gradient(circle at bottom left, rgba(35,72,107,.10), transparent 24%),
+      var(--kame-panel)}
+    .kame-kicker{margin:0;color:var(--kame-accent);font-size:.82rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
+    .kame-stage-intro{gap:10px;max-width:860px;margin-bottom:12px}
+    .kame-stage h1,.kame-panel h2,.kame-panel h3,.kame-fleet-card h3{margin:0;font-family:"Oswald",sans-serif;line-height:.95}
+    .kame-stage h1{font-size:clamp(3.2rem,7vw,5.6rem);line-height:.88;letter-spacing:-.02em}
+    .kame-copy,.kame-panel p,.kame-fleet-card p,.kame-mini{margin:0;color:var(--kame-muted);line-height:1.7}
+    .kame-copy{max-width:760px;font-size:1.02rem}
+    .kame-choice-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+    .kame-choice-card{display:grid;gap:18px;align-content:start;padding:30px;border:1px solid var(--kame-border);border-radius:28px;background:var(--kame-panel-2);min-height:232px}
+    .kame-choice-card.is-citizen{background:radial-gradient(circle at top right,rgba(204,94,28,.10),transparent 30%),var(--kame-panel-2)}
+    .kame-choice-card.is-employee{background:radial-gradient(circle at top right,rgba(35,72,107,.12),transparent 30%),var(--kame-panel-2)}
+    .kame-choice-card h3{font-family:"Oswald",sans-serif;font-size:2.2rem;line-height:.95}
+    .kame-choice-card p:last-of-type{max-width:42ch}
+    .kame-choice-card .portal-actions{margin-top:auto}
+    .kame-citizen-layout,.kame-employee-layout{grid-template-columns:minmax(320px,390px) minmax(0,1fr);align-items:start}
+    .kame-grid{grid-template-columns:1fr;align-items:start}
+    .kame-panel-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+    .kame-form{display:grid;gap:14px}
+    .kame-form label{display:grid;gap:8px;font-weight:500;color:var(--kame-text)}
+    .kame-form input,.kame-form select,.kame-form textarea{width:100%;min-height:52px;padding:12px 16px;border:1px solid rgba(25,37,50,.14);border-radius:16px;background:#fff;color:var(--kame-text);font:inherit}
+    .kame-form textarea{min-height:120px;resize:vertical}
+    .kame-fleet-grid{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+    .kame-fleet-card{overflow:hidden;background:linear-gradient(180deg,#ffffff 0%, #f7f2ea 100%)}
+    .kame-fleet-image{height:220px;background:linear-gradient(180deg,#eef3f7 0%, #dce8f2 100%);display:flex;align-items:center;justify-content:center;padding:0;overflow:hidden}
+    .kame-fleet-image img{width:100%;height:100%;object-fit:cover;object-position:center;display:block}
+    .kame-fleet-body{display:grid;gap:12px;padding:22px}
+    .kame-type{display:inline-flex;align-items:center;min-height:32px;padding:0 12px;border-radius:999px;background:var(--kame-accent-soft);color:var(--kame-accent);font-size:.82rem;font-weight:700}
+    .kame-request-list{margin-top:8px}
+    .kame-request-item{display:grid;gap:12px;padding:18px;background:rgba(255,255,255,.66)}
+    .kame-request-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap}
+    .kame-pill{display:inline-flex;align-items:center;justify-content:center;min-height:34px;padding:0 12px;border-radius:999px;background:#eef1f3;font-weight:700;color:var(--kame-text)}
+    .kame-pill.pending{color:#9c6a00;background:rgba(255,207,110,.22)}
+    .kame-pill.accepted,.kame-pill.scheduled,.kame-pill.completed{color:#17714c;background:rgba(99,216,141,.20)}
+    .kame-pill.rejected{color:#b13a3a;background:rgba(239,90,90,.16)}
+    .kame-request-actions{grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch}
+    .kame-request-actions .portal-button{width:100%;justify-content:center}
+    .kame-request-actions.is-empty{grid-template-columns:1fr}
+    .kame-feedback.is-error{color:#b13a3a}
+    .kame-feedback.is-ok{color:#17714c}
+    .kame-stat-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .kame-stat{padding:18px 20px;background:rgba(255,255,255,.66)}
+    .kame-stat strong{display:block;font-family:"Oswald",sans-serif;font-size:1.85rem}
+    .kame-empty{padding:22px;border:1px dashed var(--kame-border);border-radius:22px;color:var(--kame-muted);text-align:center;background:rgba(255,255,255,.55)}
+    .kame-hidden{display:none !important}
+    .kame-modal[hidden]{display:none!important}
+    .kame-modal{position:fixed;inset:0;z-index:90;display:grid;place-items:center;padding:20px;background:rgba(16,24,33,.38);backdrop-filter:blur(8px)}
+    .kame-modal-card{width:min(100%,560px);padding:28px;border:1px solid var(--kame-border);border-radius:28px;background:rgba(255,255,255,.98);box-shadow:0 28px 80px rgba(40,31,18,.18);display:grid;gap:18px}
+    .kame-modal-card h3{margin:0;font-family:"Oswald",sans-serif;font-size:2rem;line-height:1}
+    .kame-modal-card p{margin:0;color:var(--kame-muted);line-height:1.7}
+    .portal-button.secondary{background:#fff;color:var(--kame-text);border-color:rgba(25,37,50,.14)}
+    .portal-button.primary{background:linear-gradient(135deg,#d8702b 0%, #b75015 100%);border-color:transparent}
+    .portal-card{background:var(--kame-panel)!important;border-color:var(--kame-border)!important;box-shadow:0 22px 52px rgba(104,86,56,.10)!important}
+    .portal-user,.portal-kicker{color:var(--kame-muted)!important}
+    @media (max-width:1120px){
+      .kame-choice-grid,.kame-citizen-layout,.kame-employee-layout,.kame-grid,.kame-fleet-grid,.kame-stat-grid,.kame-request-actions{grid-template-columns:1fr}
+    }
+    @media (max-width:760px){
+      .kame-shell{padding:20px 16px 48px}
+      .kame-topbar{grid-template-columns:auto 1fr}
+      .kame-return{grid-column:1 / -1;justify-self:start}
+      .kame-stage,.kame-panel,.kame-choice-card{padding:22px;border-radius:24px}
+      .kame-stage h1{font-size:clamp(2.7rem,14vw,4rem)}
+      .kame-stage-intro{gap:8px}
+      .kame-fleet-image{height:160px}
+    }
+  </style>
+</head>
+<body>
+  <div class="portal-loader" data-kame-loader>
+    <div class="portal-loader-card">
+      <img class="portal-loader-logo" src="assets/logo.png" alt="Logo Viva Chile Roleplay">
+      <div class="portal-loader-bar"><span></span></div>
+    </div>
+  </div>
+
+  <main class="kame-shell">
+    <section class="portal-card" data-kame-login hidden>
+      <p class="portal-kicker">Kame Motors</p>
+      <h2 style="margin:0;font-family:'Oswald',sans-serif;">Sesion requerida</h2>
+      <p class="portal-user" data-kame-login-message>Debes iniciar sesion en el portal para entrar a Kame Motors.</p>
+      <div class="portal-actions">
+        <a class="portal-button primary" href="portal.html">Ir al portal</a>
+      </div>
+    </section>
+
+    <section data-kame-app hidden>
+      <header class="kame-topbar">
+        <a class="kame-logo" href="portal.html" aria-label="Volver al portal">
+          <img src="assets/logo.png" alt="Logo Viva Chile RP">
+        </a>
+        <div>
+          <p class="kame-kicker">Kame Motors</p>
+          <p class="kame-mini">Mecanica, revisiones y arriendo operativo</p>
+        </div>
+        <div class="kame-return">
+          <a class="portal-button secondary" href="portal.html">Volver al portal</a>
+        </div>
+      </header>
+
+      <section class="kame-stage" data-kame-mode-stage>
+        <div class="kame-stage-intro">
+          <p class="kame-kicker">Ingreso</p>
+          <h1>Elige tu acceso</h1>
+          <p class="kame-copy">Primero escoge si quieres entrar como ciudadano o como personal de Kame Motors. Recien despues veras las herramientas de cada lado.</p>
+        </div>
+        <div class="kame-choice-grid" data-kame-chooser>
+          <article class="kame-choice-card is-citizen">
+            <p class="kame-kicker">Ciudadano</p>
+            <h3>Solicitudes y arriendos</h3>
+            <p>Pide hora para revision tecnica, diagnosticos, reparaciones, cambio de color y arriendos de la flota basica de Kame Motors.</p>
+            <div class="portal-actions">
+              <button type="button" class="portal-button primary" data-kame-mode="citizen">Entrar como ciudadano</button>
+            </div>
+          </article>
+          <article class="kame-choice-card is-employee">
+            <p class="kame-kicker">Funcionario</p>
+            <h3>Agenda y flota interna</h3>
+            <p>Si tienes el rol <strong>Kame motors</strong>, desde aqui podras gestionar solicitudes y tambien agregar o sacar autos de arriendo.</p>
+            <div class="portal-actions">
+              <button type="button" class="portal-button primary" data-kame-mode="employee">Entrar como funcionario</button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section data-kame-citizen hidden>
+        <div class="kame-panel-header">
+          <div>
+            <p class="kame-kicker">Vista ciudadana</p>
+            <h2>Solicitudes y arriendos</h2>
+          </div>
+          <button type="button" class="portal-button secondary" data-kame-back>Volver a la seleccion</button>
+        </div>
+
+        <div class="kame-citizen-layout">
+          <aside class="kame-panel">
+            <div class="kame-panel-header">
+              <div>
+                <p class="kame-kicker">Atencion mecanica</p>
+                <h3>Solicitar hora</h3>
+              </div>
+            </div>
+            <form class="kame-form" data-kame-request-form>
+              <label>
+                Tipo de solicitud
+                <select name="service_type" required>
+                  <option value="revision_tecnica">Revision tecnica</option>
+                  <option value="reparacion_general">Reparacion general</option>
+                  <option value="diagnostico">Diagnostico</option>
+                  <option value="cambio_color">Cambio de color</option>
+                  <option value="mantencion">Mantencion</option>
+                </select>
+              </label>
+              <label>
+                Vehiculo por patente
+                <select name="plate" data-kame-vehicle-select required>
+                  <option value="">Selecciona tu vehiculo</option>
+                </select>
+              </label>
+              <label>
+                Fecha deseada
+                <input type="datetime-local" name="preferred_date" required>
+              </label>
+              <label>
+                Detalle
+                <textarea name="note" placeholder="Explica que servicio necesitas para el vehiculo." required></textarea>
+              </label>
+              <div class="portal-actions">
+                <button type="submit" class="portal-button primary">Enviar solicitud</button>
+              </div>
+            </form>
+            <p class="portal-feedback kame-feedback" data-kame-citizen-feedback></p>
+          </aside>
+
+          <div class="kame-grid">
+            <section class="kame-panel">
+              <div class="kame-panel-header">
+                <div>
+                  <p class="kame-kicker">Arriendo disponible</p>
+                  <h3>Flota Kame Motors</h3>
+                </div>
+              </div>
+              <div class="kame-fleet-grid" data-kame-fleet-citizen></div>
+            </section>
+
+            <section class="kame-panel">
+              <div class="kame-panel-header">
+                <div>
+                  <p class="kame-kicker">Seguimiento</p>
+                  <h3>Mis solicitudes</h3>
+                </div>
+              </div>
+              <div class="kame-request-list" data-kame-my-requests></div>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <section data-kame-employee hidden>
+        <div class="kame-panel-header">
+          <div>
+            <p class="kame-kicker">Vista funcionario</p>
+            <h2>Operacion Kame Motors</h2>
+          </div>
+          <button type="button" class="portal-button secondary" data-kame-back>Volver a la seleccion</button>
+        </div>
+
+        <section class="kame-panel" data-kame-employee-denied hidden>
+          <p class="kame-kicker">Acceso restringido</p>
+          <h3>Sin permisos de Kame Motors</h3>
+          <p>No tienes el rol requerido para entrar como funcionario.</p>
+        </section>
+
+        <section class="kame-employee-layout" data-kame-employee-panel hidden>
+          <aside class="kame-panel">
+            <div class="kame-panel-header">
+              <div>
+                <p class="kame-kicker">Administracion de flota</p>
+                <h3>Agregar o quitar autos</h3>
+              </div>
+            </div>
+            <form class="kame-form" data-kame-fleet-form>
+              <label>
+                Nombre del auto
+                <input type="text" name="name" placeholder="Ej: Chevlon captain 1992" required>
+              </label>
+              <label>
+                Tipo
+                <input type="text" name="type" placeholder="Ej: Sedan clasico" required>
+              </label>
+              <label>
+                Descripcion
+                <textarea name="description" placeholder="Uso sugerido o descripcion del arriendo." required></textarea>
+              </label>
+              <label>
+                Imagen
+                <input type="text" name="image" placeholder="assets/tienda/autos/Chevlon_captain_1992.png">
+              </label>
+              <div class="portal-actions">
+                <button type="submit" class="portal-button primary">Agregar auto</button>
+              </div>
+            </form>
+            <form class="kame-form" data-kame-employee-filter-form>
+              <label>
+                Filtrar solicitudes por patente
+                <input type="text" name="plate" placeholder="Ej: ABC-123">
+              </label>
+              <div class="portal-actions">
+                <button type="submit" class="portal-button secondary">Aplicar filtro</button>
+              </div>
+            </form>
+            <p class="portal-feedback kame-feedback" data-kame-employee-feedback></p>
+          </aside>
+
+          <div class="kame-grid">
+            <section class="kame-panel">
+              <div class="kame-panel-header">
+                <div>
+                  <p class="kame-kicker">Flota actual</p>
+                  <h3>Autos de arriendo</h3>
+                </div>
+              </div>
+              <div class="kame-fleet-grid" data-kame-fleet-employee></div>
+            </section>
+
+            <section class="kame-panel">
+              <div class="kame-panel-header">
+                <div>
+                  <p class="kame-kicker">Bandeja interna</p>
+                  <h3>Solicitudes pendientes</h3>
+                </div>
+              </div>
+              <div class="kame-request-list" data-kame-employee-requests></div>
+            </section>
+          </div>
+        </section>
+      </section>
+    </section>
+  </main>
+
+  <section class="kame-modal" data-kame-rental-modal hidden>
+    <div class="kame-modal-card">
+      <div>
+        <p class="kame-kicker">Arriendo Kame Motors</p>
+        <h3 data-kame-rental-title>Solicitar arriendo</h3>
+      </div>
+      <p>Ingresa la fecha, hora y el detalle de uso para enviar tu solicitud al equipo de Kame Motors.</p>
+      <form class="kame-form" data-kame-rental-form>
+        <label>
+          Fecha y hora deseada
+          <input type="datetime-local" name="preferred_date" required>
+        </label>
+        <label>
+          Detalle del uso
+          <textarea name="note" placeholder="Ej: Traslado ejecutivo, apoyo logistico, evento especial..." required></textarea>
+        </label>
+        <div class="portal-actions">
+          <button type="submit" class="portal-button primary">Enviar solicitud</button>
+          <button type="button" class="portal-button secondary" data-kame-rental-cancel>Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section class="kame-modal" data-kame-staff-modal hidden>
+    <div class="kame-modal-card">
+      <div>
+        <p class="kame-kicker">Gestion interna</p>
+        <h3 data-kame-staff-title>Actualizar solicitud</h3>
+      </div>
+      <p>Completa la respuesta interna y, si corresponde, agenda la hora del servicio.</p>
+      <form class="kame-form" data-kame-staff-form>
+        <label>
+          Nota interna o respuesta
+          <textarea name="staff_note" placeholder="Ej: Vehiculo recibido, cliente contactado, pendiente de revision..."></textarea>
+        </label>
+        <label data-kame-staff-schedule-wrap hidden>
+          Fecha y hora agendada
+          <input type="datetime-local" name="scheduled_for">
+        </label>
+        <div class="portal-actions">
+          <button type="submit" class="portal-button primary">Guardar accion</button>
+          <button type="button" class="portal-button secondary" data-kame-staff-cancel>Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <script src="kame-motors.js"></script>
+</body>
+</html>

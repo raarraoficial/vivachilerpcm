@@ -1,0 +1,561 @@
+[
+  {
+    "id": "9b2f2b24cb0cfbf7",
+    "name": "Chevlon captain 1992",
+    "description": "Vehículo inicial accesible para todos",
+    "price": 0,
+    "image": "assets/tienda/uploads/small-1774985479113.webp",
+    "category": "vehiculos",
+    "created_at": "2026-03-31T19:31:20.536Z"
+  },
+  {
+    "id": "377cdfedfdc716d9",
+    "slug": "bullhorn-foreman-1988",
+    "name": "Bullhorn Foreman 1988",
+    "description": "Pickup clasica adaptada al mercado chileno.",
+    "price": 7650000,
+    "image": "assets/tienda/uploads/imagen-2026-03-30-145527139-1774893327327.png",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.192Z"
+  },
+  {
+    "id": "fafe8d7261a5b19d",
+    "slug": "lawn-mower",
+    "name": "Lawn Mower",
+    "description": "Vehiculo utilitario liviano.",
+    "price": 650000,
+    "image": "assets/tienda/uploads/imagen-2026-03-30-145548030-1774893348180.png",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.192Z"
+  },
+  {
+    "id": "d69e5df239ba0382",
+    "slug": "chevlon-antelope-ss-1994",
+    "name": "Chevlon antelope ss 1994",
+    "description": "Coupe deportivo clasico adaptado al mercado chileno.",
+    "price": 8250000,
+    "image": "assets/tienda/uploads/imagen-2026-03-30-145605501-1774893365600.png",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.192Z"
+  },
+  {
+    "id": "d9b3c4db1cd94067",
+    "slug": "chevlon-captain-ltz-1994",
+    "name": "chevlon captain ltz 1994",
+    "description": "Sedan clasico version LTZ adaptado al mercado chileno.",
+    "price": 5350000,
+    "image": "assets/tienda/uploads/imagen-2026-03-30-145620683-1774893380815.png",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.192Z"
+  },
+  {
+    "id": "6f624011aae09f1c",
+    "slug": "chevlon-camion-2002",
+    "name": "Chevlon Camion 2002",
+    "description": "Camioneta utilitaria adaptada al mercado chileno.",
+    "price": 9900000,
+    "image": "https://media.discordapp.net/attachments/1487186194180608242/1487263063395536916/Chevlon_Camion_2002.png?ex=69cd1e6a&is=69cbccea&hm=0b9b5839ffa32346c420e2304aebc46573640957b9e197e847026bd7c6c02d71&=&format=webp&quality=lossless&width=982&height=552",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.192Z"
+  },
+  {
+    "id": "01501923653d488a",
+    "slug": "overland-apache-1995",
+    "name": "Overland Apache 1995",
+    "description": "SUV clasico adaptado al mercado chileno.",
+    "price": 8950000,
+    "image": "assets/tienda/uploads/imagen-2026-03-30-145708618-1774893428710.png",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.192Z"
+  },
+  {
+    "id": "a420da070a891c24",
+    "slug": "chevlon-captain-2009",
+    "name": "Chevlon Captain 2009",
+    "description": "Sedan familiar adaptado al mercado chileno.",
+    "price": 6950000,
+    "image": "assets/tienda/uploads/imagen-2026-03-30-145737339-1774893457471.png",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.192Z"
+  },
+  {
+    "id": "02c574494106ec92",
+    "slug": "falcon-traveller-2003",
+    "name": "Falcon Traveller 2003",
+    "description": "SUV familiar adaptado al mercado chileno.",
+    "price": 8450000,
+    "image": "assets/tienda/uploads/imagen-2026-03-30-145757529-1774893477706.png",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "8784e8ac129f196c",
+    "slug": "falcon-advance-100-1956",
+    "name": "Falcon Advance 100 1956",
+    "description": "Clasico de coleccion adaptado al mercado chileno.",
+    "price": 6500000,
+    "image": "assets/tienda/uploads/imagen-2026-03-30-145908414-1774893548515.png",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "7add14896a12e440",
+    "slug": "vellfire-evert-1995",
+    "name": "Vellfire Evert 1995",
+    "description": "Sedan clasico adaptado al mercado chileno.",
+    "price": 5150000,
+    "image": "assets/tienda/uploads/imagen-2026-03-30-145919238-1774893559322.png",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "f716c7ada20fe588",
+    "slug": "4-wheeler",
+    "name": "4-Wheeler",
+    "description": "Cuatrimoto recreativa.",
+    "price": 4200000,
+    "image": "assets/tienda/uploads/imagen-2026-03-30-145932055-1774893572190.png",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "6dd02f6583a9a871",
+    "slug": "chevlon-l-15-1981",
+    "name": "Chevlon L/15 1981",
+    "description": "Pickup clasica de trabajo.",
+    "price": 3650000,
+    "image": "assets/tienda/uploads/imagen-2026-03-30-145941852-1774893581929.png",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "ef8b4a922f390950",
+    "slug": "vellfire-prima-2009",
+    "name": "Vellfire Prima 2009",
+    "description": "Sedan urbano adaptado al mercado chileno.",
+    "price": 7250000,
+    "image": "assets/tienda/uploads/imagen-2026-03-30-145954366-1774893594501.png",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "fa843a99ea5927c2",
+    "slug": "chevlon-landslide-2007",
+    "name": "Chevlon Landslide 2007",
+    "description": "SUV grande adaptado al mercado chileno.",
+    "price": 13950000,
+    "image": "assets/tienda/uploads/imagen-2026-03-30-150012014-1774893612095.png",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "b7ecc8d021d25840",
+    "slug": "elysion-slick-2014",
+    "name": "Elysion Slick 2014",
+    "description": "Sedan moderno adaptado al mercado chileno.",
+    "price": 11450000,
+    "image": "assets/tienda/uploads/imagen-2026-03-30-150023056-1774893623187.png",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "b23dd2d28f7f0e57",
+    "slug": "falcon-coupe-1934",
+    "name": "Falcon Coupe 1934",
+    "description": "Coupe clasico de coleccion.",
+    "price": 7350000,
+    "image": "assets/tienda/Falcon_Coupe_1934.png",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "bad7a8cc8b9d3bae",
+    "slug": "chevlon-commuter-van-2006",
+    "name": "Chevlon Commuter Van 2006",
+    "description": "Van de pasajeros adaptada al mercado chileno.",
+    "price": 8950000,
+    "image": "assets/tienda/uploads/imagen-2026-03-30-150211149-1774893731238.png",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "f8d2e1a6f17c3a7e",
+    "slug": "chevlon-camion-2008",
+    "name": "Chevlon Camion 2008",
+    "description": "Camioneta de trabajo adaptada al mercado chileno.",
+    "price": 12450000,
+    "image": "assets/tienda/uploads/imagen-2026-03-30-150250604-1774893770691.png",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "7ff5002131873856",
+    "slug": "chevlon-corbeta-c2-1967",
+    "name": "Chevlon Corbeta C2 1967",
+    "description": "Deportivo clasico de coleccion.",
+    "price": 11250000,
+    "image": "https://media.discordapp.net/attachments/1487186194180608242/1487267070352818358/Chevlon_Corbeta_C2_1967.png?ex=69cd2225&is=69cbd0a5&hm=318b625da898a58763ef95df36c40fc78b62327056e467f611d7b019c295b92d&=&format=webp&quality=lossless&width=982&height=552",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "6b1d285d7e2c2eaa",
+    "slug": "bullhorn-bh15-2009",
+    "name": "Bullhorn BH15 2009",
+    "description": "Pickup full size adaptada al mercado chileno.",
+    "price": 12850000,
+    "image": "assets/tienda/uploads/imagen-2026-03-30-150323315-1774893803458.png",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "66fd1a85c722d622",
+    "slug": "canyon-descender-2018",
+    "name": "Canyon Descender 2018",
+    "description": "SUV off-road moderno.",
+    "price": 18950000,
+    "image": "assets/tienda/uploads/imagen-2026-03-30-150336396-1774893816496.png",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "95750ea246b5388d",
+    "slug": "sentinel-platinum-1968",
+    "name": "Sentinel Platinum 1968",
+    "description": "Sedan clasico premium.",
+    "price": 9850000,
+    "image": "assets/tienda/uploads/imagen-2026-03-30-150347716-1774893827808.png",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "e7a4386a95f7e1da",
+    "slug": "vellfire-renabout-1984",
+    "name": "Vellfire Renabout 1984",
+    "description": "Compacto clasico adaptado al mercado chileno.",
+    "price": 3150000,
+    "image": "assets/tienda/uploads/imagen-2026-03-30-150356815-1774893836933.png",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "69cccfc6452e3029",
+    "slug": "chevlon-revver-2005",
+    "name": "Chevlon Revver 2005",
+    "description": "Hatchback deportivo adaptado al mercado chileno.",
+    "price": 8850000,
+    "image": "assets/tienda/uploads/imagen-2026-03-30-150406361-1774893846504.png",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "96a875766e16c6cb",
+    "slug": "arrow-phoenix-nationals-1977",
+    "name": "Arrow Phoenix Nationals 1977",
+    "description": "Muscle car clasico de coleccion.",
+    "price": 8950000,
+    "image": "https://media.discordapp.net/attachments/1487186194180608242/1487269020527890492/Arrow_Phoenix_Nationals_1977.png?ex=69cd23f6&is=69cbd276&hm=cace6a4357d1f3a4a0e1081b3feb53501c3a44c12a6b310b83ad4cdbed682eae&=&format=webp&quality=lossless&width=982&height=552",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "1ac2d774410c5fe5",
+    "slug": "overland-apache-2011",
+    "name": "Overland Apache 2011",
+    "description": "SUV mediano adaptado al mercado chileno.",
+    "price": 14950000,
+    "image": "https://media.discordapp.net/attachments/1487186194180608242/1487269186446168166/Overland_Apache_2011.png?ex=69cd241e&is=69cbd29e&hm=ec5bbc7b028a98ab3186e5da179204355a861da582bff6d840fbaec9f61280f2&=&format=webp&quality=lossless&width=753&height=424",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "cd4ebc5ed14d94c3",
+    "slug": "overland-buckaro-2018",
+    "name": "Overland Buckaro 2018",
+    "description": "SUV/pickup moderna adaptada al mercado chileno.",
+    "price": 21450000,
+    "image": "assets/tienda/uploads/overland-buckaroo-2018-1774984944081.webp",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "1834074e2dafd472",
+    "slug": "chryslus-champion-2005",
+    "name": "Chryslus Champion 2005",
+    "description": "Sedan ejecutivo adaptado al mercado chileno.",
+    "price": 6950000,
+    "image": "assets/tienda/uploads/imagen-2026-03-30-150519753-1774893919843.png",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "a30fe2a39c89e05a",
+    "slug": "vellfire-riptide-2020",
+    "name": "Vellfire Riptide 2020",
+    "description": "Deportivo moderno adaptado al mercado chileno.",
+    "price": 24850000,
+    "image": "assets/tienda/uploads/imagen-2026-03-30-150533785-1774893933926.png",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "eb692462b9174d00",
+    "slug": "navara-boundary-2022",
+    "name": "Navara Boundary 2022",
+    "description": "SUV moderna de alta gama.",
+    "price": 27950000,
+    "image": "assets/tienda/uploads/imagen-2026-03-30-150549333-1774893949430.png",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "05f922dcbf41461a",
+    "slug": "bullhorn-prancer-2015",
+    "name": "Bullhorn Prancer 2015",
+    "description": "Camioneta full size adaptada al mercado chileno.",
+    "price": 19850000,
+    "image": "assets/tienda/uploads/imagen-2026-03-30-150601311-1774893961543.png",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "e83832023ef74b85",
+    "slug": "bullhorn-prancer-2011",
+    "name": "Bullhorn Prancer 2011",
+    "description": "Camioneta full size adaptada al mercado chileno.",
+    "price": 15450000,
+    "image": "assets/tienda/uploads/imagen-2026-03-30-150615349-1774893975467.png",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "0be29a8431136116",
+    "slug": "bullhorn-determinator-2008",
+    "name": "Bullhorn Determinator 2008",
+    "description": "SUV/pickup grande adaptada al mercado chileno.",
+    "price": 13950000,
+    "image": "assets/tienda/uploads/bullhorn-determinator-2008-1774984965388.webp",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "58420ca480893447",
+    "slug": "navara-imperium-2020",
+    "name": "Navara Imperium 2020",
+    "description": "SUV premium adaptada al mercado chileno.",
+    "price": 33450000,
+    "image": "assets/tienda/uploads/imagen-2026-03-30-150917904-1774894158017.png",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "b32177b4c135bece",
+    "slug": "falcon-stallion-350-1969",
+    "name": "Falcon Stallion 350 1969",
+    "description": "Muscle car clasico de coleccion.",
+    "price": 11850000,
+    "image": "assets/tienda/uploads/falcon-stallion-350-1969-1774984979904.webp",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "f134a56bdd9923dc",
+    "slug": "vellfire-everest-vrd-max",
+    "name": "Vellfire Everest VRD MAX",
+    "description": "SUV moderna version deportiva.",
+    "price": 28950000,
+    "image": "assets/tienda/uploads/captura-de-pantalla-2026-03-27-231542-1774984993860.webp",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "dfc67612ac343a3f",
+    "slug": "stuttgart-landschaft-2022",
+    "name": "Stuttgart Landschaft 2022",
+    "description": "SUV de lujo alta gama.",
+    "price": 48500000,
+    "image": "assets/tienda/uploads/stuttgart-landschaft-2022-1774985004777.webp",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "e56985af81fe786c",
+    "slug": "falcon-advance-450-2020",
+    "name": "Falcon Advance 450 2020",
+    "description": "SUV moderna full equipada.",
+    "price": 23950000,
+    "image": "assets/tienda/uploads/2325-1774985015506.webp",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "c07e35b1293545da",
+    "slug": "chevlon-amigo-s-2016",
+    "name": "Chevlon Amigo S 2016",
+    "description": "Pickup mediana adaptada al mercado chileno.",
+    "price": 15950000,
+    "image": "assets/tienda/uploads/chevlon-amigo-sport-2016-1774985024508.webp",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "a5634b8282c64a15",
+    "slug": "chevlon-platoro-2019",
+    "name": "Chevlon Platoro 2019",
+    "description": "SUV premium adaptada al mercado chileno.",
+    "price": 33950000,
+    "image": "assets/tienda/uploads/chevlon-platoro-2019-1774985086855.webp",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "27f7a915e5861736",
+    "slug": "vellfire-praire-2022",
+    "name": "Vellfire Praire 2022",
+    "description": "SUV moderna adaptada al mercado chileno.",
+    "price": 25450000,
+    "image": "assets/tienda/uploads/vellfire-prairie-2022-1774985102871.webp",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "339e17d5bdb41a78",
+    "slug": "chevlon-camion-2021",
+    "name": "Chevlon Camion 2021",
+    "description": "Camioneta moderna full equipada.",
+    "price": 31450000,
+    "image": "assets/tienda/uploads/chevlon-camion-2021-1774985118956.webp",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "7354c43b04010d32",
+    "slug": "bullhorn-determinator-c-t",
+    "name": "Bullhorn Determinator C/T",
+    "description": "SUV/pickup performance adaptada al mercado chileno.",
+    "price": 28950000,
+    "image": "assets/tienda/uploads/bullhorn-determinator-sfp-fury-2022-1774985128924.webp",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "159cbb4249041d03",
+    "slug": "chevlon-corbeta-x08-2014",
+    "name": "Chevlon Corbeta X08 2014",
+    "description": "Deportivo moderno adaptado al mercado chileno.",
+    "price": 27950000,
+    "image": "assets/tienda/uploads/imagen-2026-03-30-144949013-1774892989261.png",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "a9cccb749df801c4",
+    "slug": "leland-vault-2020",
+    "name": "Leland Vault 2020",
+    "description": "Sedan/SUV premium adaptado al mercado chileno.",
+    "price": 35500000,
+    "image": "assets/tienda/uploads/leland-vault-2020-1774985143552.webp",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "cc7dc62a7eb7075d",
+    "slug": "falcon-rampage-beast-2021",
+    "name": "Falcon Rampage Beast 2021",
+    "description": "Pickup/SUV extrema de alta gama.",
+    "price": 38950000,
+    "image": "assets/tienda/uploads/falcon-rampage-beast-2021-1774985164456.webp",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "600e02f335a67ab9",
+    "slug": "averon-bremen-vs-garde-2023",
+    "name": "Averon Bremen VS Garde 2023",
+    "description": "Sedan deportivo premium adaptado al mercado chileno.",
+    "price": 41950000,
+    "image": "assets/tienda/uploads/averon-bremen-vs-garde-2023-1774985176146.webp",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "95c5f692c18041b6",
+    "slug": "averon-s5-2010",
+    "name": "Averon S5 2010",
+    "description": "Sedan premium usado adaptado al mercado chileno.",
+    "price": 14950000,
+    "image": "assets/tienda/uploads/averon-s5-2010-1774985187035.webp",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "8770477ffc975448",
+    "slug": "ferdinand-jalapeno-turbo-2022",
+    "name": "Ferdinand Jalapeno Turbo 2022",
+    "description": "SUV/crossover premium turbo.",
+    "price": 42950000,
+    "image": "assets/tienda/uploads/ferdinand-jalapeno-turbo-2022-1774985200500.webp",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "9607cfe9d8b4cb77",
+    "slug": "terrain-traveller-2022",
+    "name": "Terrain Traveller 2022",
+    "description": "SUV familiar moderna.",
+    "price": 26450000,
+    "image": "assets/tienda/uploads/terrain-traveller-2022-1774985209640.webp",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "da58e900570619d7",
+    "slug": "bkm-munich-2020",
+    "name": "Bkm Munich 2020",
+    "description": "Sedan premium adaptado al mercado chileno.",
+    "price": 36500000,
+    "image": "assets/tienda/uploads/bkm-munich-2020-1774985220075.webp",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "8fd6e30370d342cf",
+    "slug": "stuttgart-vierturig-2021",
+    "name": "Stuttgart Vierturig 2021",
+    "description": "Sedan premium alta gama.",
+    "price": 45950000,
+    "image": "assets/tienda/uploads/stuttgart-vierturig-2021-1774985232203.webp",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "dd019488f9905854",
+    "slug": "averon-rs3-2020",
+    "name": "Averon RS3 2020",
+    "description": "Sedan deportivo premium.",
+    "price": 31950000,
+    "image": "assets/tienda/uploads/averon-rs3-2020-1774985244309.webp",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "ce5fe196d5c764b4",
+    "slug": "averon-q8-2022",
+    "name": "Averon Q8 2022",
+    "description": "SUV premium de alta gama.",
+    "price": 48950000,
+    "image": "assets/tienda/uploads/averon-q8-2022-1774985293832.webp",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  },
+  {
+    "id": "2a1435c790c77c91",
+    "slug": "bullhorn-determinator-sfp-fury-2022",
+    "name": "Bullhorn Determinator SFP Fury 2022",
+    "description": "SUV/pickup performance tope de linea.",
+    "price": 42950000,
+    "image": "assets/tienda/uploads/bullhorn-determinator-sfp-fury-2022-1774985303670.webp",
+    "category": "vehiculos",
+    "created_at": "2026-03-28T03:19:47.193Z"
+  }
+]

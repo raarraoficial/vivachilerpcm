@@ -1,0 +1,61 @@
+{
+  "967606464627765289": {
+    "fines": [
+      {
+        "id": "6c697714a59f7795",
+        "amount": 45000,
+        "reason": "wapo",
+        "paid": true,
+        "created_at": "2026-04-01T04:09:36.858Z",
+        "officer": "raarra",
+        "paid_at": "2026-04-01T04:09:50.594Z"
+      },
+      {
+        "id": "ed622d7e5885f922",
+        "amount": 4500,
+        "reason": "452156",
+        "paid": true,
+        "created_at": "2026-03-31T14:34:19.541Z",
+        "officer": "raarra",
+        "paid_at": "2026-03-31T18:56:35.830Z"
+      },
+      {
+        "id": "62666d6665de0e7c",
+        "amount": 4500,
+        "reason": "pico",
+        "paid": true,
+        "created_at": "2026-03-31T01:06:14.325Z",
+        "officer": "raarra",
+        "paid_at": "2026-03-31T01:40:16.481Z"
+      }
+    ],
+    "backgrounds": [],
+    "wanted_orders": [
+      {
+        "id": "471c0ff52f5bc3cc",
+        "reason": "awdawdad",
+        "active": true,
+        "created_at": "2026-04-01T04:08:38.310Z",
+        "officer": "raarra"
+      },
+      {
+        "id": "98a60f70bf329dfa",
+        "reason": "me mato",
+        "active": false,
+        "created_at": "2026-03-31T18:55:46.392Z",
+        "officer": "raarra",
+        "closed_at": "2026-03-31T18:55:53.427Z",
+        "closed_by": "raarra"
+      },
+      {
+        "id": "f6b2ce409a8a6eb8",
+        "reason": "5555",
+        "active": false,
+        "created_at": "2026-03-31T14:34:39.540Z",
+        "officer": "raarra",
+        "closed_at": "2026-03-31T18:55:36.989Z",
+        "closed_by": "raarra"
+      }
+    ]
+  }
+}

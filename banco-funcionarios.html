@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Banco de Chile | Funcionarios</title>
+  <link rel="icon" type="image/png" href="assets/logo.png">
+  <link rel="apple-touch-icon" href="assets/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="portal.css">
+  <script src="app-config.js"></script>
+</head>
+<body>
+  <main class="portal-shell">
+    <section class="portal-card" data-bank-officer-view hidden>
+      <p class="portal-kicker">Banco de Chile</p>
+      <h2 style="margin:0;font-family:'Oswald',sans-serif;font-size:clamp(2.6rem,8vw,4.6rem);line-height:1.02;">Panel bancario</h2>
+      <section class="portal-card" style="margin-top:20px;padding:20px;">
+        <div class="portal-home-head" style="margin-bottom:14px;">
+          <div>
+            <p class="portal-kicker">Registro de horas</p>
+            <h3 style="margin:0;font-family:'Oswald',sans-serif;font-size:2rem;" data-shift-total>00:00:00</h3>
+          </div>
+          <button class="portal-button primary" type="button" data-shift-toggle>Iniciar turno</button>
+        </div>
+        <p class="portal-feedback" data-shift-feedback>Sin turno activo por ahora.</p>
+        <div class="transaction-history" data-shift-history></div>
+      </section>
+      <div class="transaction-history" data-bank-officer-credits style="margin-top:20px;"></div>
+      <div class="portal-actions" style="margin-top:20px;"><a class="portal-button secondary" href="portal.html">Volver al portal</a></div>
+    </section>
+    <section class="portal-card" data-bank-officer-denied hidden>
+      <p class="portal-kicker">Acceso restringido</p>
+      <h2 style="margin:0;font-family:'Oswald',sans-serif;">No autorizado</h2>
+      <p class="portal-user">Necesitas el rol Banco de Chile para entrar a este panel.</p>
+      <a class="portal-button secondary" href="portal.html">Volver al portal</a>
+    </section>
+  </main>
+  <script>
+    const creditsNode=document.querySelector("[data-bank-officer-credits]"),allowedView=document.querySelector("[data-bank-officer-view]"),deniedView=document.querySelector("[data-bank-officer-denied]"),shiftTotal=document.querySelector("[data-shift-total]"),shiftToggle=document.querySelector("[data-shift-toggle]"),shiftFeedback=document.querySelector("[data-shift-feedback]"),shiftHistory=document.querySelector("[data-shift-history]"),fmt=(v)=>`$${Number(v||0).toLocaleString("es-CL")}`;
+    const formatDate=(v)=>{if(!v)return"Sin registro";const d=new Date(v);return Number.isNaN(d.getTime())?String(v):d.toLocaleString("es-CL")},formatDuration=(ms)=>{const t=Math.max(0,Math.floor(Number(ms||0)/1000)),h=String(Math.floor(t/3600)).padStart(2,"0"),m=String(Math.floor((t%3600)/60)).padStart(2,"0"),s=String(t%60).padStart(2,"0");return`${h}:${m}:${s}`};
+    function renderShift(summary){if(!summary){shiftTotal.textContent="00:00:00";shiftToggle.textContent="Iniciar turno";shiftFeedback.textContent="Sin turno activo por ahora.";shiftHistory.innerHTML='<p class="transaction-empty">Todavia no hay horas registradas.</p>';return}shiftTotal.textContent=formatDuration(summary.total_ms);const active=!!summary.active_shift;shiftToggle.textContent=active?"Finalizar turno":"Iniciar turno";shiftFeedback.textContent=active?`Turno activo desde ${formatDate(summary.active_shift.started_at)}.`:"Sin turno activo por ahora.";const sessions=Array.isArray(summary.sessions)?summary.sessions:[];shiftHistory.innerHTML=sessions.length?sessions.slice(0,6).map((item)=>`<article class="transaction-item"><div class="transaction-item-head"><p class="transaction-item-title">${formatDate(item.started_at)}</p><strong class="transaction-item-amount">${formatDuration(item.duration_ms)}</strong></div></article>`).join(""):'<p class="transaction-empty">Todavia no hay horas registradas.</p>'}
+    async function loadShift(){const res=await fetch("/api/service-hours?panel=bank",{cache:"no-store"});if(!res.ok){renderShift(null);return}const data=await res.json();renderShift(data.summary||null)}
+    (async()=>{const sessionRes=await fetch("/api/portal/session",{cache:"no-store"});if(!sessionRes.ok){location.href="/portal.html";return}const session=await sessionRes.json();if(!session.permissions?.canManageBank){deniedView.hidden=false;return}allowedView.hidden=false;await loadShift();setInterval(loadShift,10000);const res=await fetch("/api/bank-officer/credits",{cache:"no-store"}),data=await res.json(),items=data.items||[];creditsNode.innerHTML=items.length?items.map((item)=>`<article class="transaction-item ${item.status==="pending"?"admin":item.status==="approved"?"income":"expense"}"><div class="transaction-item-head"><p class="transaction-item-title">${item.status==="pending"?"Solicitud pendiente":item.status==="approved"?"Credito aprobado":"Credito rechazado"}</p><strong class="transaction-item-amount">${fmt(item.amount)}</strong></div><p class="transaction-item-description">${item.reason}</p><p class="transaction-item-meta">Plazo: ${item.months} meses</p>${item.status==="pending"?`<div class="portal-actions"><button class="portal-button primary" data-review="${item.id}" data-decision="approved">Aprobar</button><button class="portal-button danger" data-review="${item.id}" data-decision="rejected">Rechazar</button></div>`:""}</article>`).join(""):'<p class="transaction-empty">No hay solicitudes de credito.</p>';document.querySelectorAll("[data-review]").forEach((button)=>{button.addEventListener("click",async()=>{await fetch("/api/bank-officer/credits/review",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:button.dataset.review,decision:button.dataset.decision})});location.reload()})})})();
+    shiftToggle?.addEventListener("click",async()=>{const starting=shiftToggle.textContent.includes("Iniciar"),res=await fetch(starting?"/api/service-hours/start":"/api/service-hours/stop",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({panel:"bank"})});if(!res.ok)return;const data=await res.json();renderShift(data.summary||null)});
+  </script>
+</body>
+</html>

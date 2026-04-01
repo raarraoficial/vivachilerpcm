@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Documento emitido</title>
+  <link rel="icon" type="image/png" href="../assets/logo.png">
+  <link rel="apple-touch-icon" href="../assets/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="documento.css">
+</head>
+<body>
+  <main class="doc-shell">
+    <section class="doc-actions" data-document-page hidden>
+      <div class="doc-capture-banner">
+        Toma una screenshot completa de esta hoja antes de salir.
+      </div>
+      <a class="doc-action-button secondary" href="index.html">Volver a la comisaria virtual</a>
+    </section>
+
+    <section class="doc-page" data-document-page hidden>
+      <header class="doc-header">
+        <div class="doc-logo-wrap">
+          <img class="doc-logo" src="../assets/logo-carabineros.png" alt="Logo de Carabineros de Chile">
+        </div>
+
+        <div class="doc-title-block">
+          <h1>CARABINEROS DE CHILE</h1>
+          <p>https://comisariavirtual.vivachile</p>
+        </div>
+
+        <div class="doc-meta">
+          <p><strong>Folio:</strong></p>
+          <p data-folio></p>
+          <p class="doc-folio-large" data-folio-large></p>
+          <p>Pagina 1 de 1</p>
+        </div>
+      </header>
+
+      <div class="doc-divider"></div>
+
+      <section class="doc-heading">
+        <h2 data-document-title>Constancia</h2>
+        <p data-subtitle></p>
+      </section>
+
+      <div class="doc-divider light"></div>
+
+      <section class="doc-body">
+        <p data-intro></p>
+
+        <div class="doc-section">
+          <p class="doc-label" data-detail-label>El ciudadano solicitante expone lo siguiente:</p>
+          <p data-detail></p>
+        </div>
+
+        <div class="doc-section doc-strong">
+          <p data-strong-note>VALIDO PARA FINES PARTICULARES.</p>
+        </div>
+
+        <div class="doc-section">
+          <p data-document-note></p>
+        </div>
+      </section>
+
+      <footer class="doc-footer">
+        <div class="doc-footer-top">
+          <p><strong>Fecha de emision:</strong> <span data-issued-at></span></p>
+          <p>Valido indefinidamente</p>
+        </div>
+
+        <div class="doc-footer-grid">
+          <div class="doc-verification">
+            <p><strong>Codigo de verificacion:</strong></p>
+            <p data-verification-code></p>
+            <p class="doc-small">Verifica la validez de este documento en la comisaria virtual del servidor.</p>
+          </div>
+
+          <div class="doc-stamp">
+            <div class="doc-stamp-circle">
+              <span>CARABINEROS DE CHILE</span>
+              <span>COMISARIA VIRTUAL</span>
+            </div>
+          </div>
+
+          <div class="doc-signature">
+            <div class="doc-signature-line"></div>
+            <p><strong>Comisario Virtual</strong></p>
+            <p>Viva Chile Roleplay</p>
+          </div>
+        </div>
+      </footer>
+    </section>
+
+    <section class="doc-empty" data-empty-state hidden>
+      <h2>No hay un documento cargado</h2>
+      <p>Vuelve a la comisaria virtual, genera una constancia o denuncia y te mandaremos aqui automaticamente.</p>
+      <a class="doc-back-link" href="index.html">Volver a la comisaria virtual</a>
+    </section>
+  </main>
+
+  <script src="documento.js"></script>
+</body>
+</html>

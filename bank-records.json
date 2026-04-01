@@ -1,0 +1,992 @@
+{
+  "967606464627765289": {
+    "discord_id": "967606464627765289",
+    "balance": 214916270,
+    "card_number": "5281 7150 8055 8602",
+    "password_hash": "19b5654bc0926dcbb50f468c7bd08e25ea8367b100c76d0c13c9b0610829dc3f",
+    "last_salary_claim_at": 1774560454639,
+    "card_cvv": "491",
+    "investment_account": {
+      "enabled": true,
+      "balance": 500
+    },
+    "transactions": [
+      {
+        "id": "b04aa740624fe718",
+        "created_at": "2026-03-30T16:27:24.071Z",
+        "type": "casino_coinflip",
+        "direction": "in",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Ganaste coinflip con cara. Premio abonado al saldo casino."
+      },
+      {
+        "id": "fc9d0c7b3ef8305b",
+        "created_at": "2026-03-30T16:27:24.271Z",
+        "type": "casino_coinflip",
+        "direction": "out",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Perdiste coinflip. Salio sello."
+      },
+      {
+        "id": "da2ede855dd898b1",
+        "created_at": "2026-03-30T16:27:24.471Z",
+        "type": "casino_coinflip",
+        "direction": "in",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Ganaste coinflip con cara. Premio abonado al saldo casino."
+      },
+      {
+        "id": "6e27ceec1567b6c1",
+        "created_at": "2026-03-30T16:27:24.657Z",
+        "type": "casino_coinflip",
+        "direction": "out",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Perdiste coinflip. Salio sello."
+      },
+      {
+        "id": "a8f640885b77d56d",
+        "created_at": "2026-03-30T16:27:24.856Z",
+        "type": "casino_coinflip",
+        "direction": "in",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Ganaste coinflip con cara. Premio abonado al saldo casino."
+      },
+      {
+        "id": "3c98f7ef9f282003",
+        "created_at": "2026-03-30T16:27:25.033Z",
+        "type": "casino_coinflip",
+        "direction": "out",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Perdiste coinflip. Salio sello."
+      },
+      {
+        "id": "73f8828165ce4c0e",
+        "created_at": "2026-03-30T16:27:25.217Z",
+        "type": "casino_coinflip",
+        "direction": "in",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Ganaste coinflip con cara. Premio abonado al saldo casino."
+      },
+      {
+        "id": "95025d29b6e584b2",
+        "created_at": "2026-03-30T16:27:25.401Z",
+        "type": "casino_coinflip",
+        "direction": "in",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Ganaste coinflip con cara. Premio abonado al saldo casino."
+      },
+      {
+        "id": "e61519926d528688",
+        "created_at": "2026-03-30T16:27:25.601Z",
+        "type": "casino_coinflip",
+        "direction": "out",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Perdiste coinflip. Salio sello."
+      },
+      {
+        "id": "d1c3c33eb931ac66",
+        "created_at": "2026-03-30T16:27:25.793Z",
+        "type": "casino_coinflip",
+        "direction": "out",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Perdiste coinflip. Salio sello."
+      },
+      {
+        "id": "ba0115f52b33f8f1",
+        "created_at": "2026-03-30T16:27:25.992Z",
+        "type": "casino_coinflip",
+        "direction": "in",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Ganaste coinflip con cara. Premio abonado al saldo casino."
+      },
+      {
+        "id": "260a57b5f6786a61",
+        "created_at": "2026-03-30T16:27:26.182Z",
+        "type": "casino_coinflip",
+        "direction": "in",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Ganaste coinflip con cara. Premio abonado al saldo casino."
+      },
+      {
+        "id": "4a51bfd8c62418c0",
+        "created_at": "2026-03-30T16:27:26.376Z",
+        "type": "casino_coinflip",
+        "direction": "out",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Perdiste coinflip. Salio sello."
+      },
+      {
+        "id": "49d4bc479d5f4f4c",
+        "created_at": "2026-03-30T16:27:26.552Z",
+        "type": "casino_coinflip",
+        "direction": "in",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Ganaste coinflip con cara. Premio abonado al saldo casino."
+      },
+      {
+        "id": "936dee67b9df3a7a",
+        "created_at": "2026-03-30T16:27:26.745Z",
+        "type": "casino_coinflip",
+        "direction": "out",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Perdiste coinflip. Salio sello."
+      },
+      {
+        "id": "8afdb3366560ba6f",
+        "created_at": "2026-03-30T16:27:26.946Z",
+        "type": "casino_coinflip",
+        "direction": "out",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Perdiste coinflip. Salio sello."
+      },
+      {
+        "id": "b9fb6fa2e6d63070",
+        "created_at": "2026-03-30T16:27:27.145Z",
+        "type": "casino_coinflip",
+        "direction": "out",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Perdiste coinflip. Salio sello."
+      },
+      {
+        "id": "ee51228cd8dcf287",
+        "created_at": "2026-03-30T16:27:27.338Z",
+        "type": "casino_coinflip",
+        "direction": "in",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Ganaste coinflip con cara. Premio abonado al saldo casino."
+      },
+      {
+        "id": "b23b2666c7bb1342",
+        "created_at": "2026-03-30T16:27:27.547Z",
+        "type": "casino_coinflip",
+        "direction": "in",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Ganaste coinflip con cara. Premio abonado al saldo casino."
+      },
+      {
+        "id": "1050a3e7106fba17",
+        "created_at": "2026-03-30T16:27:27.736Z",
+        "type": "casino_coinflip",
+        "direction": "out",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Perdiste coinflip. Salio sello."
+      },
+      {
+        "id": "7229d982a865f6ed",
+        "created_at": "2026-03-30T16:27:27.920Z",
+        "type": "casino_coinflip",
+        "direction": "in",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Ganaste coinflip con cara. Premio abonado al saldo casino."
+      },
+      {
+        "id": "e96d486bac1961ef",
+        "created_at": "2026-03-30T16:27:28.113Z",
+        "type": "casino_coinflip",
+        "direction": "out",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Perdiste coinflip. Salio sello."
+      },
+      {
+        "id": "74f6482c73e8843d",
+        "created_at": "2026-03-30T16:27:28.316Z",
+        "type": "casino_coinflip",
+        "direction": "in",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Ganaste coinflip con cara. Premio abonado al saldo casino."
+      },
+      {
+        "id": "60d02d71abfa4f84",
+        "created_at": "2026-03-30T16:27:28.506Z",
+        "type": "casino_coinflip",
+        "direction": "in",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Ganaste coinflip con cara. Premio abonado al saldo casino."
+      },
+      {
+        "id": "a32956d84c490de5",
+        "created_at": "2026-03-30T16:27:28.698Z",
+        "type": "casino_coinflip",
+        "direction": "in",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Ganaste coinflip con cara. Premio abonado al saldo casino."
+      },
+      {
+        "id": "bb13219e9250b978",
+        "created_at": "2026-03-30T16:27:28.905Z",
+        "type": "casino_coinflip",
+        "direction": "in",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Ganaste coinflip con cara. Premio abonado al saldo casino."
+      },
+      {
+        "id": "1d7b7f367d5a333b",
+        "created_at": "2026-03-30T16:27:29.104Z",
+        "type": "casino_coinflip",
+        "direction": "out",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Perdiste coinflip. Salio sello."
+      },
+      {
+        "id": "21659b4028ddf649",
+        "created_at": "2026-03-30T16:27:29.321Z",
+        "type": "casino_coinflip",
+        "direction": "out",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Perdiste coinflip. Salio sello."
+      },
+      {
+        "id": "3bcfbe6c77272f1e",
+        "created_at": "2026-03-30T16:27:29.530Z",
+        "type": "casino_coinflip",
+        "direction": "in",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Ganaste coinflip con cara. Premio abonado al saldo casino."
+      },
+      {
+        "id": "77b3d02e467ba8f8",
+        "created_at": "2026-03-30T16:27:29.716Z",
+        "type": "casino_coinflip",
+        "direction": "in",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Ganaste coinflip con cara. Premio abonado al saldo casino."
+      },
+      {
+        "id": "c00cdca879f7ae29",
+        "created_at": "2026-03-30T16:27:29.904Z",
+        "type": "casino_coinflip",
+        "direction": "in",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Ganaste coinflip con cara. Premio abonado al saldo casino."
+      },
+      {
+        "id": "17b103268b3f81fa",
+        "created_at": "2026-03-30T16:27:30.089Z",
+        "type": "casino_coinflip",
+        "direction": "in",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Ganaste coinflip con cara. Premio abonado al saldo casino."
+      },
+      {
+        "id": "9ed689bb4d8ce2dd",
+        "created_at": "2026-03-30T16:27:30.280Z",
+        "type": "casino_coinflip",
+        "direction": "out",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Perdiste coinflip. Salio sello."
+      },
+      {
+        "id": "604762edfc490a1d",
+        "created_at": "2026-03-30T16:27:30.464Z",
+        "type": "casino_coinflip",
+        "direction": "out",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Perdiste coinflip. Salio sello."
+      },
+      {
+        "id": "3872cf87a513e1ab",
+        "created_at": "2026-03-30T16:27:30.674Z",
+        "type": "casino_coinflip",
+        "direction": "out",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Perdiste coinflip. Salio sello."
+      },
+      {
+        "id": "fb3bbe20e5f42673",
+        "created_at": "2026-03-30T16:27:30.865Z",
+        "type": "casino_coinflip",
+        "direction": "out",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Perdiste coinflip. Salio sello."
+      },
+      {
+        "id": "35379cba768592dc",
+        "created_at": "2026-03-30T16:27:31.048Z",
+        "type": "casino_coinflip",
+        "direction": "out",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Perdiste coinflip. Salio sello."
+      },
+      {
+        "id": "3eadea46483acce1",
+        "created_at": "2026-03-30T16:27:31.249Z",
+        "type": "casino_coinflip",
+        "direction": "out",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Perdiste coinflip. Salio sello."
+      },
+      {
+        "id": "56337342197f9aa7",
+        "created_at": "2026-03-30T16:27:31.428Z",
+        "type": "casino_coinflip",
+        "direction": "out",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Perdiste coinflip. Salio sello."
+      },
+      {
+        "id": "26ed92690fbf7c77",
+        "created_at": "2026-03-30T16:27:31.625Z",
+        "type": "casino_coinflip",
+        "direction": "in",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Ganaste coinflip con cara. Premio abonado al saldo casino."
+      },
+      {
+        "id": "20a815abbd8c2391",
+        "created_at": "2026-03-30T16:27:31.817Z",
+        "type": "casino_coinflip",
+        "direction": "out",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Perdiste coinflip. Salio sello."
+      },
+      {
+        "id": "5b38268e8c568a9d",
+        "created_at": "2026-03-30T16:27:32.026Z",
+        "type": "casino_coinflip",
+        "direction": "out",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Perdiste coinflip. Salio sello."
+      },
+      {
+        "id": "f19d61cc37182607",
+        "created_at": "2026-03-30T16:27:32.201Z",
+        "type": "casino_coinflip",
+        "direction": "out",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Perdiste coinflip. Salio sello."
+      },
+      {
+        "id": "ffb2a52f3799a50e",
+        "created_at": "2026-03-30T16:27:32.399Z",
+        "type": "casino_coinflip",
+        "direction": "in",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Ganaste coinflip con cara. Premio abonado al saldo casino."
+      },
+      {
+        "id": "91a6804b837d556b",
+        "created_at": "2026-03-30T16:27:32.579Z",
+        "type": "casino_coinflip",
+        "direction": "in",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Ganaste coinflip con cara. Premio abonado al saldo casino."
+      },
+      {
+        "id": "72ed905381c6bf3a",
+        "created_at": "2026-03-30T16:27:32.777Z",
+        "type": "casino_coinflip",
+        "direction": "out",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Perdiste coinflip. Salio sello."
+      },
+      {
+        "id": "24594d415d55e65f",
+        "created_at": "2026-03-30T16:27:32.929Z",
+        "type": "casino_coinflip",
+        "direction": "in",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Ganaste coinflip con cara. Premio abonado al saldo casino."
+      },
+      {
+        "id": "4b8c1d39d1c25c2c",
+        "created_at": "2026-03-30T16:27:33.130Z",
+        "type": "casino_coinflip",
+        "direction": "in",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Ganaste coinflip con cara. Premio abonado al saldo casino."
+      },
+      {
+        "id": "5372218ccf7e50ae",
+        "created_at": "2026-03-30T16:29:35.696Z",
+        "type": "casino_coinflip",
+        "direction": "out",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Perdiste coinflip. Salio sello."
+      },
+      {
+        "id": "fc107dfd017e2a3e",
+        "created_at": "2026-03-30T16:29:35.873Z",
+        "type": "casino_coinflip",
+        "direction": "out",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Perdiste coinflip. Salio sello."
+      },
+      {
+        "id": "83f901b76dd8a722",
+        "created_at": "2026-03-30T16:29:36.055Z",
+        "type": "casino_coinflip",
+        "direction": "out",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Perdiste coinflip. Salio sello."
+      },
+      {
+        "id": "9b9e684726990cdd",
+        "created_at": "2026-03-30T16:29:36.215Z",
+        "type": "casino_coinflip",
+        "direction": "out",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Perdiste coinflip. Salio sello."
+      },
+      {
+        "id": "0d82dfcc74bdcd5d",
+        "created_at": "2026-03-30T16:29:36.492Z",
+        "type": "casino_coinflip",
+        "direction": "out",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Perdiste coinflip. Salio sello."
+      },
+      {
+        "id": "5ff781dcd791ebbb",
+        "created_at": "2026-03-30T16:29:36.667Z",
+        "type": "casino_coinflip",
+        "direction": "in",
+        "amount": 10,
+        "title": "Casino: Coinflip",
+        "description": "Ganaste coinflip con cara. Premio abonado al saldo casino."
+      },
+      {
+        "id": "4e3c795e29d3dffe",
+        "created_at": "2026-03-30T16:29:57.540Z",
+        "type": "casino_deposit",
+        "direction": "out",
+        "amount": 100000,
+        "title": "Deposito a saldo casino",
+        "description": "Fondos movidos desde la cuenta principal al saldo casino."
+      },
+      {
+        "id": "e333ada55a138fa8",
+        "created_at": "2026-03-30T16:30:25.653Z",
+        "type": "casino_deposit",
+        "direction": "out",
+        "amount": 212387697,
+        "title": "Deposito a saldo casino",
+        "description": "Fondos movidos desde la cuenta principal al saldo casino."
+      },
+      {
+        "id": "be823571d0999589",
+        "created_at": "2026-03-30T16:30:31.103Z",
+        "type": "casino_slots",
+        "direction": "in",
+        "amount": 6000000,
+        "title": "Casino: Slots",
+        "description": "Ganaste slots con 🍀 7 7. Premio abonado al saldo casino."
+      },
+      {
+        "id": "d57ef740201d95f6",
+        "created_at": "2026-03-30T16:30:34.347Z",
+        "type": "casino_slots",
+        "direction": "out",
+        "amount": 10000000,
+        "title": "Casino: Slots",
+        "description": "Perdiste slots con 💎 🍀 🍒."
+      },
+      {
+        "id": "585f6f8bf845b53c",
+        "created_at": "2026-03-30T16:30:36.574Z",
+        "type": "casino_slots",
+        "direction": "in",
+        "amount": 6000000,
+        "title": "Casino: Slots",
+        "description": "Ganaste slots con 7 ⭐ 7. Premio abonado al saldo casino."
+      },
+      {
+        "id": "c25b36c1e0c91497",
+        "created_at": "2026-03-30T16:30:38.471Z",
+        "type": "casino_slots",
+        "direction": "out",
+        "amount": 10000000,
+        "title": "Casino: Slots",
+        "description": "Perdiste slots con 🍀 7 ⭐."
+      },
+      {
+        "id": "900a7f3d2635bb22",
+        "created_at": "2026-03-30T16:30:40.072Z",
+        "type": "casino_slots",
+        "direction": "out",
+        "amount": 10000000,
+        "title": "Casino: Slots",
+        "description": "Perdiste slots con ⭐ 🍒 7."
+      },
+      {
+        "id": "5ed29ae824d04cc1",
+        "created_at": "2026-03-30T16:30:41.126Z",
+        "type": "casino_slots",
+        "direction": "in",
+        "amount": 6000000,
+        "title": "Casino: Slots",
+        "description": "Ganaste slots con ⭐ 💎 ⭐. Premio abonado al saldo casino."
+      },
+      {
+        "id": "1fe2e764248621e3",
+        "created_at": "2026-03-30T16:30:42.391Z",
+        "type": "casino_slots",
+        "direction": "in",
+        "amount": 6000000,
+        "title": "Casino: Slots",
+        "description": "Ganaste slots con 7 7 ⭐. Premio abonado al saldo casino."
+      },
+      {
+        "id": "24aa09594dcd32b5",
+        "created_at": "2026-03-30T16:30:44.031Z",
+        "type": "casino_slots",
+        "direction": "in",
+        "amount": 6000000,
+        "title": "Casino: Slots",
+        "description": "Ganaste slots con 🍒 ⭐ 🍒. Premio abonado al saldo casino."
+      },
+      {
+        "id": "cbd57a8c6be36d25",
+        "created_at": "2026-03-30T16:30:48.247Z",
+        "type": "casino_slots",
+        "direction": "out",
+        "amount": 10000000,
+        "title": "Casino: Slots",
+        "description": "Perdiste slots con 🍀 7 ⭐."
+      },
+      {
+        "id": "7b46a52be8f80a85",
+        "created_at": "2026-03-30T16:30:49.714Z",
+        "type": "casino_slots",
+        "direction": "in",
+        "amount": 6000000,
+        "title": "Casino: Slots",
+        "description": "Ganaste slots con 💎 🍒 💎. Premio abonado al saldo casino."
+      },
+      {
+        "id": "3bd5551e00562c12",
+        "created_at": "2026-03-30T16:30:51.046Z",
+        "type": "casino_slots",
+        "direction": "in",
+        "amount": 6000000,
+        "title": "Casino: Slots",
+        "description": "Ganaste slots con 7 🍀 7. Premio abonado al saldo casino."
+      },
+      {
+        "id": "005c66f9f2e7e0a2",
+        "created_at": "2026-03-30T16:30:52.641Z",
+        "type": "casino_slots",
+        "direction": "out",
+        "amount": 10000000,
+        "title": "Casino: Slots",
+        "description": "Perdiste slots con ⭐ 7 💎."
+      },
+      {
+        "id": "ca3305f604f940d9",
+        "created_at": "2026-03-30T16:30:55.992Z",
+        "type": "casino_slots",
+        "direction": "out",
+        "amount": 10000000,
+        "title": "Casino: Slots",
+        "description": "Perdiste slots con ⭐ 💎 🍒."
+      },
+      {
+        "id": "07c18784164976b1",
+        "created_at": "2026-03-30T16:30:58.584Z",
+        "type": "casino_slots",
+        "direction": "out",
+        "amount": 10000000,
+        "title": "Casino: Slots",
+        "description": "Perdiste slots con ⭐ 🍀 7."
+      },
+      {
+        "id": "6a6cedc1e712c451",
+        "created_at": "2026-03-30T16:30:58.742Z",
+        "type": "casino_slots",
+        "direction": "in",
+        "amount": 6000000,
+        "title": "Casino: Slots",
+        "description": "Ganaste slots con ⭐ 🍒 ⭐. Premio abonado al saldo casino."
+      },
+      {
+        "id": "519a22f0e1cb4396",
+        "created_at": "2026-03-30T16:30:58.886Z",
+        "type": "casino_slots",
+        "direction": "in",
+        "amount": 6000000,
+        "title": "Casino: Slots",
+        "description": "Ganaste slots con 🍒 ⭐ ⭐. Premio abonado al saldo casino."
+      },
+      {
+        "id": "747b3f66a366ee5e",
+        "created_at": "2026-03-30T16:30:59.024Z",
+        "type": "casino_slots",
+        "direction": "in",
+        "amount": 6000000,
+        "title": "Casino: Slots",
+        "description": "Ganaste slots con 💎 🍒 💎. Premio abonado al saldo casino."
+      },
+      {
+        "id": "e24868203ca5d28e",
+        "created_at": "2026-03-30T16:30:59.169Z",
+        "type": "casino_slots",
+        "direction": "in",
+        "amount": 30000000,
+        "title": "Casino: Slots",
+        "description": "Ganaste slots con 🍀 🍀 🍀. Premio abonado al saldo casino."
+      },
+      {
+        "id": "3cf750eafca6c204",
+        "created_at": "2026-03-30T16:30:59.326Z",
+        "type": "casino_slots",
+        "direction": "out",
+        "amount": 10000000,
+        "title": "Casino: Slots",
+        "description": "Perdiste slots con 7 💎 🍀."
+      },
+      {
+        "id": "52e530a86d95f2b8",
+        "created_at": "2026-03-30T16:30:59.527Z",
+        "type": "casino_slots",
+        "direction": "in",
+        "amount": 6000000,
+        "title": "Casino: Slots",
+        "description": "Ganaste slots con 💎 ⭐ 💎. Premio abonado al saldo casino."
+      },
+      {
+        "id": "a04dbfe96e45717b",
+        "created_at": "2026-03-30T16:31:13.151Z",
+        "type": "casino_withdraw",
+        "direction": "in",
+        "amount": 228487837,
+        "title": "Retiro de saldo casino",
+        "description": "Fondos retirados del casino a la cuenta principal."
+      },
+      {
+        "id": "76269d455e107263",
+        "created_at": "2026-03-30T16:36:37.860Z",
+        "type": "admin_adjustment",
+        "direction": "in",
+        "amount": 10,
+        "title": "Ajuste administrativo",
+        "description": "Abono realizado desde panel administrativo."
+      },
+      {
+        "id": "1ea986508b7652a3",
+        "created_at": "2026-03-30T17:50:47.478Z",
+        "type": "store_purchase",
+        "direction": "out",
+        "amount": 4250000,
+        "title": "Compra en tienda",
+        "description": "Compra realizada: Chevlon captain 1992."
+      },
+      {
+        "id": "df9e27f951399828",
+        "created_at": "2026-03-30T17:50:58.017Z",
+        "type": "market_listing",
+        "direction": "out",
+        "amount": 0,
+        "title": "Articulo publicado",
+        "description": "Chevlon Camion SS fue publicado en mercado de 2da mano por $750.000."
+      },
+      {
+        "id": "889a23e0663c776a",
+        "created_at": "2026-03-30T17:51:44.048Z",
+        "type": "vehicle_registration",
+        "direction": "out",
+        "amount": 220750,
+        "title": "Inscripcion de vehiculo",
+        "description": "Inscripcion, patente y permiso de circulacion pagados para Chevlon captain 1992."
+      },
+      {
+        "id": "acd34dea5d50f739",
+        "created_at": "2026-03-30T20:30:53.514Z",
+        "type": "casino_deposit",
+        "direction": "out",
+        "amount": 100000,
+        "title": "Deposito a saldo casino",
+        "description": "Fondos movidos desde la cuenta principal al saldo casino."
+      },
+      {
+        "id": "932a7558c9811159",
+        "created_at": "2026-03-31T01:06:55.885Z",
+        "type": "bank_credit",
+        "direction": "in",
+        "amount": 2000000,
+        "title": "Credito bancario aprobado",
+        "description": "Credito abonado por $2.000.000."
+      },
+      {
+        "id": "f6c3cf291abddbc3",
+        "created_at": "2026-03-31T01:07:59.652Z",
+        "type": "market_listing",
+        "direction": "out",
+        "amount": 0,
+        "title": "Articulo publicado",
+        "description": "Chevlon captain 1992 fue publicado en mercado de 2da mano por $4.250.000."
+      },
+      {
+        "id": "1122aacf69c7badd",
+        "created_at": "2026-03-31T01:08:20.574Z",
+        "type": "store_purchase",
+        "direction": "out",
+        "amount": 4250000,
+        "title": "Compra en tienda",
+        "description": "Compra realizada: Chevlon captain 1992."
+      },
+      {
+        "id": "bcfac485c30a3ea5",
+        "created_at": "2026-03-31T01:40:16.498Z",
+        "type": "municipality_fine_payment",
+        "direction": "out",
+        "amount": 4500,
+        "title": "Pago de multa municipal",
+        "description": "Pago realizado por multa: pico."
+      },
+      {
+        "id": "27c79198329de5f9",
+        "created_at": "2026-03-31T01:42:02.574Z",
+        "type": "bank_credit",
+        "direction": "in",
+        "amount": 123123,
+        "title": "Credito bancario aprobado",
+        "description": "Credito abonado por $123.123."
+      },
+      {
+        "id": "bda06f0c5b13d7e4",
+        "created_at": "2026-03-31T01:46:09.943Z",
+        "type": "market_listing",
+        "direction": "out",
+        "amount": 0,
+        "title": "Articulo publicado",
+        "description": "Chevlon captain 1992 fue publicado en mercado de 2da mano por $4.250.000."
+      },
+      {
+        "id": "dcae88b4bc8ecb1c",
+        "created_at": "2026-03-31T03:34:53.988Z",
+        "type": "store_purchase",
+        "direction": "out",
+        "amount": 4250000,
+        "title": "Compra en tienda",
+        "description": "Compra realizada: Chevlon captain 1992."
+      },
+      {
+        "id": "d41a960fe2a4d53b",
+        "created_at": "2026-03-31T03:34:57.931Z",
+        "type": "vehicle_registration",
+        "direction": "out",
+        "amount": 220750,
+        "title": "Inscripcion de vehiculo",
+        "description": "Inscripcion, patente y permiso de circulacion pagados para Chevlon captain 1992."
+      },
+      {
+        "id": "f11edfd55d2f1ba0",
+        "created_at": "2026-03-31T14:08:33.595Z",
+        "type": "casino_deposit",
+        "direction": "out",
+        "amount": 10000000,
+        "title": "Deposito a saldo casino",
+        "description": "Fondos movidos desde la cuenta principal al saldo casino."
+      },
+      {
+        "id": "938a9d623606ba42",
+        "created_at": "2026-03-31T14:10:02.184Z",
+        "type": "casino_withdraw",
+        "direction": "in",
+        "amount": 8808800,
+        "title": "Retiro de saldo casino",
+        "description": "Fondos retirados del casino a la cuenta principal."
+      },
+      {
+        "id": "a498ea59a8d89c1c",
+        "created_at": "2026-03-31T14:33:10.591Z",
+        "type": "municipality_impound_release",
+        "direction": "out",
+        "amount": 85000,
+        "title": "Salida de corrales",
+        "description": "Retiro de corrales para Chevlon captain 1992."
+      },
+      {
+        "id": "503ebc94e253c350",
+        "created_at": "2026-03-31T18:56:35.831Z",
+        "type": "municipality_fine_payment",
+        "direction": "out",
+        "amount": 4500,
+        "title": "Pago de multa municipal",
+        "description": "Pago realizado por multa: 452156."
+      },
+      {
+        "id": "465036f0106aeed5",
+        "created_at": "2026-03-31T19:17:05.854Z",
+        "type": "administrative_adjustment",
+        "direction": "in",
+        "amount": 1000,
+        "title": "Ajuste administrativo",
+        "description": "tfytf. Aplicado por raarra."
+      },
+      {
+        "id": "f72c848c22bb1868",
+        "created_at": "2026-04-01T04:07:10.953Z",
+        "type": "casino_deposit",
+        "direction": "out",
+        "amount": 1000000,
+        "title": "Deposito a saldo casino",
+        "description": "Fondos movidos desde la cuenta principal al saldo casino."
+      },
+      {
+        "id": "420fac9e988d3d69",
+        "created_at": "2026-04-01T04:09:50.595Z",
+        "type": "municipality_fine_payment",
+        "direction": "out",
+        "amount": 45000,
+        "title": "Pago de multa municipal",
+        "description": "Pago realizado por multa: wapo."
+      },
+      {
+        "id": "221c98227eb775a8",
+        "created_at": "2026-04-01T04:11:02.665Z",
+        "type": "bank_credit",
+        "direction": "in",
+        "amount": 1000,
+        "title": "Credito bancario aprobado",
+        "description": "Credito abonado por $1.000."
+      },
+      {
+        "id": "727e863362c31c03",
+        "created_at": "2026-04-01T04:12:56.295Z",
+        "type": "admin_adjustment",
+        "direction": "in",
+        "amount": 10000,
+        "title": "Ajuste administrativo",
+        "description": "Abono realizado desde panel administrativo."
+      },
+      {
+        "id": "668b05ed7457bf49",
+        "created_at": "2026-04-01T04:24:41.049Z",
+        "type": "municipality_impound_release",
+        "direction": "out",
+        "amount": 85000,
+        "title": "Salida de corrales",
+        "description": "Retiro de corrales para Chevlon captain 1992."
+      }
+    ],
+    "salary": {
+      "rank": "General Inspector",
+      "base": 5800000,
+      "tax": 35000,
+      "net": 5765000
+    },
+    "inventory": [
+      {
+        "id": "1dbc119a581d0ee2",
+        "item_id": "5fef512ef8d050c8",
+        "name": "Chevlon captain 1992",
+        "description": "Sedan clasico adaptado al mercado chileno.",
+        "image": "assets/tienda/Chevlon_captain_1992.png",
+        "price": 4250000,
+        "category": "vehiculos",
+        "vehicle_record": {
+          "registered": true,
+          "inscription_fee": 106250,
+          "plate_fee": 38000,
+          "circulation_fee": 76500,
+          "total_fee": 220750,
+          "registration_number": "RVC-921110",
+          "plate": "FOG-113",
+          "color": "Blanco",
+          "registered_at": "2026-03-31T03:34:57.928Z",
+          "circulation_valid_until": "2027-03-31T03:34:57.928Z",
+          "technical_review_due_at": "2026-10-01T03:34:57.928Z",
+          "technical_review_enabled": false
+        },
+        "purchased_at": "2026-03-31T03:34:53.970Z",
+        "impounded": {
+          "active": false,
+          "reason": "awdawdawd",
+          "created_at": "2026-04-01T04:08:50.788Z",
+          "officer": "raarra",
+          "released_at": "2026-04-01T04:24:41.032Z"
+        }
+      }
+    ],
+    "casino_balance": 986000,
+    "loans": [
+      {
+        "id": "f3175d5c872fc702",
+        "amount": 2000000,
+        "remaining_balance": 2000000,
+        "months": 12,
+        "monthly_payment": 166667,
+        "reason": "5151",
+        "approved_at": "2026-03-31T01:06:55.884Z",
+        "due_at": 1806023215884,
+        "status": "active"
+      },
+      {
+        "id": "16ce8d6f2dc9115a",
+        "amount": 123123,
+        "remaining_balance": 123123,
+        "months": 12,
+        "monthly_payment": 10260,
+        "reason": "wdawdwa",
+        "approved_at": "2026-03-31T01:42:02.572Z",
+        "due_at": 1806025322574,
+        "status": "active"
+      },
+      {
+        "id": "e71378c43b431e81",
+        "amount": 1000,
+        "remaining_balance": 1000,
+        "months": 12,
+        "monthly_payment": 83,
+        "reason": "000",
+        "approved_at": "2026-04-01T04:11:02.663Z",
+        "due_at": 1806120662664,
+        "status": "active"
+      }
+    ],
+    "pending_claims": []
+  }
+}

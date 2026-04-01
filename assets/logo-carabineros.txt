@@ -1,0 +1,4 @@
+Pon aqui el logo de Carabineros para la pagina de comisaria virtual.
+
+Nombre esperado:
+- `logo-carabineros.png`

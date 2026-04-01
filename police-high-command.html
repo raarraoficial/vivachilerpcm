@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Altos Mandos | Viva Chile RP</title>
+  <link rel="icon" type="image/png" href="assets/logo.png">
+  <link rel="apple-touch-icon" href="assets/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="portal.css">
+  <script src="app-config.js"></script>
+  <style>
+    :root{--hc-accent:#43c96f;--hc-deep:#1d8a46;--hc-bg:radial-gradient(circle at top left,rgba(67,201,111,.14),transparent 20%),linear-gradient(180deg,#07170f 0%,#0d1720 100%)}body{background:var(--hc-bg)}body[data-skin="pdi"]{--hc-accent:#69b6ff;--hc-deep:#246cb2;--hc-bg:radial-gradient(circle at top left,rgba(105,182,255,.16),transparent 22%),linear-gradient(180deg,#09182f 0%,#0d1720 100%)}.hc-shell{width:min(100%,1280px);padding-top:34px}.hc-wrap,.hc-grid,.hc-ranking{display:grid;gap:24px}.hc-grid{grid-template-columns:1fr 420px;align-items:start}.hc-card{border:1px solid rgba(255,255,255,.08);border-radius:28px;background:rgba(9,18,27,.9);box-shadow:0 26px 70px rgba(0,0,0,.24);backdrop-filter:blur(14px);padding:28px}.hc-head,.hc-form-actions,.hc-entry-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}.hc-kicker{margin:0 0 6px;color:var(--hc-accent);font-size:.82rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase}.hc-title,.hc-entry-top h3{margin:0;font-family:"Oswald",sans-serif;line-height:1.02}.hc-title{font-size:clamp(2.5rem,4vw,4rem)}.hc-copy,.hc-feedback,.hc-entry p{margin:0;color:var(--muted);line-height:1.8}.hc-form{display:grid;gap:12px;margin-top:18px}.hc-form input,.hc-form textarea{width:100%;min-height:52px;padding:14px 16px;border:1px solid rgba(255,255,255,.08);border-radius:16px;background:rgba(4,10,15,.92);color:var(--text);font:inherit;resize:vertical}.hc-form textarea{min-height:100px}.hc-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.hc-button{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 18px;border-radius:999px;border:1px solid transparent;font:inherit;font-weight:700;text-decoration:none;cursor:pointer;background:linear-gradient(135deg,var(--hc-accent) 0%,var(--hc-deep) 100%);color:#05141c}.hc-button.secondary{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08);color:var(--text)}.hc-feedback.is-error{color:#ef8b8b}.hc-feedback.is-ok{color:#7ef0a8}.hc-entry{border:1px solid rgba(255,255,255,.08);border-radius:22px;background:rgba(255,255,255,.03);padding:18px}.hc-entry-rank{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:999px;background:rgba(255,255,255,.06);font-family:"Oswald",sans-serif;font-size:1.2rem}.hc-entry-hours{font-family:"Oswald",sans-serif;font-size:1.8rem;line-height:1}.hc-empty{margin:0;color:var(--muted)}@media (max-width:980px){.hc-grid{grid-template-columns:1fr}}@media (max-width:760px){.hc-shell{padding-top:20px}.hc-card{padding:22px;border-radius:24px}.hc-form-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <main class="portal-shell hc-shell">
+    <section class="hc-card" data-denied hidden>
+      <p class="portal-kicker">Acceso restringido</p>
+      <h2 style="margin:0;font-family:'Oswald',sans-serif;">No autorizado</h2>
+      <p class="portal-user">Necesitas el rol Administrador carabineros o Administrador pdi.</p>
+      <div class="portal-actions" style="margin-top:20px;"><a class="portal-button secondary" href="policial.html">Volver al panel policial</a></div>
+    </section>
+    <section class="hc-wrap" data-view hidden>
+      <section class="hc-card">
+        <div class="hc-head">
+          <div>
+            <p class="hc-kicker" data-agency-kicker>Carabineros de Chile</p>
+            <h1 class="hc-title" data-title>Panel de altos mandos</h1>
+          </div>
+          <a class="hc-button secondary" href="policial.html">Volver al panel policial</a>
+        </div>
+        <p class="hc-copy" data-copy>Supervisa la carga horaria del personal policial, revisa quién acumula más o menos servicio y agrega horas manuales cuando corresponda.</p>
+      </section>
+      <section class="hc-grid">
+        <article class="hc-card">
+          <div class="hc-head">
+            <div>
+              <p class="hc-kicker">Ranking de horas</p>
+              <h2 style="margin:0;font-family:'Oswald',sans-serif;font-size:2rem;">Personal policial</h2>
+            </div>
+          </div>
+          <div class="hc-ranking" data-ranking>
+            <p class="hc-empty">Todavia no hay funcionarios con horas registradas.</p>
+          </div>
+        </article>
+        <aside class="hc-card">
+          <div class="hc-head">
+            <div>
+              <p class="hc-kicker">Carga manual</p>
+              <h2 style="margin:0;font-family:'Oswald',sans-serif;font-size:2rem;">Agregar horas</h2>
+            </div>
+          </div>
+          <form class="hc-form" data-add-hours-form>
+            <label>Funcionario
+              <input type="text" name="identifier" placeholder="Nombre, RUT o documento" required>
+            </label>
+            <div class="hc-form-grid">
+              <label>Horas
+                <input type="number" name="hours" min="0" step="1" placeholder="Ej: 2" required>
+              </label>
+              <label>Minutos
+                <input type="number" name="minutes" min="0" max="59" step="1" placeholder="Ej: 30" required>
+              </label>
+            </div>
+            <label>Nota interna
+              <textarea name="note" placeholder="Motivo de la carga manual de horas"></textarea>
+            </label>
+            <div class="hc-form-actions">
+              <button class="hc-button" type="submit">Agregar a la lista de horas</button>
+            </div>
+          </form>
+          <p class="hc-feedback" data-feedback>Listo para registrar horas manuales.</p>
+        </aside>
+      </section>
+    </section>
+  </main>
+  <script>
+    const denied=document.querySelector("[data-denied]"),view=document.querySelector("[data-view]"),rankingNode=document.querySelector("[data-ranking]"),feedback=document.querySelector("[data-feedback]"),agencyKicker=document.querySelector("[data-agency-kicker]"),titleNode=document.querySelector("[data-title]"),copyNode=document.querySelector("[data-copy]");
+    const formatDuration=(ms)=>{const total=Math.max(0,Math.floor(Number(ms||0)/1000));const h=String(Math.floor(total/3600)).padStart(2,"0"),m=String(Math.floor((total%3600)/60)).padStart(2,"0"),s=String(total%60).padStart(2,"0");return`${h}:${m}:${s}`};
+    const escapeHtml=(v)=>String(v||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;").replace(/'/g,"&#39;");
+    function setFeedback(msg,isError=false){feedback.textContent=msg;feedback.classList.toggle("is-error",!!isError);feedback.classList.toggle("is-ok",!isError&&!!msg)}
+    function renderRanking(items=[]){rankingNode.innerHTML=items.length?items.map((item,index)=>`<article class="hc-entry"><div class="hc-entry-top"><div style="display:flex;align-items:center;gap:14px;"><span class="hc-entry-rank">${index+1}</span><div><h3>${escapeHtml(item.name||"Sin nombre")}</h3><p>${escapeHtml(item.rut||"Sin RUT")} · ${item.active_shift?"Turno activo":"Sin turno activo"}</p></div></div><strong class="hc-entry-hours">${escapeHtml(formatDuration(item.total_ms))}</strong></div><p>Sesiones registradas: ${Number(item.sessions_count||0)}</p></article>`).join(""):'<p class="hc-empty">Todavia no hay funcionarios con horas registradas.</p>'}
+    async function loadRanking(){const res=await fetch("/api/police/admin/hours",{cache:"no-store"});if(!res.ok){renderRanking([]);return}const data=await res.json();renderRanking(data.items||[])}
+    document.querySelector("[data-add-hours-form]")?.addEventListener("submit",async(e)=>{e.preventDefault();const data=new FormData(e.currentTarget),payload={identifier:String(data.get("identifier")||"").trim(),hours:Number(data.get("hours")||0),minutes:Number(data.get("minutes")||0),note:String(data.get("note")||"").trim()};const res=await fetch("/api/police/admin/hours/add",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});if(!res.ok){setFeedback("No se pudo agregar el registro de horas.",true);return}const body=await res.json();renderRanking(body.items||[]);setFeedback("Horas agregadas correctamente.");e.currentTarget.reset()});
+    (async()=>{const res=await fetch("/api/portal/session",{cache:"no-store"});if(!res.ok){location.href="/portal.html";return}const session=await res.json();if(!session.permissions?.isCarabinerosAdmin&&!session.permissions?.isPdiAdmin){denied.hidden=false;return}view.hidden=false;if(session.permissions?.isPdiAdmin){document.body.dataset.skin="pdi";agencyKicker.textContent="Policia de investigaciones";titleNode.textContent="Panel de altos mandos PDI";copyNode.textContent="Supervisa la carga horaria del personal investigativo, revisa el ranking interno y agrega horas manuales cuando corresponda."}await loadRanking()})();
+  </script>
+</body>
+</html>
