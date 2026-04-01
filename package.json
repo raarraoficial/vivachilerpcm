@@ -1,0 +1,13 @@
+{
+  "name": "vivachile-rp-web",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Backend y sitio de Viva Chile Roleplay",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
