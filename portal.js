@@ -131,11 +131,26 @@ function renderNotifications(items = []) {
 function playEmergencyAudio() {
   if (!emergencyAudio) return;
   try {
+    emergencyAudio.muted = false;
+    emergencyAudio.pause();
     emergencyAudio.currentTime = 0;
     const result = emergencyAudio.play();
     if (result && typeof result.catch === "function") {
       result.catch(() => {});
     }
+  } catch {}
+}
+
+function stopEmergencyAudio() {
+  if (!emergencyAudio) return;
+  try {
+    emergencyAudio.muted = true;
+    emergencyAudio.pause();
+    emergencyAudio.currentTime = 0;
+    emergencyAudio.load();
+    setTimeout(() => {
+      emergencyAudio.muted = false;
+    }, 60);
   } catch {}
 }
 
@@ -1381,6 +1396,7 @@ emergencyAcceptButton?.addEventListener("click", () => {
   if (activeEmergencyAlert?.id) {
     window.localStorage.setItem("vcrp_seen_emergency_alert", activeEmergencyAlert.id);
   }
+  stopEmergencyAudio();
   if (emergencyAlertNode) emergencyAlertNode.hidden = true;
   activeEmergencyAlert = null;
 });
