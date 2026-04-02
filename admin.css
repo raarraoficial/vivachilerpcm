@@ -318,8 +318,17 @@ body {
 
 .admin-store-item-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   margin-top: 10px;
+}
+
+.admin-salary-role-list {
+  margin-top: 18px;
+}
+
+.admin-salary-role-item {
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .admin-store-edit-form {

@@ -52,13 +52,19 @@ window.VCRP_CONFIG = Object.assign(
     let changed = false;
 
     if (portalSession) {
-      window.localStorage.setItem("vcrp_user_session", portalSession);
+      try {
+        window.localStorage.setItem("vcrp_user_session", portalSession);
+      } catch {}
+      document.cookie = `vcrp_user_session=${encodeURIComponent(portalSession)}; Path=/; SameSite=Lax; Secure`;
       currentUrl.searchParams.delete("portal_session");
       changed = true;
     }
 
     if (adminSession) {
-      window.localStorage.setItem("vcrp_admin_session", adminSession);
+      try {
+        window.localStorage.setItem("vcrp_admin_session", adminSession);
+      } catch {}
+      document.cookie = `vcrp_admin_session=${encodeURIComponent(adminSession)}; Path=/; SameSite=Lax; Secure`;
       currentUrl.searchParams.delete("admin_session");
       changed = true;
     }
@@ -80,8 +86,12 @@ window.VCRP_CONFIG = Object.assign(
         nextInput = window.VCRP.api(nextInput);
         if (!nextInit.credentials) nextInit.credentials = "include";
         nextInit.headers = Object.assign({}, nextInit.headers || {});
-        const userSession = window.localStorage.getItem("vcrp_user_session");
-        const adminSession = window.localStorage.getItem("vcrp_admin_session");
+        let userSession = "";
+        let adminSession = "";
+        try {
+          userSession = window.localStorage.getItem("vcrp_user_session") || "";
+          adminSession = window.localStorage.getItem("vcrp_admin_session") || "";
+        } catch {}
         if (userSession && !nextInit.headers["x-vcrp-user-session"]) {
           nextInit.headers["x-vcrp-user-session"] = userSession;
         }

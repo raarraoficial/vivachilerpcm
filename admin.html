@@ -220,6 +220,32 @@
             <button type="submit" class="admin-button primary">Enviar a todos</button>
           </div>
         </form>
+
+        <div class="admin-divider"></div>
+        <p class="admin-kicker">Sueldos por rol</p>
+        <h2 class="admin-block-title">Gestion de sueldos por ID de rol</h2>
+        <form class="admin-form" data-admin-salary-role-form>
+          <label>
+            ID del rol de Discord
+            <input type="text" name="role_id" placeholder="Ej: 123456789012345678" required>
+          </label>
+          <label>
+            Nombre visible del rol
+            <input type="text" name="role_name" placeholder="Ej: General Inspector">
+          </label>
+          <label>
+            Nombre del cargo en el banco
+            <input type="text" name="rank" placeholder="Ej: General Inspector">
+          </label>
+          <label>
+            Sueldo bruto
+            <input type="number" name="amount" min="1" placeholder="Ej: 5800000" required>
+          </label>
+          <div class="admin-submit-row">
+            <button type="submit" class="admin-button primary">Guardar sueldo</button>
+          </div>
+        </form>
+        <div class="admin-store-list admin-salary-role-list" data-admin-salary-role-list></div>
       </section>
 
       <section class="admin-block" data-admin-tab="identidad">

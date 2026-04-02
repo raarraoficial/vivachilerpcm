@@ -45,6 +45,7 @@ const KAME_REQUESTS_PATH = path.join(DATA_ROOT, "kame-requests.json");
 const KAME_FLEET_PATH = path.join(DATA_ROOT, "kame-fleet.json");
 const USER_SESSIONS_PATH = path.join(DATA_ROOT, "user-sessions.json");
 const MAINTENANCE_PATH = path.join(DATA_ROOT, "maintenance.json");
+const SALARY_ROLE_OVERRIDES_PATH = path.join(DATA_ROOT, "salary-role-overrides.json");
 const STORE_UPLOADS_DIR = path.join(ROOT, "assets", "tienda", "uploads");
 const ADMIN_SESSIONS = new Map();
 const USER_SESSIONS = new Map();
@@ -312,6 +313,7 @@ const STATE_DEFINITIONS = {
   maintenance: { path: MAINTENANCE_PATH, fallback: createDefaultMaintenanceState },
   store_items: { path: STORE_ITEMS_PATH, fallback: () => ([]) },
   secondhand_market: { path: SECONDHAND_MARKET_PATH, fallback: () => ([]) },
+  salary_role_overrides: { path: SALARY_ROLE_OVERRIDES_PATH, fallback: () => ([]) },
 };
 
 function hydrateUserSessionsFromStore() {
@@ -552,6 +554,15 @@ function readMaintenanceState() {
 
 function writeMaintenanceState(state) {
   writeState("maintenance", state);
+}
+
+function readSalaryRoleOverrides() {
+  const payload = readState("salary_role_overrides");
+  return Array.isArray(payload) ? payload : [];
+}
+
+function writeSalaryRoleOverrides(items) {
+  writeState("salary_role_overrides", items);
 }
 
 function hydrateKameFleetImages(items) {
@@ -941,19 +952,24 @@ async function fetchGuildMember(userId) {
 }
 
 async function verifyAllowedRole(userId) {
-  const [member, roles] = await Promise.all([fetchGuildMember(userId), fetchGuildRoles()]);
-  const roleNames = roles
-    .filter((role) => member.roles.includes(role.id))
-    .map((role) => String(role.name || "").trim().toLowerCase());
+  const roleNames = (await fetchMemberRoles(userId)).map((role) => role.name);
 
   return env.allowedRoleNames.some((name) => roleNames.includes(name));
 }
 
-async function fetchMemberRoleNames(userId) {
+async function fetchMemberRoles(userId) {
   const [member, roles] = await Promise.all([fetchGuildMember(userId), fetchGuildRoles()]);
   return roles
     .filter((role) => member.roles.includes(role.id))
-    .map((role) => String(role.name || "").trim().toLowerCase());
+    .map((role) => ({
+      id: String(role.id || "").trim(),
+      name: String(role.name || "").trim().toLowerCase(),
+    }));
+}
+
+async function fetchMemberRoleNames(userId) {
+  const roles = await fetchMemberRoles(userId);
+  return roles.map((role) => role.name);
 }
 
 function createSession(user) {
@@ -975,9 +991,21 @@ function createUserSession(user) {
   return sessionId;
 }
 
-function resolveSalaryProfile(roleNames = []) {
+function resolveSalaryProfile(roleNames = [], roleIds = []) {
   const normalizedRoles = roleNames.map((role) => normalizeLookup(role));
+  const normalizedRoleIds = roleIds.map((roleId) => String(roleId || "").trim()).filter(Boolean);
   let bestMatch = null;
+
+  const overrides = readSalaryRoleOverrides();
+  for (const override of overrides) {
+    if (!normalizedRoleIds.includes(String(override.role_id || "").trim())) continue;
+    if (!bestMatch || Number(override.base || 0) > Number(bestMatch.base || 0)) {
+      bestMatch = {
+        rank: String(override.rank || override.role_name || "Cargo personalizado"),
+        base: Number(override.base || 0),
+      };
+    }
+  }
 
   for (const role of normalizedRoles) {
     const profile = SALARY_ROLE_MAP.get(role);
@@ -1006,8 +1034,8 @@ function resolveSalaryProfile(roleNames = []) {
   };
 }
 
-function applySalaryProfile(bank, roleNames = []) {
-  const salary = resolveSalaryProfile(roleNames);
+function applySalaryProfile(bank, roleNames = [], roleIds = []) {
+  const salary = resolveSalaryProfile(roleNames, roleIds);
   bank.salary = {
     rank: salary.rank,
     base: salary.base,
@@ -1017,17 +1045,28 @@ function applySalaryProfile(bank, roleNames = []) {
   return bank.salary;
 }
 
-async function resolveSessionRoleNames(session) {
-  if (!session?.user?.id) return [];
-  if (Array.isArray(session.user.role_names) && session.user.role_names.length) {
-    return session.user.role_names;
+async function resolveSessionRoleContext(session) {
+  if (!session?.user?.id) return { names: [], ids: [] };
+  if (Array.isArray(session.user.role_names) && Array.isArray(session.user.role_ids) && session.user.role_ids.length) {
+    return {
+      names: session.user.role_names,
+      ids: session.user.role_ids,
+    };
   }
-  if (!env.discordBotToken || !env.discordGuildId) return [];
+  if (!env.discordBotToken || !env.discordGuildId) {
+    return {
+      names: Array.isArray(session.user.role_names) ? session.user.role_names : [],
+      ids: Array.isArray(session.user.role_ids) ? session.user.role_ids : [],
+    };
+  }
 
-  const roleNames = await fetchMemberRoleNames(session.user.id).catch(() => []);
+  const roles = await fetchMemberRoles(session.user.id).catch(() => []);
+  const roleNames = roles.map((role) => role.name);
+  const roleIds = roles.map((role) => role.id);
   session.user.role_names = roleNames;
+  session.user.role_ids = roleIds;
   writeUserSessions();
-  return roleNames;
+  return { names: roleNames, ids: roleIds };
 }
 
 function hashPassword(password) {
@@ -1681,6 +1720,7 @@ const server = http.createServer(async (request, response) => {
       stats: readStats(),
       storeItems: readStoreItems(),
       maintenance: readMaintenanceState(),
+      salaryRoleOverrides: readSalaryRoleOverrides(),
     });
     return;
   }
@@ -2178,6 +2218,47 @@ const server = http.createServer(async (request, response) => {
     return;
   }
 
+  if (url.pathname === "/api/admin/store/items/reorder" && request.method === "POST") {
+    const session = getAdminSession(request);
+    if (!session) {
+      sendJson(response, 401, { error: "unauthorized" });
+      return;
+    }
+
+    try {
+      const rawBody = await readRequestBody(request);
+      const incoming = JSON.parse(rawBody || "{}");
+      const itemId = String(incoming.id || "").trim();
+      const direction = String(incoming.direction || "").trim().toLowerCase();
+      if (!itemId || !["up", "down"].includes(direction)) {
+        sendJson(response, 400, { error: "invalid_reorder" });
+        return;
+      }
+
+      const items = readStoreItems();
+      const itemIndex = items.findIndex((item) => item.id === itemId);
+      if (itemIndex === -1) {
+        sendJson(response, 404, { error: "item_not_found" });
+        return;
+      }
+
+      const targetIndex = direction === "up" ? itemIndex - 1 : itemIndex + 1;
+      if (targetIndex < 0 || targetIndex >= items.length) {
+        sendJson(response, 200, { ok: true, items });
+        return;
+      }
+
+      const reordered = [...items];
+      const [movedItem] = reordered.splice(itemIndex, 1);
+      reordered.splice(targetIndex, 0, movedItem);
+      writeStoreItems(reordered);
+      sendJson(response, 200, { ok: true, items: reordered });
+    } catch {
+      sendJson(response, 400, { error: "invalid_payload" });
+    }
+    return;
+  }
+
   if (url.pathname === "/api/admin/store/import" && request.method === "POST") {
     const session = getAdminSession(request);
     if (!session) {
@@ -2223,6 +2304,77 @@ const server = http.createServer(async (request, response) => {
       }
 
       writeStoreItems(nextItems);
+      sendJson(response, 200, { ok: true, items: nextItems });
+    } catch {
+      sendJson(response, 400, { error: "invalid_payload" });
+    }
+    return;
+  }
+
+  if (url.pathname === "/api/admin/salaries" && request.method === "POST") {
+    const session = getAdminSession(request);
+    if (!session) {
+      sendJson(response, 401, { error: "unauthorized" });
+      return;
+    }
+
+    try {
+      const rawBody = await readRequestBody(request);
+      const incoming = JSON.parse(rawBody || "{}");
+      const roleId = String(incoming.role_id || "").trim();
+      const roleName = String(incoming.role_name || "").trim();
+      const rank = String(incoming.rank || roleName || "Cargo personalizado").trim();
+      const amount = Number(incoming.amount);
+
+      if (!roleId || !Number.isFinite(amount) || amount <= 0) {
+        sendJson(response, 400, { error: "invalid_salary_override" });
+        return;
+      }
+
+      const items = readSalaryRoleOverrides();
+      const nextItem = {
+        role_id: roleId,
+        role_name: roleName,
+        rank,
+        base: Math.round(amount),
+        updated_at: new Date().toISOString(),
+      };
+      const existingIndex = items.findIndex((item) => String(item.role_id || "").trim() === roleId);
+      if (existingIndex >= 0) {
+        items[existingIndex] = {
+          ...items[existingIndex],
+          ...nextItem,
+        };
+      } else {
+        items.unshift(nextItem);
+      }
+      writeSalaryRoleOverrides(items);
+      sendJson(response, 200, { ok: true, items });
+    } catch {
+      sendJson(response, 400, { error: "invalid_payload" });
+    }
+    return;
+  }
+
+  if (url.pathname === "/api/admin/salaries/delete" && request.method === "POST") {
+    const session = getAdminSession(request);
+    if (!session) {
+      sendJson(response, 401, { error: "unauthorized" });
+      return;
+    }
+
+    try {
+      const rawBody = await readRequestBody(request);
+      const incoming = JSON.parse(rawBody || "{}");
+      const roleId = String(incoming.role_id || "").trim();
+      if (!roleId) {
+        sendJson(response, 400, { error: "invalid_salary_override" });
+        return;
+      }
+
+      const items = readSalaryRoleOverrides();
+      const nextItems = items.filter((item) => String(item.role_id || "").trim() !== roleId);
+      writeSalaryRoleOverrides(nextItems);
       sendJson(response, 200, { ok: true, items: nextItems });
     } catch {
       sendJson(response, 400, { error: "invalid_payload" });
@@ -4126,9 +4278,9 @@ const server = http.createServer(async (request, response) => {
     const bankRecords = readBankRecords();
     const bank = bankRecords[session.user.id] || null;
     if (bank) {
-      const roleNames = await resolveSessionRoleNames(session);
+      const roleContext = await resolveSessionRoleContext(session);
       const changed = ensureBankRecordShape(bank, bankRecords);
-      applySalaryProfile(bank, roleNames);
+      applySalaryProfile(bank, roleContext.names, roleContext.ids);
       if (changed) {
         bankRecords[session.user.id] = bank;
       }
@@ -4177,8 +4329,8 @@ const server = http.createServer(async (request, response) => {
       const bankRecords = readBankRecords();
     if (bankRecords[session.user.id]) {
       ensureBankRecordShape(bankRecords[session.user.id], bankRecords);
-      const roleNames = await resolveSessionRoleNames(session);
-      applySalaryProfile(bankRecords[session.user.id], roleNames);
+      const roleContext = await resolveSessionRoleContext(session);
+      applySalaryProfile(bankRecords[session.user.id], roleContext.names, roleContext.ids);
       writeBankRecords(bankRecords);
       sendJson(response, 200, { ok: true, bank: serializeBank(bankRecords[session.user.id]), existing: true });
       return;
@@ -4204,8 +4356,8 @@ const server = http.createServer(async (request, response) => {
         },
         last_salary_claim_at: 0,
       };
-      const roleNames = await resolveSessionRoleNames(session);
-      applySalaryProfile(bank, roleNames);
+      const roleContext = await resolveSessionRoleContext(session);
+      applySalaryProfile(bank, roleContext.names, roleContext.ids);
       pushTransaction(bank, {
         type: "account_opening",
         direction: "in",
@@ -4444,8 +4596,8 @@ const server = http.createServer(async (request, response) => {
       return;
     }
     ensureBankRecordShape(bank, bankRecords);
-    const roleNames = await resolveSessionRoleNames(session);
-    const salaryProfile = applySalaryProfile(bank, roleNames);
+    const roleContext = await resolveSessionRoleContext(session);
+    const salaryProfile = applySalaryProfile(bank, roleContext.names, roleContext.ids);
 
     const now = Date.now();
     if (now - Number(bank.last_salary_claim_at || 0) < SALARY_COOLDOWN_MS) {
@@ -4567,19 +4719,22 @@ const server = http.createServer(async (request, response) => {
 
       const tokenData = await exchangeDiscordCode(code, env.discordPortalRedirectUri);
       const user = await fetchDiscordUser(tokenData.access_token);
-      const roleNames = env.discordBotToken && env.discordGuildId ? await fetchMemberRoleNames(user.id).catch(() => []) : [];
+      const roles = env.discordBotToken && env.discordGuildId ? await fetchMemberRoles(user.id).catch(() => []) : [];
+      const roleNames = roles.map((role) => role.name);
+      const roleIds = roles.map((role) => role.id);
       const sessionId = createUserSession({
         id: user.id,
         username: user.username,
         global_name: user.global_name || user.username,
         avatar: user.avatar || "",
         role_names: roleNames,
+        role_ids: roleIds,
         permissions: {
           canModerateMarket: roleNames.includes(env.departmentAdminRoleName),
           canAccessStaff: roleNames.includes(env.departmentAdminRoleName),
           canManageBank: roleNames.includes(env.bankRoleName),
           canAccessKame: roleNames.includes(env.kameRoleName),
-          canReceiveEmergencyAlerts: roleNames.includes(env.disasterRoleName),
+          canReceiveEmergencyAlerts: true,
           isCarabineros: roleNames.includes(env.carabinerosRoleName),
           isPdi: roleNames.includes(env.pdiRoleName),
           isCarabinerosAdmin: roleNames.includes(env.carabinerosAdminRoleName),

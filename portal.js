@@ -79,6 +79,17 @@ let purchaseTicketTimeout = null;
 let currentPermissions = {};
 let currentNotifications = [];
 let activeEmergencyAlert = null;
+const portalOpenedAt = Date.now();
+
+function isLiveEmergencyAlert(item) {
+  if (!item || item.kind !== "emergency_alert") return false;
+  const createdAt = new Date(item.created_at || 0).getTime();
+  return Number.isFinite(createdAt) && createdAt >= portalOpenedAt;
+}
+
+function getVisibleNotifications(items = []) {
+  return items.filter((item) => item.kind !== "emergency_alert" || isLiveEmergencyAlert(item));
+}
 
 function setFeedback(node, message, isError = false) {
   if (!node) return;
@@ -104,16 +115,17 @@ function hidePortalLoader() {
 }
 
 function renderNotifications(items = []) {
+  const visibleItems = getVisibleNotifications(items);
   if (notificationsDot) {
-    notificationsDot.hidden = !items.some((item) => item.read === false);
+    notificationsDot.hidden = !visibleItems.some((item) => item.read === false);
   }
   if (!notificationsList) return;
-  if (!items.length) {
+  if (!visibleItems.length) {
     notificationsList.innerHTML = '<p class="transaction-empty">Todavia no hay notificaciones.</p>';
     return;
   }
 
-  notificationsList.innerHTML = items
+  notificationsList.innerHTML = visibleItems
     .map(
       (item) => `
         <article class="transaction-item ${item.kind === "emergency_alert" ? "expense" : item.kind === "announcement" ? "admin" : "income"}">
@@ -131,6 +143,7 @@ function renderNotifications(items = []) {
 function playEmergencyAudio() {
   if (!emergencyAudio) return;
   try {
+    emergencyAudio.loop = true;
     emergencyAudio.muted = false;
     emergencyAudio.pause();
     emergencyAudio.currentTime = 0;
@@ -157,6 +170,7 @@ function stopEmergencyAudio() {
 function handleEmergencyAlert(items = []) {
   const latestAlert = items.find((item) => item.kind === "emergency_alert");
   if (!latestAlert || !emergencyAlertNode) return;
+  if (!isLiveEmergencyAlert(latestAlert)) return;
 
   const seenId = window.localStorage.getItem("vcrp_seen_emergency_alert");
   if (seenId === latestAlert.id) return;
