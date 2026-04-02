@@ -491,6 +491,28 @@
     <div class="transaction-history" data-notifications-list></div>
   </aside>
 
+  <div class="emergency-alert" data-emergency-alert hidden>
+    <div class="emergency-alert-card">
+      <div class="emergency-alert-head">
+        <div class="emergency-alert-icon" aria-hidden="true">▲</div>
+        <div>
+          <h3 data-emergency-title>Alerta de Emergencia</h3>
+          <p data-emergency-date>--</p>
+        </div>
+      </div>
+      <div class="emergency-alert-body">
+        <p data-emergency-message></p>
+      </div>
+      <div class="emergency-alert-actions">
+        <button type="button" class="portal-button primary" data-emergency-accept>Aceptar</button>
+      </div>
+    </div>
+  </div>
+
+  <audio data-emergency-audio preload="auto">
+    <source src="assets/alerta.mp3" type="audio/mpeg">
+  </audio>
+
   <div class="store-confirmation" data-store-confirmation hidden>
     <div class="store-confirmation-card">
       <p class="portal-kicker">Confirmar compra</p>

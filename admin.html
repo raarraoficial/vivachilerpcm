@@ -144,6 +144,20 @@
             <button type="submit" class="admin-button primary">Enviar anuncio</button>
           </div>
         </form>
+
+        <form class="admin-form" data-admin-emergency-form style="margin-top:24px;">
+          <label>
+            Titulo de alerta
+            <input type="text" name="title" placeholder="Ej: Alerta de Emergencia" value="Alerta de Emergencia" required>
+          </label>
+          <label class="admin-form-span">
+            Mensaje de alerta
+            <textarea name="message" rows="5" placeholder="Escribe la alerta que aparecerá como aviso emergente en el portal." required></textarea>
+          </label>
+          <div class="admin-submit-row">
+            <button type="submit" class="admin-button danger">Enviar alerta sonora</button>
+          </div>
+        </form>
       </section>
 
       <section class="admin-block" data-admin-tab="economia">

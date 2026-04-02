@@ -48,6 +48,8 @@ const MAINTENANCE_PATH = path.join(DATA_ROOT, "maintenance.json");
 const STORE_UPLOADS_DIR = path.join(ROOT, "assets", "tienda", "uploads");
 const ADMIN_SESSIONS = new Map();
 const USER_SESSIONS = new Map();
+const STATE_CACHE = new Map();
+const STATE_PERSIST_QUEUES = new Map();
 const DEFAULT_BANK_BALANCE = 5_000_000;
 const SALARY_BASE = 250_000;
 const SALARY_TAX = 35_000;
@@ -246,6 +248,11 @@ const MAINTENANCE_ROUTE_SECTIONS = {
   "/banco-funcionarios.html": "banco_funcionarios",
 };
 
+function cloneJson(value) {
+  if (value === undefined) return undefined;
+  return JSON.parse(JSON.stringify(value));
+}
+
 const PORT = Number(process.env.PORT || 3000);
 
 const env = {
@@ -269,6 +276,8 @@ const env = {
   sessionSecret: process.env.SESSION_SECRET || crypto.randomBytes(24).toString("hex"),
   frontendOrigin: String(process.env.FRONTEND_ORIGIN || "").trim(),
   publicBaseUrl: String(process.env.PUBLIC_BASE_URL || `http://localhost:${PORT}`).trim(),
+  supabaseUrl: String(process.env.SUPABASE_URL || "").trim(),
+  supabaseServiceRoleKey: String(process.env.SUPABASE_SERVICE_ROLE_KEY || "").trim(),
 };
 
 function normalizeOrigin(value) {
@@ -277,11 +286,40 @@ function normalizeOrigin(value) {
 
 env.frontendOrigin = normalizeOrigin(env.frontendOrigin);
 env.publicBaseUrl = normalizeOrigin(env.publicBaseUrl);
+env.supabaseUrl = normalizeOrigin(env.supabaseUrl);
 
-Object.entries(readUserSessions()).forEach(([sessionId, session]) => {
-  if (!sessionId || !session || typeof session !== "object" || !session.user) return;
-  USER_SESSIONS.set(sessionId, session);
+const DEFAULT_STATS = () => ({
+  discord_members: 0,
+  server_staff: 20,
+  server_status: "Cerrado",
+  general_status: "En linea",
+  updated_at: "sin datos",
 });
+
+const STATE_DEFINITIONS = {
+  stats: { path: STATS_PATH, fallback: DEFAULT_STATS },
+  identities: { path: IDENTITY_PATH, fallback: () => ({}) },
+  bank_records: { path: BANK_PATH, fallback: () => ({}) },
+  user_sessions: { path: USER_SESSIONS_PATH, fallback: () => ({}) },
+  notifications: { path: NOTIFICATIONS_PATH, fallback: () => ({}) },
+  announcements: { path: ANNOUNCEMENTS_PATH, fallback: () => ([]) },
+  credit_applications: { path: CREDIT_APPLICATIONS_PATH, fallback: () => ([]) },
+  police_records: { path: POLICE_RECORDS_PATH, fallback: () => ({}) },
+  service_hours: { path: SERVICE_HOURS_PATH, fallback: () => ({}) },
+  kame_requests: { path: KAME_REQUESTS_PATH, fallback: () => ([]) },
+  kame_fleet: { path: KAME_FLEET_PATH, fallback: () => cloneJson(DEFAULT_KAME_FLEET) },
+  maintenance: { path: MAINTENANCE_PATH, fallback: createDefaultMaintenanceState },
+  store_items: { path: STORE_ITEMS_PATH, fallback: () => ([]) },
+  secondhand_market: { path: SECONDHAND_MARKET_PATH, fallback: () => ([]) },
+};
+
+function hydrateUserSessionsFromStore() {
+  USER_SESSIONS.clear();
+  Object.entries(readUserSessions()).forEach(([sessionId, session]) => {
+    if (!sessionId || !session || typeof session !== "object" || !session.user) return;
+    USER_SESSIONS.set(sessionId, session);
+  });
+}
 
 const MIME_TYPES = {
   ".html": "text/html; charset=utf-8",
@@ -298,153 +336,184 @@ const MIME_TYPES = {
   ".wav": "audio/wav",
 };
 
-function readStats() {
+function readStateFromFile(definition) {
   try {
-    return JSON.parse(fs.readFileSync(STATS_PATH, "utf8"));
+    return JSON.parse(fs.readFileSync(definition.path, "utf8"));
   } catch {
-    return {
-      discord_members: 0,
-      server_staff: 20,
-      server_status: "Cerrado",
-      general_status: "En linea",
-      updated_at: "sin datos",
-    };
+    return definition.fallback();
   }
+}
+
+async function loadStateFromSupabase() {
+  if (!env.supabaseUrl || !env.supabaseServiceRoleKey) return false;
+  const response = await fetch(`${env.supabaseUrl}/rest/v1/app_state?select=state_key,payload`, {
+    headers: {
+      apikey: env.supabaseServiceRoleKey,
+      Authorization: `Bearer ${env.supabaseServiceRoleKey}`,
+    },
+  });
+  if (!response.ok) {
+    throw new Error(`supabase_load_failed:${response.status}`);
+  }
+  const rows = await response.json();
+  const byKey = new Map((Array.isArray(rows) ? rows : []).map((row) => [row.state_key, row.payload]));
+  for (const [key, definition] of Object.entries(STATE_DEFINITIONS)) {
+    const value = byKey.has(key) ? byKey.get(key) : readStateFromFile(definition);
+    STATE_CACHE.set(key, cloneJson(value));
+  }
+  return true;
+}
+
+function ensureStateCacheLoaded() {
+  for (const [key, definition] of Object.entries(STATE_DEFINITIONS)) {
+    if (!STATE_CACHE.has(key)) {
+      STATE_CACHE.set(key, cloneJson(readStateFromFile(definition)));
+    }
+  }
+}
+
+function readState(key) {
+  ensureStateCacheLoaded();
+  return cloneJson(STATE_CACHE.get(key));
+}
+
+function queueStatePersist(key) {
+  const definition = STATE_DEFINITIONS[key];
+  if (!definition) return;
+  const payload = cloneJson(STATE_CACHE.get(key));
+  const previous = STATE_PERSIST_QUEUES.get(key) || Promise.resolve();
+  const next = previous
+    .catch(() => {})
+    .then(async () => {
+      if (env.supabaseUrl && env.supabaseServiceRoleKey) {
+        const response = await fetch(`${env.supabaseUrl}/rest/v1/app_state?on_conflict=state_key`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            apikey: env.supabaseServiceRoleKey,
+            Authorization: `Bearer ${env.supabaseServiceRoleKey}`,
+            Prefer: "resolution=merge-duplicates,return=minimal",
+          },
+          body: JSON.stringify([{ state_key: key, payload }]),
+        });
+        if (!response.ok) {
+          throw new Error(`supabase_write_failed:${key}:${response.status}`);
+        }
+        return;
+      }
+      fs.writeFileSync(definition.path, JSON.stringify(payload, null, 2), "utf8");
+    })
+    .catch((error) => {
+      console.error(`[state] ${error.message || error}`);
+    });
+  STATE_PERSIST_QUEUES.set(key, next);
+}
+
+function writeState(key, value) {
+  STATE_CACHE.set(key, cloneJson(value));
+  queueStatePersist(key);
+}
+
+function readStats() {
+  return readState("stats") || DEFAULT_STATS();
 }
 
 function writeStats(stats) {
-  fs.writeFileSync(STATS_PATH, JSON.stringify(stats, null, 2), "utf8");
+  writeState("stats", stats);
 }
 
 function readIdentityRecords() {
-  try {
-    return JSON.parse(fs.readFileSync(IDENTITY_PATH, "utf8"));
-  } catch {
-    return {};
-  }
+  return readState("identities") || {};
 }
 
 function writeIdentityRecords(records) {
-  fs.writeFileSync(IDENTITY_PATH, JSON.stringify(records, null, 2), "utf8");
+  writeState("identities", records);
 }
 
 function readBankRecords() {
-  try {
-    return JSON.parse(fs.readFileSync(BANK_PATH, "utf8"));
-  } catch {
-    return {};
-  }
+  return readState("bank_records") || {};
 }
 
 function writeBankRecords(records) {
-  fs.writeFileSync(BANK_PATH, JSON.stringify(records, null, 2), "utf8");
+  writeState("bank_records", records);
 }
 
 function readUserSessions() {
-  try {
-    const payload = JSON.parse(fs.readFileSync(USER_SESSIONS_PATH, "utf8"));
-    return payload && typeof payload === "object" ? payload : {};
-  } catch {
-    return {};
-  }
+  const payload = readState("user_sessions");
+  return payload && typeof payload === "object" ? payload : {};
 }
 
 function writeUserSessions() {
   const records = Object.fromEntries(USER_SESSIONS.entries());
-  fs.writeFileSync(USER_SESSIONS_PATH, JSON.stringify(records, null, 2), "utf8");
+  writeState("user_sessions", records);
 }
 
 function readNotifications() {
-  try {
-    const payload = JSON.parse(fs.readFileSync(NOTIFICATIONS_PATH, "utf8"));
-    return payload && typeof payload === "object" ? payload : {};
-  } catch {
-    return {};
-  }
+  const payload = readState("notifications");
+  return payload && typeof payload === "object" ? payload : {};
 }
 
 function writeNotifications(records) {
-  fs.writeFileSync(NOTIFICATIONS_PATH, JSON.stringify(records, null, 2), "utf8");
+  writeState("notifications", records);
 }
 
 function readAnnouncements() {
-  try {
-    const payload = JSON.parse(fs.readFileSync(ANNOUNCEMENTS_PATH, "utf8"));
-    return Array.isArray(payload) ? payload : [];
-  } catch {
-    return [];
-  }
+  const payload = readState("announcements");
+  return Array.isArray(payload) ? payload : [];
 }
 
 function writeAnnouncements(items) {
-  fs.writeFileSync(ANNOUNCEMENTS_PATH, JSON.stringify(items, null, 2), "utf8");
+  writeState("announcements", items);
 }
 
 function readCreditApplications() {
-  try {
-    const payload = JSON.parse(fs.readFileSync(CREDIT_APPLICATIONS_PATH, "utf8"));
-    return Array.isArray(payload) ? payload : [];
-  } catch {
-    return [];
-  }
+  const payload = readState("credit_applications");
+  return Array.isArray(payload) ? payload : [];
 }
 
 function writeCreditApplications(items) {
-  fs.writeFileSync(CREDIT_APPLICATIONS_PATH, JSON.stringify(items, null, 2), "utf8");
+  writeState("credit_applications", items);
 }
 
 function readPoliceRecords() {
-  try {
-    const payload = JSON.parse(fs.readFileSync(POLICE_RECORDS_PATH, "utf8"));
-    return payload && typeof payload === "object" ? payload : {};
-  } catch {
-    return {};
-  }
+  const payload = readState("police_records");
+  return payload && typeof payload === "object" ? payload : {};
 }
 
 function writePoliceRecords(records) {
-  fs.writeFileSync(POLICE_RECORDS_PATH, JSON.stringify(records, null, 2), "utf8");
+  writeState("police_records", records);
 }
 
 function readServiceHours() {
-  try {
-    const payload = JSON.parse(fs.readFileSync(SERVICE_HOURS_PATH, "utf8"));
-    return payload && typeof payload === "object" ? payload : {};
-  } catch {
-    return {};
-  }
+  const payload = readState("service_hours");
+  return payload && typeof payload === "object" ? payload : {};
 }
 
 function writeServiceHours(records) {
-  fs.writeFileSync(SERVICE_HOURS_PATH, JSON.stringify(records, null, 2), "utf8");
+  writeState("service_hours", records);
 }
 
 function readKameRequests() {
-  try {
-    const payload = JSON.parse(fs.readFileSync(KAME_REQUESTS_PATH, "utf8"));
-    return Array.isArray(payload) ? payload : [];
-  } catch {
-    return [];
-  }
+  const payload = readState("kame_requests");
+  return Array.isArray(payload) ? payload : [];
 }
 
 function writeKameRequests(items) {
-  fs.writeFileSync(KAME_REQUESTS_PATH, JSON.stringify(items, null, 2), "utf8");
+  writeState("kame_requests", items);
 }
 
 function readKameFleet() {
-  try {
-    const payload = JSON.parse(fs.readFileSync(KAME_FLEET_PATH, "utf8"));
-    if (!Array.isArray(payload) || !payload.length) throw new Error("empty_fleet");
-    return payload;
-  } catch {
-    fs.writeFileSync(KAME_FLEET_PATH, JSON.stringify(DEFAULT_KAME_FLEET, null, 2), "utf8");
-    return DEFAULT_KAME_FLEET.slice();
+  const payload = readState("kame_fleet");
+  if (!Array.isArray(payload) || !payload.length) {
+    const fallback = cloneJson(DEFAULT_KAME_FLEET);
+    writeKameFleet(fallback);
+    return fallback;
   }
+  return payload;
 }
 
 function writeKameFleet(items) {
-  fs.writeFileSync(KAME_FLEET_PATH, JSON.stringify(items, null, 2), "utf8");
+  writeState("kame_fleet", items);
 }
 
 function createDefaultMaintenanceState() {
@@ -464,28 +533,24 @@ function createDefaultMaintenanceState() {
 
 function readMaintenanceState() {
   const fallback = createDefaultMaintenanceState();
-  try {
-    const payload = JSON.parse(fs.readFileSync(MAINTENANCE_PATH, "utf8"));
-    if (!payload || typeof payload !== "object") return fallback;
-    const merged = { ...fallback };
-    for (const [key, value] of Object.entries(payload)) {
-      if (!merged[key] || !value || typeof value !== "object") continue;
-      merged[key] = {
-        ...merged[key],
-        enabled: Boolean(value.enabled),
-        title: String(value.title || merged[key].title),
-        message: String(value.message || merged[key].message),
-        updated_at: String(value.updated_at || ""),
-      };
-    }
-    return merged;
-  } catch {
-    return fallback;
+  const payload = readState("maintenance");
+  if (!payload || typeof payload !== "object") return fallback;
+  const merged = { ...fallback };
+  for (const [key, value] of Object.entries(payload)) {
+    if (!merged[key] || !value || typeof value !== "object") continue;
+    merged[key] = {
+      ...merged[key],
+      enabled: Boolean(value.enabled),
+      title: String(value.title || merged[key].title),
+      message: String(value.message || merged[key].message),
+      updated_at: String(value.updated_at || ""),
+    };
   }
+  return merged;
 }
 
 function writeMaintenanceState(state) {
-  fs.writeFileSync(MAINTENANCE_PATH, JSON.stringify(state, null, 2), "utf8");
+  writeState("maintenance", state);
 }
 
 function hydrateKameFleetImages(items) {
@@ -502,44 +567,40 @@ function hydrateKameFleetImages(items) {
 }
 
 function readStoreItems() {
-  try {
-    const items = JSON.parse(fs.readFileSync(STORE_ITEMS_PATH, "utf8"));
-    if (!Array.isArray(items)) return [];
-    let changed = false;
-    const normalized = items.map((item) => {
-      let nextItem = item;
-      if (!nextItem.category) {
-        changed = true;
-        nextItem = { ...nextItem, category: "vehiculos" };
-      }
+  const items = readState("store_items");
+  if (!Array.isArray(items)) return [];
+  let changed = false;
+  const normalized = items.map((item) => {
+    let nextItem = item;
+    if (!nextItem.category) {
+      changed = true;
+      nextItem = { ...nextItem, category: "vehiculos" };
+    }
 
-      const imagePath = String(nextItem.image || "").trim();
-      if (imagePath && imagePath.startsWith("assets/tienda/autos/")) {
-        const absoluteCurrent = path.join(ROOT, imagePath);
-        if (!fs.existsSync(absoluteCurrent)) {
-          const fileName = path.basename(imagePath);
-          const fallbackPath = `assets/tienda/${fileName}`;
-          const absoluteFallback = path.join(ROOT, fallbackPath);
-          if (fs.existsSync(absoluteFallback)) {
-            changed = true;
-            nextItem = { ...nextItem, image: fallbackPath };
-          }
+    const imagePath = String(nextItem.image || "").trim();
+    if (imagePath && imagePath.startsWith("assets/tienda/autos/")) {
+      const absoluteCurrent = path.join(ROOT, imagePath);
+      if (!fs.existsSync(absoluteCurrent)) {
+        const fileName = path.basename(imagePath);
+        const fallbackPath = `assets/tienda/${fileName}`;
+        const absoluteFallback = path.join(ROOT, fallbackPath);
+        if (fs.existsSync(absoluteFallback)) {
+          changed = true;
+          nextItem = { ...nextItem, image: fallbackPath };
         }
       }
-
-      return nextItem;
-    });
-    if (changed) {
-      writeStoreItems(normalized);
     }
-    return normalized;
-  } catch {
-    return [];
+
+    return nextItem;
+  });
+  if (changed) {
+    writeStoreItems(normalized);
   }
+  return normalized;
 }
 
 function writeStoreItems(items) {
-  fs.writeFileSync(STORE_ITEMS_PATH, JSON.stringify(items, null, 2), "utf8");
+  writeState("store_items", items);
 }
 
 function ensureDirectory(directoryPath) {
@@ -701,16 +762,12 @@ function parseBulkStoreLines(raw) {
 }
 
 function readSecondhandMarket() {
-  try {
-    const items = JSON.parse(fs.readFileSync(SECONDHAND_MARKET_PATH, "utf8"));
-    return Array.isArray(items) ? items : [];
-  } catch {
-    return [];
-  }
+  const items = readState("secondhand_market");
+  return Array.isArray(items) ? items : [];
 }
 
 function writeSecondhandMarket(items) {
-  fs.writeFileSync(SECONDHAND_MARKET_PATH, JSON.stringify(items, null, 2), "utf8");
+  writeState("secondhand_market", items);
 }
 
 function sendJson(response, statusCode, payload) {
@@ -1826,6 +1883,7 @@ const server = http.createServer(async (request, response) => {
       const incoming = JSON.parse(rawBody || "{}");
       const title = String(incoming.title || "").trim();
       const message = String(incoming.message || "").trim();
+      const kind = String(incoming.kind || "announcement").trim() || "announcement";
       if (!title || !message) {
         sendJson(response, 400, { error: "invalid_announcement" });
         return;
@@ -1834,7 +1892,7 @@ const server = http.createServer(async (request, response) => {
       const announcements = readAnnouncements();
       announcements.unshift({
         id: crypto.randomBytes(8).toString("hex"),
-        kind: "announcement",
+        kind,
         title,
         message,
         created_at: new Date().toISOString(),
@@ -4526,11 +4584,30 @@ const server = http.createServer(async (request, response) => {
     return;
   }
 
-  serveStaticFile(request, response, url.pathname);
+serveStaticFile(request, response, url.pathname);
 });
 
-server.listen(PORT, () => {
-  console.log(`Viva Chile web + OAuth escuchando en http://localhost:${PORT}`);
-});
+async function bootstrap() {
+  try {
+    if (env.supabaseUrl && env.supabaseServiceRoleKey) {
+      await loadStateFromSupabase();
+      console.log("[state] Supabase conectado.");
+    } else {
+      ensureStateCacheLoaded();
+      console.log("[state] Usando almacenamiento local.");
+    }
+  } catch (error) {
+    console.error(`[state] No se pudo cargar Supabase, usando almacenamiento local. ${error.message || error}`);
+    ensureStateCacheLoaded();
+  }
+
+  hydrateUserSessionsFromStore();
+
+  server.listen(PORT, () => {
+    console.log(`Viva Chile web + OAuth escuchando en http://localhost:${PORT}`);
+  });
+}
+
+bootstrap();
 
 

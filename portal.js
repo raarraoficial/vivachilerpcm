@@ -14,6 +14,12 @@ const notificationsCloseButton = document.querySelector("[data-notifications-clo
 const notificationsPanel = document.querySelector("[data-notifications-panel]");
 const notificationsList = document.querySelector("[data-notifications-list]");
 const notificationsDot = document.querySelector("[data-notifications-dot]");
+const emergencyAlertNode = document.querySelector("[data-emergency-alert]");
+const emergencyTitleNode = document.querySelector("[data-emergency-title]");
+const emergencyDateNode = document.querySelector("[data-emergency-date]");
+const emergencyMessageNode = document.querySelector("[data-emergency-message]");
+const emergencyAcceptButton = document.querySelector("[data-emergency-accept]");
+const emergencyAudio = document.querySelector("[data-emergency-audio]");
 const avatarNode = document.querySelector("[data-dni-avatar]");
 const initialsNode = document.querySelector("[data-dni-initials]");
 const nav = document.querySelector("[data-portal-nav]");
@@ -72,6 +78,7 @@ const purchaseSound = new Audio("assets/purchase-sound.mp3");
 let purchaseTicketTimeout = null;
 let currentPermissions = {};
 let currentNotifications = [];
+let activeEmergencyAlert = null;
 
 function setFeedback(node, message, isError = false) {
   if (!node) return;
@@ -109,7 +116,7 @@ function renderNotifications(items = []) {
   notificationsList.innerHTML = items
     .map(
       (item) => `
-        <article class="transaction-item ${item.kind === "announcement" ? "admin" : "income"}">
+        <article class="transaction-item ${item.kind === "emergency_alert" ? "expense" : item.kind === "announcement" ? "admin" : "income"}">
           <div class="transaction-item-head">
             <p class="transaction-item-title">${item.title || "Aviso"}</p>
           </div>
@@ -121,6 +128,32 @@ function renderNotifications(items = []) {
     .join("");
 }
 
+function playEmergencyAudio() {
+  if (!emergencyAudio) return;
+  try {
+    emergencyAudio.currentTime = 0;
+    const result = emergencyAudio.play();
+    if (result && typeof result.catch === "function") {
+      result.catch(() => {});
+    }
+  } catch {}
+}
+
+function handleEmergencyAlert(items = []) {
+  const latestAlert = items.find((item) => item.kind === "emergency_alert");
+  if (!latestAlert || !emergencyAlertNode) return;
+
+  const seenId = window.localStorage.getItem("vcrp_seen_emergency_alert");
+  if (seenId === latestAlert.id) return;
+
+  activeEmergencyAlert = latestAlert;
+  if (emergencyTitleNode) emergencyTitleNode.textContent = latestAlert.title || "Alerta de Emergencia";
+  if (emergencyDateNode) emergencyDateNode.textContent = formatDateTime(latestAlert.created_at);
+  if (emergencyMessageNode) emergencyMessageNode.textContent = latestAlert.message || "";
+  emergencyAlertNode.hidden = false;
+  playEmergencyAudio();
+}
+
 async function markNotificationsRead() {
   try {
     const response = await fetch("/api/portal/notifications/read-all", { method: "POST" });
@@ -128,6 +161,7 @@ async function markNotificationsRead() {
     const payload = await response.json();
     currentNotifications = payload.notifications || [];
     renderNotifications(currentNotifications);
+    handleEmergencyAlert(currentNotifications);
   } catch {}
 }
 
@@ -995,6 +1029,7 @@ async function loadPortalSession() {
     currentPermissions = payload.permissions || {};
     currentNotifications = payload.notifications || [];
     renderNotifications(currentNotifications);
+    handleEmergencyAlert(currentNotifications);
 
     document.querySelectorAll("[data-requires-permission]").forEach((node) => {
       node.hidden = !currentPermissions[node.dataset.requiresPermission];
@@ -1319,6 +1354,14 @@ notificationsCloseButton?.addEventListener("click", () => {
   window.setTimeout(() => {
     notificationsPanel.hidden = true;
   }, 180);
+});
+
+emergencyAcceptButton?.addEventListener("click", () => {
+  if (activeEmergencyAlert?.id) {
+    window.localStorage.setItem("vcrp_seen_emergency_alert", activeEmergencyAlert.id);
+  }
+  if (emergencyAlertNode) emergencyAlertNode.hidden = true;
+  activeEmergencyAlert = null;
 });
 
 document.querySelectorAll("[data-bank-subtab-button]").forEach((button) => {
