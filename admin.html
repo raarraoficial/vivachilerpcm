@@ -47,6 +47,7 @@
           <button type="button" class="admin-nav-button is-active" data-admin-tab-button="stats">Stats y portada</button>
           <button type="button" class="admin-nav-button" data-admin-tab-button="mantenimiento">Mantenimiento</button>
           <button type="button" class="admin-nav-button" data-admin-tab-button="anuncios">Anuncios</button>
+          <button type="button" class="admin-nav-button" data-admin-tab-button="alertas">Alertas</button>
           <button type="button" class="admin-nav-button" data-admin-tab-button="economia">Economia</button>
           <button type="button" class="admin-nav-button" data-admin-tab-button="identidad">Identidad</button>
           <button type="button" class="admin-nav-button" data-admin-tab-button="tienda">Tienda</button>
@@ -154,6 +155,24 @@
           <label class="admin-form-span">
             Mensaje de alerta
             <textarea name="message" rows="5" placeholder="Escribe la alerta que aparecerá como aviso emergente solo para el rol de Desastres Naturales." required></textarea>
+          </label>
+          <div class="admin-submit-row">
+            <button type="submit" class="admin-button danger">Enviar alerta sonora</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="admin-block" data-admin-tab="alertas">
+        <p class="admin-kicker">Alertas</p>
+        <h2 class="admin-block-title">Alerta especial de desastres naturales</h2>
+        <form class="admin-form" data-admin-emergency-form-alt>
+          <label>
+            Titulo de alerta
+            <input type="text" name="title" placeholder="Ej: Alerta de Emergencia" value="Alerta de Emergencia" required>
+          </label>
+          <label class="admin-form-span">
+            Mensaje de alerta
+            <textarea name="message" rows="5" placeholder="Escribe la alerta que aparecera como aviso emergente solo para el rol de Desastres Naturales." required></textarea>
           </label>
           <div class="admin-submit-row">
             <button type="submit" class="admin-button danger">Enviar alerta sonora</button>

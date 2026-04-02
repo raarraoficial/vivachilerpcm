@@ -4,6 +4,7 @@ const adminUser = document.querySelector("[data-admin-user]");
 const adminForm = document.querySelector("[data-admin-form]");
 const adminAnnouncementForm = document.querySelector("[data-admin-announcement-form]");
 const adminEmergencyForm = document.querySelector("[data-admin-emergency-form]");
+const adminEmergencyFormAlt = document.querySelector("[data-admin-emergency-form-alt]");
 const adminMaintenanceForm = document.querySelector("[data-admin-maintenance-form]");
 const adminBalanceForm = document.querySelector("[data-admin-balance-form]");
 const adminBulkBalanceForm = document.querySelector("[data-admin-bulk-balance-form]");
@@ -381,24 +382,39 @@ adminAnnouncementForm?.addEventListener("submit", async (event) => {
   }
 });
 
+async function submitEmergencyForm(form) {
+  const payload = {
+    kind: "emergency_alert",
+    title: form.elements.title.value.trim(),
+    message: form.elements.message.value.trim(),
+  };
+
+  const response = await fetch("/api/admin/announcements", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) throw new Error("emergency_announcement_failed");
+  form.reset();
+  form.elements.title.value = "Alerta de Emergencia";
+}
+
 adminEmergencyForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
 
-  const payload = {
-    kind: "emergency_alert",
-    title: adminEmergencyForm.elements.title.value.trim(),
-    message: adminEmergencyForm.elements.message.value.trim(),
-  };
+  try {
+    await submitEmergencyForm(adminEmergencyForm);
+    setFeedback("Alerta de emergencia enviada correctamente.", "success");
+  } catch {
+    setFeedback("No se pudo enviar la alerta de emergencia.", "error");
+  }
+});
+
+adminEmergencyFormAlt?.addEventListener("submit", async (event) => {
+  event.preventDefault();
 
   try {
-    const response = await fetch("/api/admin/announcements", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-    if (!response.ok) throw new Error("emergency_announcement_failed");
-    adminEmergencyForm.reset();
-    adminEmergencyForm.elements.title.value = "Alerta de Emergencia";
+    await submitEmergencyForm(adminEmergencyFormAlt);
     setFeedback("Alerta de emergencia enviada correctamente.", "success");
   } catch {
     setFeedback("No se pudo enviar la alerta de emergencia.", "error");
