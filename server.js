@@ -854,14 +854,22 @@ function clearCookie(response, name) {
 
 function getAdminSession(request) {
   const cookies = parseCookies(request);
-  const sessionId = cookies.vcrp_admin_session || String(request.headers["x-vcrp-admin-session"] || "").trim();
+  const requestUrl = new URL(request.url, env.publicBaseUrl || `http://localhost:${PORT}`);
+  const sessionId =
+    cookies.vcrp_admin_session ||
+    String(request.headers["x-vcrp-admin-session"] || "").trim() ||
+    String(requestUrl.searchParams.get("admin_session") || "").trim();
   if (!sessionId) return null;
   return ADMIN_SESSIONS.get(sessionId) || null;
 }
 
 function getUserSession(request) {
   const cookies = parseCookies(request);
-  const sessionId = cookies.vcrp_user_session || String(request.headers["x-vcrp-user-session"] || "").trim();
+  const requestUrl = new URL(request.url, env.publicBaseUrl || `http://localhost:${PORT}`);
+  const sessionId =
+    cookies.vcrp_user_session ||
+    String(request.headers["x-vcrp-user-session"] || "").trim() ||
+    String(requestUrl.searchParams.get("portal_session") || "").trim();
   if (!sessionId) return null;
   return USER_SESSIONS.get(sessionId) || null;
 }
@@ -1144,11 +1152,6 @@ function pushNotification(userId, entry) {
 function listNotificationsForUser(userId, permissions = {}) {
   const personal = readNotifications()[userId] || [];
   const announcements = readAnnouncements()
-    .filter((item) => {
-      const kind = item.kind || "announcement";
-      if (kind !== "emergency_alert") return true;
-      return Boolean(permissions.canReceiveEmergencyAlerts);
-    })
     .map((item) => ({
       ...item,
       kind: item.kind || "announcement",
