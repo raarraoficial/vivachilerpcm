@@ -1,8 +1,8 @@
 window.VCRP_CONFIG = Object.assign(
   {
     appBase: "https://vivachilerpcm.netlify.app",
-    apiBase: "https://vivachile-backend.onrender.com",
-    authBase: "https://vivachile-backend.onrender.com",
+    apiBase: "",
+    authBase: "",
   },
   window.VCRP_CONFIG || {}
 );
@@ -45,6 +45,31 @@ window.VCRP_CONFIG = Object.assign(
     },
   };
 
+  function storeSessionTokensFromUrl() {
+    const currentUrl = new URL(window.location.href);
+    const portalSession = currentUrl.searchParams.get("portal_session");
+    const adminSession = currentUrl.searchParams.get("admin_session");
+    let changed = false;
+
+    if (portalSession) {
+      window.localStorage.setItem("vcrp_user_session", portalSession);
+      currentUrl.searchParams.delete("portal_session");
+      changed = true;
+    }
+
+    if (adminSession) {
+      window.localStorage.setItem("vcrp_admin_session", adminSession);
+      currentUrl.searchParams.delete("admin_session");
+      changed = true;
+    }
+
+    if (changed) {
+      window.history.replaceState({}, document.title, `${currentUrl.pathname}${currentUrl.search}${currentUrl.hash}`);
+    }
+  }
+
+  storeSessionTokensFromUrl();
+
   const nativeFetch = window.fetch ? window.fetch.bind(window) : null;
   if (nativeFetch) {
     window.fetch = function patchedFetch(input, init) {
@@ -54,6 +79,15 @@ window.VCRP_CONFIG = Object.assign(
       if (typeof nextInput === "string" && nextInput.startsWith("/api/")) {
         nextInput = window.VCRP.api(nextInput);
         if (!nextInit.credentials) nextInit.credentials = "include";
+        nextInit.headers = Object.assign({}, nextInit.headers || {});
+        const userSession = window.localStorage.getItem("vcrp_user_session");
+        const adminSession = window.localStorage.getItem("vcrp_admin_session");
+        if (userSession && !nextInit.headers["x-vcrp-user-session"]) {
+          nextInit.headers["x-vcrp-user-session"] = userSession;
+        }
+        if (adminSession && !nextInit.headers["x-vcrp-admin-session"]) {
+          nextInit.headers["x-vcrp-admin-session"] = adminSession;
+        }
       }
 
       return nativeFetch(nextInput, nextInit);

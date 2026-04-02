@@ -1366,6 +1366,7 @@ document.querySelectorAll('a[href]').forEach((link) => {
 logoutButtons.forEach((button) => {
   button.addEventListener("click", async () => {
     await fetch("/api/portal/logout", { method: "POST" });
+    window.localStorage.removeItem("vcrp_user_session");
     window.location.href = "/portal.html";
   });
 });

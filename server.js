@@ -5,20 +5,46 @@ const crypto = require("crypto");
 const { URL, URLSearchParams } = require("url");
 
 const ROOT = __dirname;
-const STATS_PATH = path.join(ROOT, "stats.json");
-const IDENTITY_PATH = path.join(ROOT, "identity-records.json");
-const BANK_PATH = path.join(ROOT, "bank-records.json");
-const STORE_ITEMS_PATH = path.join(ROOT, "store-items.json");
-const SECONDHAND_MARKET_PATH = path.join(ROOT, "secondhand-market.json");
-const NOTIFICATIONS_PATH = path.join(ROOT, "notifications.json");
-const ANNOUNCEMENTS_PATH = path.join(ROOT, "announcements.json");
-const CREDIT_APPLICATIONS_PATH = path.join(ROOT, "credit-applications.json");
-const POLICE_RECORDS_PATH = path.join(ROOT, "police-records.json");
-const SERVICE_HOURS_PATH = path.join(ROOT, "service-hours.json");
-const KAME_REQUESTS_PATH = path.join(ROOT, "kame-requests.json");
-const KAME_FLEET_PATH = path.join(ROOT, "kame-fleet.json");
-const USER_SESSIONS_PATH = path.join(ROOT, "user-sessions.json");
-const MAINTENANCE_PATH = path.join(ROOT, "maintenance.json");
+
+function loadEnvFile() {
+  const envPath = path.join(ROOT, ".env");
+  if (!fs.existsSync(envPath)) return;
+
+  const lines = fs.readFileSync(envPath, "utf8").split(/\r?\n/);
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#")) continue;
+    const separatorIndex = trimmed.indexOf("=");
+    if (separatorIndex === -1) continue;
+    const key = trimmed.slice(0, separatorIndex).trim();
+    const value = trimmed.slice(separatorIndex + 1).trim();
+    if (key && !process.env[key]) {
+      process.env[key] = value;
+    }
+  }
+}
+
+loadEnvFile();
+
+const DATA_ROOT = path.resolve(process.env.DATA_DIR || ROOT);
+if (!fs.existsSync(DATA_ROOT)) {
+  fs.mkdirSync(DATA_ROOT, { recursive: true });
+}
+
+const STATS_PATH = path.join(DATA_ROOT, "stats.json");
+const IDENTITY_PATH = path.join(DATA_ROOT, "identity-records.json");
+const BANK_PATH = path.join(DATA_ROOT, "bank-records.json");
+const STORE_ITEMS_PATH = path.join(DATA_ROOT, "store-items.json");
+const SECONDHAND_MARKET_PATH = path.join(DATA_ROOT, "secondhand-market.json");
+const NOTIFICATIONS_PATH = path.join(DATA_ROOT, "notifications.json");
+const ANNOUNCEMENTS_PATH = path.join(DATA_ROOT, "announcements.json");
+const CREDIT_APPLICATIONS_PATH = path.join(DATA_ROOT, "credit-applications.json");
+const POLICE_RECORDS_PATH = path.join(DATA_ROOT, "police-records.json");
+const SERVICE_HOURS_PATH = path.join(DATA_ROOT, "service-hours.json");
+const KAME_REQUESTS_PATH = path.join(DATA_ROOT, "kame-requests.json");
+const KAME_FLEET_PATH = path.join(DATA_ROOT, "kame-fleet.json");
+const USER_SESSIONS_PATH = path.join(DATA_ROOT, "user-sessions.json");
+const MAINTENANCE_PATH = path.join(DATA_ROOT, "maintenance.json");
 const STORE_UPLOADS_DIR = path.join(ROOT, "assets", "tienda", "uploads");
 const ADMIN_SESSIONS = new Map();
 const USER_SESSIONS = new Map();
@@ -219,26 +245,6 @@ const MAINTENANCE_ROUTE_SECTIONS = {
   "/policial.html": "policial",
   "/banco-funcionarios.html": "banco_funcionarios",
 };
-
-function loadEnvFile() {
-  const envPath = path.join(ROOT, ".env");
-  if (!fs.existsSync(envPath)) return;
-
-  const lines = fs.readFileSync(envPath, "utf8").split(/\r?\n/);
-  for (const line of lines) {
-    const trimmed = line.trim();
-    if (!trimmed || trimmed.startsWith("#")) continue;
-    const separatorIndex = trimmed.indexOf("=");
-    if (separatorIndex === -1) continue;
-    const key = trimmed.slice(0, separatorIndex).trim();
-    const value = trimmed.slice(separatorIndex + 1).trim();
-    if (key && !process.env[key]) {
-      process.env[key] = value;
-    }
-  }
-}
-
-loadEnvFile();
 
 const PORT = Number(process.env.PORT || 3000);
 
@@ -740,7 +746,7 @@ function applyCorsHeaders(request, response) {
   if (env.frontendOrigin && origin === env.frontendOrigin) {
     response.setHeader("Access-Control-Allow-Origin", origin);
     response.setHeader("Access-Control-Allow-Credentials", "true");
-    response.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    response.setHeader("Access-Control-Allow-Headers", "Content-Type, X-VCRP-User-Session, X-VCRP-Admin-Session");
     response.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
     response.setHeader("Vary", "Origin");
   }
@@ -790,14 +796,14 @@ function clearCookie(response, name) {
 
 function getAdminSession(request) {
   const cookies = parseCookies(request);
-  const sessionId = cookies.vcrp_admin_session;
+  const sessionId = cookies.vcrp_admin_session || String(request.headers["x-vcrp-admin-session"] || "").trim();
   if (!sessionId) return null;
   return ADMIN_SESSIONS.get(sessionId) || null;
 }
 
 function getUserSession(request) {
   const cookies = parseCookies(request);
-  const sessionId = cookies.vcrp_user_session;
+  const sessionId = cookies.vcrp_user_session || String(request.headers["x-vcrp-user-session"] || "").trim();
   if (!sessionId) return null;
   return USER_SESSIONS.get(sessionId) || null;
 }
@@ -4448,7 +4454,7 @@ const server = http.createServer(async (request, response) => {
       clearCookie(response, "vcrp_oauth_state");
       const cookieOptions = getCookieSecurityOptions();
       setCookie(response, "vcrp_admin_session", sessionId, { sameSite: cookieOptions.sameSite, secure: cookieOptions.secure, maxAge: 60 * 60 * 8 });
-      redirect(response, `${env.frontendOrigin || env.publicBaseUrl}/admin.html`);
+      redirect(response, `${env.frontendOrigin || env.publicBaseUrl}/admin.html?admin_session=${encodeURIComponent(sessionId)}`);
     } catch (error) {
       const details = error && error.message ? error.message : "unknown_error";
       sendText(response, 500, `No se pudo completar el OAuth con Discord.\n\nDetalle: ${details}`);
@@ -4512,7 +4518,7 @@ const server = http.createServer(async (request, response) => {
       clearCookie(response, "vcrp_portal_oauth_state");
       const cookieOptions = getCookieSecurityOptions();
       setCookie(response, "vcrp_user_session", sessionId, { sameSite: cookieOptions.sameSite, secure: cookieOptions.secure, maxAge: 60 * 60 * 8 });
-      redirect(response, `${env.frontendOrigin || env.publicBaseUrl}/portal.html`);
+      redirect(response, `${env.frontendOrigin || env.publicBaseUrl}/portal.html?portal_session=${encodeURIComponent(sessionId)}`);
     } catch (error) {
       const details = error && error.message ? error.message : "unknown_error";
       sendText(response, 500, `No se pudo completar el OAuth del portal.\n\nDetalle: ${details}`);

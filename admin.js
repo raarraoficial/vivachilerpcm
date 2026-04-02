@@ -608,6 +608,7 @@ if (refreshButton) {
 if (logoutButton) {
   logoutButton.addEventListener("click", async () => {
     await fetch("/api/admin/logout", { method: "POST" });
+    window.localStorage.removeItem("vcrp_admin_session");
     window.location.href = "/admin.html";
   });
 }

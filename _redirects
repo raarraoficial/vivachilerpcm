@@ -1,0 +1,3 @@
+/api/* https://vivachile-backend.onrender.com/api/:splat 200
+/auth/* https://vivachile-backend.onrender.com/auth/:splat 200
+/assets/tienda/uploads/* https://vivachile-backend.onrender.com/assets/tienda/uploads/:splat 200
