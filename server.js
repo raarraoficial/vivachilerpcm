@@ -271,6 +271,7 @@ const env = {
   kameRoleName: String(process.env.KAME_ROLE_NAME || "Kame motors").trim().toLowerCase(),
   carabinerosRoleName: String(process.env.CARABINEROS_ROLE_NAME || "Carabineros de Chile").trim().toLowerCase(),
   pdiRoleName: String(process.env.PDI_ROLE_NAME || "Policia de investigaciones").trim().toLowerCase(),
+  disasterRoleName: String(process.env.DISASTER_ROLE_NAME || "Desastres Naturales").trim().toLowerCase(),
   carabinerosAdminRoleName: String(process.env.CARABINEROS_ADMIN_ROLE_NAME || "Administrador carabineros").trim().toLowerCase(),
   pdiAdminRoleName: String(process.env.PDI_ADMIN_ROLE_NAME || "Administrador pdi").trim().toLowerCase(),
   sessionSecret: process.env.SESSION_SECRET || crypto.randomBytes(24).toString("hex"),
@@ -1140,13 +1141,19 @@ function pushNotification(userId, entry) {
   writeNotifications(notifications);
 }
 
-function listNotificationsForUser(userId) {
+function listNotificationsForUser(userId, permissions = {}) {
   const personal = readNotifications()[userId] || [];
-  const announcements = readAnnouncements().map((item) => ({
-    ...item,
-    kind: item.kind || "announcement",
-    read: true,
-  }));
+  const announcements = readAnnouncements()
+    .filter((item) => {
+      const kind = item.kind || "announcement";
+      if (kind !== "emergency_alert") return true;
+      return Boolean(permissions.canReceiveEmergencyAlerts);
+    })
+    .map((item) => ({
+      ...item,
+      kind: item.kind || "announcement",
+      read: true,
+    }));
   return [...announcements, ...personal]
     .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
     .slice(0, 100);
@@ -1890,15 +1897,18 @@ const server = http.createServer(async (request, response) => {
       }
 
       const announcements = readAnnouncements();
-      announcements.unshift({
+      const nextAnnouncements = kind === "emergency_alert"
+        ? announcements.filter((item) => (item.kind || "announcement") !== "emergency_alert")
+        : announcements;
+      nextAnnouncements.unshift({
         id: crypto.randomBytes(8).toString("hex"),
         kind,
         title,
         message,
         created_at: new Date().toISOString(),
       });
-      writeAnnouncements(announcements.slice(0, 50));
-      sendJson(response, 200, { ok: true, announcements: announcements.slice(0, 50) });
+      writeAnnouncements(nextAnnouncements.slice(0, 50));
+      sendJson(response, 200, { ok: true, announcements: nextAnnouncements.slice(0, 50) });
     } catch {
       sendJson(response, 400, { error: "invalid_payload" });
     }
@@ -2232,7 +2242,7 @@ const server = http.createServer(async (request, response) => {
       user: session.user,
       identity,
       permissions: session.user.permissions || {},
-      notifications: listNotificationsForUser(session.user.id),
+      notifications: listNotificationsForUser(session.user.id, session.user.permissions || {}),
     });
     return;
   }
@@ -2465,7 +2475,7 @@ const server = http.createServer(async (request, response) => {
     }
 
     markNotificationsRead(session.user.id);
-    sendJson(response, 200, { ok: true, notifications: listNotificationsForUser(session.user.id) });
+    sendJson(response, 200, { ok: true, notifications: listNotificationsForUser(session.user.id, session.user.permissions || {}) });
     return;
   }
 
@@ -4566,6 +4576,7 @@ const server = http.createServer(async (request, response) => {
           canAccessStaff: roleNames.includes(env.departmentAdminRoleName),
           canManageBank: roleNames.includes(env.bankRoleName),
           canAccessKame: roleNames.includes(env.kameRoleName),
+          canReceiveEmergencyAlerts: roleNames.includes(env.disasterRoleName),
           isCarabineros: roleNames.includes(env.carabinerosRoleName),
           isPdi: roleNames.includes(env.pdiRoleName),
           isCarabinerosAdmin: roleNames.includes(env.carabinerosAdminRoleName),
