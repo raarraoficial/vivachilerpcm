@@ -633,7 +633,10 @@ if (refreshButton) {
 if (logoutButton) {
   logoutButton.addEventListener("click", async () => {
     await fetch("/api/admin/logout", { method: "POST" });
-    window.localStorage.removeItem("vcrp_admin_session");
+    try {
+      window.localStorage.removeItem("vcrp_admin_session");
+    } catch {}
+    document.cookie = "vcrp_admin_session=; Path=/; Max-Age=0; SameSite=Lax; Secure";
     window.location.href = "/admin.html";
   });
 }
