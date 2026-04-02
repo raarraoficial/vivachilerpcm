@@ -1063,6 +1063,27 @@ async function loadPortalSession() {
   }
 }
 
+async function refreshPortalNotifications() {
+  try {
+    const response = await fetch("/api/portal/session", { cache: "no-store" });
+    if (!response.ok) return;
+
+    const payload = await response.json();
+    currentPermissions = payload.permissions || currentPermissions || {};
+    currentNotifications = payload.notifications || [];
+    renderNotifications(currentNotifications);
+    handleEmergencyAlert(currentNotifications);
+
+    document.querySelectorAll("[data-requires-permission]").forEach((node) => {
+      node.hidden = !currentPermissions[node.dataset.requiresPermission];
+    });
+    document.querySelectorAll("[data-requires-any-permission]").forEach((node) => {
+      const keys = String(node.dataset.requiresAnyPermission || "").split(",").map((item) => item.trim()).filter(Boolean);
+      node.hidden = !keys.some((key) => currentPermissions[key]);
+    });
+  } catch {}
+}
+
 identityForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
 
@@ -1409,9 +1430,16 @@ document.querySelectorAll('a[href]').forEach((link) => {
 logoutButtons.forEach((button) => {
   button.addEventListener("click", async () => {
     await fetch("/api/portal/logout", { method: "POST" });
-    window.localStorage.removeItem("vcrp_user_session");
+    try {
+      window.localStorage.removeItem("vcrp_user_session");
+    } catch {}
+    document.cookie = "vcrp_user_session=; Path=/; Max-Age=0; SameSite=Lax; Secure";
     window.location.href = "/portal.html";
   });
 });
 
 loadPortalSession();
+setInterval(() => {
+  if (document.hidden) return;
+  refreshPortalNotifications();
+}, 8000);
