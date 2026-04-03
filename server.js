@@ -51,6 +51,7 @@ const ADMIN_SESSIONS = new Map();
 const USER_SESSIONS = new Map();
 const STATE_CACHE = new Map();
 const STATE_PERSIST_QUEUES = new Map();
+const OAUTH_RATE_LIMITS = new Map();
 const DEFAULT_BANK_BALANCE = 5_000_000;
 const SALARY_BASE = 250_000;
 const SALARY_TAX = 35_000;
@@ -844,6 +845,27 @@ function parseCookies(request) {
         return [key, decodeURIComponent(rest.join("="))];
       })
   );
+}
+
+function getClientIp(request) {
+  const forwarded = String(request.headers["x-forwarded-for"] || "").split(",")[0].trim();
+  return forwarded || String(request.socket?.remoteAddress || "").trim() || "unknown";
+}
+
+function rateLimitOAuth(request, scope, limit = 8, windowMs = 60_000) {
+  const key = `${scope}:${getClientIp(request)}`;
+  const now = Date.now();
+  const entry = OAUTH_RATE_LIMITS.get(key) || { count: 0, resetAt: now + windowMs };
+  if (now > entry.resetAt) {
+    entry.count = 0;
+    entry.resetAt = now + windowMs;
+  }
+  entry.count += 1;
+  OAUTH_RATE_LIMITS.set(key, entry);
+  if (entry.count > limit) {
+    return Math.ceil((entry.resetAt - now) / 1000);
+  }
+  return 0;
 }
 
 function setCookie(response, name, value, options = {}) {
@@ -4627,6 +4649,11 @@ const server = http.createServer(async (request, response) => {
   }
 
   if (url.pathname === "/auth/discord/login" && request.method === "GET") {
+    const existingAdmin = getAdminSession(request);
+    if (existingAdmin) {
+      redirect(response, `${env.frontendOrigin || env.publicBaseUrl}/admin.html`);
+      return;
+    }
     if (!env.discordClientId || !env.discordClientSecret || !env.discordBotToken || !env.discordGuildId) {
       sendText(response, 500, "Faltan variables de entorno de Discord para OAuth.");
       return;
@@ -4649,6 +4676,12 @@ const server = http.createServer(async (request, response) => {
 
   if (url.pathname === "/auth/discord/callback" && request.method === "GET") {
     try {
+      const retryAfter = rateLimitOAuth(request, "admin");
+      if (retryAfter) {
+        response.setHeader("Retry-After", String(retryAfter));
+        sendText(response, 429, "Demasiados intentos. Espera unos segundos e intenta otra vez.");
+        return;
+      }
       const cookies = parseCookies(request);
       const code = url.searchParams.get("code");
       const state = url.searchParams.get("state");
@@ -4686,6 +4719,11 @@ const server = http.createServer(async (request, response) => {
   }
 
   if (url.pathname === "/auth/discord/portal-login" && request.method === "GET") {
+    const existingUser = getUserSession(request);
+    if (existingUser) {
+      redirect(response, `${env.frontendOrigin || env.publicBaseUrl}/portal.html`);
+      return;
+    }
     if (!env.discordClientId || !env.discordClientSecret) {
       sendText(response, 500, "Faltan variables de entorno de Discord para el portal.");
       return;
@@ -4708,6 +4746,12 @@ const server = http.createServer(async (request, response) => {
 
   if (url.pathname === "/auth/discord/portal-callback" && request.method === "GET") {
     try {
+      const retryAfter = rateLimitOAuth(request, "portal");
+      if (retryAfter) {
+        response.setHeader("Retry-After", String(retryAfter));
+        sendText(response, 429, "Demasiados intentos. Espera unos segundos e intenta otra vez.");
+        return;
+      }
       const cookies = parseCookies(request);
       const code = url.searchParams.get("code");
       const state = url.searchParams.get("state");
