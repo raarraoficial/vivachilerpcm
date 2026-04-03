@@ -52,6 +52,7 @@ const USER_SESSIONS = new Map();
 const STATE_CACHE = new Map();
 const STATE_PERSIST_QUEUES = new Map();
 const OAUTH_RATE_LIMITS = new Map();
+const STATS_TOKEN = String(process.env.STATS_BOT_TOKEN || "").trim();
 const DEFAULT_BANK_BALANCE = 5_000_000;
 const SALARY_BASE = 250_000;
 const SALARY_TAX = 35_000;
@@ -1938,6 +1939,38 @@ const server = http.createServer(async (request, response) => {
       writeStats(nextStats);
       sendJson(response, 200, { ok: true, stats: nextStats });
     } catch (error) {
+      sendJson(response, 400, { error: "invalid_payload" });
+    }
+    return;
+  }
+
+  if (url.pathname === "/api/bot/stats" && request.method === "POST") {
+    if (!STATS_TOKEN) {
+      sendJson(response, 500, { error: "stats_token_missing" });
+      return;
+    }
+    const token = String(request.headers["x-stats-token"] || "").trim();
+    if (!token || token !== STATS_TOKEN) {
+      sendJson(response, 401, { error: "unauthorized" });
+      return;
+    }
+
+    try {
+      const rawBody = await readRequestBody(request);
+      const payload = JSON.parse(rawBody || "{}");
+      const stats = readStats();
+      const nextStats = {
+        ...stats,
+        discord_members: Number(payload.discord_members ?? stats.discord_members ?? 0),
+        server_staff: Number(payload.server_staff ?? stats.server_staff ?? 0),
+        server_status: String(payload.server_status ?? stats.server_status ?? "").trim() || "Cerrado",
+        general_status: String(payload.general_status ?? stats.general_status ?? "").trim() || "En linea",
+        updated_at: String(payload.updated_at ?? stats.updated_at ?? "").trim() || new Date().toLocaleString("es-CL"),
+      };
+
+      writeStats(nextStats);
+      sendJson(response, 200, { ok: true, stats: nextStats });
+    } catch {
       sendJson(response, 400, { error: "invalid_payload" });
     }
     return;
