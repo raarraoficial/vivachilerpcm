@@ -52,6 +52,8 @@ const USER_SESSIONS = new Map();
 const STATE_CACHE = new Map();
 const STATE_PERSIST_QUEUES = new Map();
 const OAUTH_RATE_LIMITS = new Map();
+const OAUTH_EXCHANGE_MIN_INTERVAL_MS = 1200;
+let OAUTH_LAST_EXCHANGE_AT = 0;
 const STATS_TOKEN = String(process.env.STATS_BOT_TOKEN || "").trim();
 const DEFAULT_BANK_BALANCE = 5_000_000;
 const SALARY_BASE = 250_000;
@@ -866,6 +868,16 @@ function rateLimitOAuth(request, scope, limit = 8, windowMs = 60_000) {
   if (entry.count > limit) {
     return Math.ceil((entry.resetAt - now) / 1000);
   }
+  return 0;
+}
+
+function rateLimitOAuthExchange() {
+  const now = Date.now();
+  const elapsed = now - OAUTH_LAST_EXCHANGE_AT;
+  if (elapsed < OAUTH_EXCHANGE_MIN_INTERVAL_MS) {
+    return Math.ceil((OAUTH_EXCHANGE_MIN_INTERVAL_MS - elapsed) / 1000);
+  }
+  OAUTH_LAST_EXCHANGE_AT = now;
   return 0;
 }
 
@@ -4715,6 +4727,12 @@ const server = http.createServer(async (request, response) => {
         sendText(response, 429, "Demasiados intentos. Espera unos segundos e intenta otra vez.");
         return;
       }
+      const exchangeRetry = rateLimitOAuthExchange();
+      if (exchangeRetry) {
+        response.setHeader("Retry-After", String(exchangeRetry));
+        sendText(response, 429, "Muchas personas estan iniciando sesion. Espera unos segundos e intenta otra vez.");
+        return;
+      }
       const cookies = parseCookies(request);
       const code = url.searchParams.get("code");
       const state = url.searchParams.get("state");
@@ -4783,6 +4801,12 @@ const server = http.createServer(async (request, response) => {
       if (retryAfter) {
         response.setHeader("Retry-After", String(retryAfter));
         sendText(response, 429, "Demasiados intentos. Espera unos segundos e intenta otra vez.");
+        return;
+      }
+      const exchangeRetry = rateLimitOAuthExchange();
+      if (exchangeRetry) {
+        response.setHeader("Retry-After", String(exchangeRetry));
+        sendText(response, 429, "Muchas personas estan iniciando sesion. Espera unos segundos e intenta otra vez.");
         return;
       }
       const cookies = parseCookies(request);
