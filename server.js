@@ -52,8 +52,11 @@ const USER_SESSIONS = new Map();
 const STATE_CACHE = new Map();
 const STATE_PERSIST_QUEUES = new Map();
 const OAUTH_RATE_LIMITS = new Map();
-const OAUTH_EXCHANGE_MIN_INTERVAL_MS = 1200;
+const OAUTH_EXCHANGE_MIN_INTERVAL_MS = 3000;
+const OAUTH_QUEUE_MAX = 20;
 let OAUTH_LAST_EXCHANGE_AT = 0;
+let OAUTH_QUEUE_SIZE = 0;
+let OAUTH_QUEUE = Promise.resolve();
 const STATS_TOKEN = String(process.env.STATS_BOT_TOKEN || "").trim();
 const DEFAULT_BANK_BALANCE = 5_000_000;
 const SALARY_BASE = 250_000;
@@ -871,14 +874,30 @@ function rateLimitOAuth(request, scope, limit = 8, windowMs = 60_000) {
   return 0;
 }
 
-function rateLimitOAuthExchange() {
-  const now = Date.now();
-  const elapsed = now - OAUTH_LAST_EXCHANGE_AT;
-  if (elapsed < OAUTH_EXCHANGE_MIN_INTERVAL_MS) {
-    return Math.ceil((OAUTH_EXCHANGE_MIN_INTERVAL_MS - elapsed) / 1000);
+async function enqueueOAuthExchange(task) {
+  if (OAUTH_QUEUE_SIZE >= OAUTH_QUEUE_MAX) {
+    const error = new Error("oauth_queue_overflow");
+    error.code = "oauth_queue_overflow";
+    throw error;
   }
-  OAUTH_LAST_EXCHANGE_AT = now;
-  return 0;
+
+  OAUTH_QUEUE_SIZE += 1;
+  const run = OAUTH_QUEUE.then(async () => {
+    const now = Date.now();
+    const wait = OAUTH_EXCHANGE_MIN_INTERVAL_MS - (now - OAUTH_LAST_EXCHANGE_AT);
+    if (wait > 0) {
+      await new Promise((resolve) => setTimeout(resolve, wait));
+    }
+    OAUTH_LAST_EXCHANGE_AT = Date.now();
+    return task();
+  });
+  OAUTH_QUEUE = run.catch(() => {});
+
+  try {
+    return await run;
+  } finally {
+    OAUTH_QUEUE_SIZE = Math.max(0, OAUTH_QUEUE_SIZE - 1);
+  }
 }
 
 function setCookie(response, name, value, options = {}) {
@@ -4727,12 +4746,6 @@ const server = http.createServer(async (request, response) => {
         sendText(response, 429, "Demasiados intentos. Espera unos segundos e intenta otra vez.");
         return;
       }
-      const exchangeRetry = rateLimitOAuthExchange();
-      if (exchangeRetry) {
-        response.setHeader("Retry-After", String(exchangeRetry));
-        sendText(response, 429, "Muchas personas estan iniciando sesion. Espera unos segundos e intenta otra vez.");
-        return;
-      }
       const cookies = parseCookies(request);
       const code = url.searchParams.get("code");
       const state = url.searchParams.get("state");
@@ -4742,7 +4755,7 @@ const server = http.createServer(async (request, response) => {
         return;
       }
 
-      const tokenData = await exchangeDiscordCode(code, env.discordRedirectUri);
+      const tokenData = await enqueueOAuthExchange(() => exchangeDiscordCode(code, env.discordRedirectUri));
       const user = await fetchDiscordUser(tokenData.access_token);
       const allowed = await verifyAllowedRole(user.id);
 
@@ -4763,6 +4776,11 @@ const server = http.createServer(async (request, response) => {
       setCookie(response, "vcrp_admin_session", sessionId, { sameSite: cookieOptions.sameSite, secure: cookieOptions.secure, maxAge: 60 * 60 * 8 });
       redirect(response, `${env.frontendOrigin || env.publicBaseUrl}/admin.html?admin_session=${encodeURIComponent(sessionId)}`);
     } catch (error) {
+      if (error?.code === "oauth_queue_overflow" || error?.message === "oauth_queue_overflow") {
+        response.setHeader("Retry-After", "5");
+        sendText(response, 429, "Hay demasiadas personas iniciando sesion. Espera unos segundos e intenta otra vez.");
+        return;
+      }
       const details = error && error.message ? error.message : "unknown_error";
       sendText(response, 500, `No se pudo completar el OAuth con Discord.\n\nDetalle: ${details}`);
     }
@@ -4803,12 +4821,6 @@ const server = http.createServer(async (request, response) => {
         sendText(response, 429, "Demasiados intentos. Espera unos segundos e intenta otra vez.");
         return;
       }
-      const exchangeRetry = rateLimitOAuthExchange();
-      if (exchangeRetry) {
-        response.setHeader("Retry-After", String(exchangeRetry));
-        sendText(response, 429, "Muchas personas estan iniciando sesion. Espera unos segundos e intenta otra vez.");
-        return;
-      }
       const cookies = parseCookies(request);
       const code = url.searchParams.get("code");
       const state = url.searchParams.get("state");
@@ -4818,7 +4830,7 @@ const server = http.createServer(async (request, response) => {
         return;
       }
 
-      const tokenData = await exchangeDiscordCode(code, env.discordPortalRedirectUri);
+      const tokenData = await enqueueOAuthExchange(() => exchangeDiscordCode(code, env.discordPortalRedirectUri));
       const user = await fetchDiscordUser(tokenData.access_token);
       const roles = env.discordBotToken && env.discordGuildId ? await fetchMemberRoles(user.id).catch(() => []) : [];
       const roleNames = roles.map((role) => role.name);
@@ -4848,6 +4860,11 @@ const server = http.createServer(async (request, response) => {
       setCookie(response, "vcrp_user_session", sessionId, { sameSite: cookieOptions.sameSite, secure: cookieOptions.secure, maxAge: 60 * 60 * 8 });
       redirect(response, `${env.frontendOrigin || env.publicBaseUrl}/portal.html?portal_session=${encodeURIComponent(sessionId)}`);
     } catch (error) {
+      if (error?.code === "oauth_queue_overflow" || error?.message === "oauth_queue_overflow") {
+        response.setHeader("Retry-After", "5");
+        sendText(response, 429, "Hay demasiadas personas iniciando sesion. Espera unos segundos e intenta otra vez.");
+        return;
+      }
       const details = error && error.message ? error.message : "unknown_error";
       sendText(response, 500, `No se pudo completar el OAuth del portal.\n\nDetalle: ${details}`);
     }
