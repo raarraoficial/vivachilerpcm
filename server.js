@@ -1071,6 +1071,7 @@ function collectSalaryEntries(roleNames = [], roleIds = []) {
   const normalizedRoleIds = roleIds.map((roleId) => String(roleId || "").trim()).filter(Boolean);
   const entries = [];
   const seen = new Set();
+  const normalizedEntryKeys = new Set();
 
   const overrides = readSalaryRoleOverrides();
   for (const override of overrides) {
@@ -1079,11 +1080,16 @@ function collectSalaryEntries(roleNames = [], roleIds = []) {
     const key = `override:${roleId}`;
     if (seen.has(key)) continue;
     seen.add(key);
-    entries.push({
+    const entry = {
       rank: String(override.rank || override.role_name || "Cargo personalizado"),
       base: Number(override.base || 0),
       source: "override",
-    });
+    };
+    const keyNorm = `${normalizeLookup(entry.rank)}:${Number(entry.base || 0)}`;
+    if (!normalizedEntryKeys.has(keyNorm)) {
+      normalizedEntryKeys.add(keyNorm);
+      entries.push(entry);
+    }
   }
 
   for (const role of normalizedRoles) {
@@ -1092,11 +1098,16 @@ function collectSalaryEntries(roleNames = [], roleIds = []) {
     const key = `map:${role}`;
     if (seen.has(key)) continue;
     seen.add(key);
-    entries.push({
+    const entry = {
       rank: String(profile.rank || role),
       base: Number(profile.base || 0),
       source: "map",
-    });
+    };
+    const keyNorm = `${normalizeLookup(entry.rank)}:${Number(entry.base || 0)}`;
+    if (!normalizedEntryKeys.has(keyNorm)) {
+      normalizedEntryKeys.add(keyNorm);
+      entries.push(entry);
+    }
   }
 
   for (const role of normalizedRoles) {
@@ -1105,11 +1116,16 @@ function collectSalaryEntries(roleNames = [], roleIds = []) {
       const key = `match:${matcher.match}`;
       if (seen.has(key)) continue;
       seen.add(key);
-      entries.push({
+      const entry = {
         rank: String(matcher.rank || matcher.match),
         base: Number(matcher.base || 0),
         source: "match",
-      });
+      };
+      const keyNorm = `${normalizeLookup(entry.rank)}:${Number(entry.base || 0)}`;
+      if (!normalizedEntryKeys.has(keyNorm)) {
+        normalizedEntryKeys.add(keyNorm);
+        entries.push(entry);
+      }
     }
   }
 
