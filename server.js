@@ -52,8 +52,8 @@ const USER_SESSIONS = new Map();
 const STATE_CACHE = new Map();
 const STATE_PERSIST_QUEUES = new Map();
 const OAUTH_RATE_LIMITS = new Map();
-const OAUTH_EXCHANGE_MIN_INTERVAL_MS = 3000;
-const OAUTH_QUEUE_MAX = 20;
+const OAUTH_EXCHANGE_MIN_INTERVAL_MS = 2000;
+const OAUTH_QUEUE_MAX = 100;
 let OAUTH_LAST_EXCHANGE_AT = 0;
 let OAUTH_QUEUE_SIZE = 0;
 let OAUTH_QUEUE = Promise.resolve();
@@ -1007,8 +1007,10 @@ async function fetchGuildMember(userId) {
 
 async function verifyAllowedRole(userId) {
   const roleNames = (await fetchMemberRoles(userId)).map((role) => role.name);
+  const extraRoles = ["director ejecutivo", "director operativo"].map((role) => normalizeLookup(role));
+  const allowedRoles = [...env.allowedRoleNames, ...extraRoles];
 
-  return env.allowedRoleNames.some((name) => roleNames.includes(name));
+  return allowedRoles.some((name) => roleNames.includes(name));
 }
 
 async function fetchMemberRoles(userId) {
