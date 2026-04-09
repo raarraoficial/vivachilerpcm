@@ -35,6 +35,8 @@ const loansListNode = document.querySelector("[data-loans-list]");
 const bankFeedback = document.querySelector("[data-bank-feedback]");
 const bankActionFeedback = document.querySelector("[data-bank-action-feedback]");
 const claimSalaryButton = document.querySelector("[data-claim-salary]");
+const salaryRolesNode = document.querySelector("[data-salary-roles]");
+const salaryRolesList = document.querySelector("[data-salary-roles-list]");
 const bankCardNode = document.querySelector("[data-bank-card]");
 const bankCardToggle = document.querySelector("[data-bank-card-toggle]");
 const bankInvestmentCreateButton = document.querySelector("[data-bank-investment-create]");
@@ -533,6 +535,24 @@ function renderBank(bank) {
   renderPendingClaims(bank.pending_claims || []);
   renderTransactionHistory(bank.transactions || []);
   renderInventory(bank.inventory || []);
+  renderSalaryRoles(bank.salary?.roles || []);
+}
+
+function renderSalaryRoles(roles = []) {
+  if (!salaryRolesNode || !salaryRolesList) return;
+  if (!roles.length) {
+    salaryRolesNode.hidden = true;
+    salaryRolesList.innerHTML = "";
+    return;
+  }
+  salaryRolesNode.hidden = false;
+  salaryRolesList.innerHTML = roles
+    .map((entry) => {
+      const name = entry.rank || "Cargo";
+      const amount = formatMoney(entry.base || 0);
+      return `<div class="salary-role-item"><span>${name}</span><strong>${amount}</strong></div>`;
+    })
+    .join("");
 }
 
 function renderPendingClaims(items = []) {

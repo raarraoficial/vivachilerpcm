@@ -1082,6 +1082,40 @@ body {
   color: #ef6b6b;
 }
 
+.salary-roles {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px dashed rgba(255, 255, 255, 0.16);
+  background: rgba(5, 12, 18, 0.35);
+}
+
+.salary-roles-title {
+  margin: 0 0 10px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.salary-roles-list {
+  display: grid;
+  gap: 8px;
+}
+
+.salary-role-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-weight: 600;
+}
+
+.salary-role-item span {
+  color: var(--text);
+}
+
+.salary-role-item strong {
+  color: #9ee4b6;
+}
+
 .transaction-history {
   display: grid;
   gap: 12px;
