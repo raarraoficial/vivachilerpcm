@@ -183,6 +183,7 @@ function bindFleetRemoveButtons(scope) {
 
 function renderFleet() {
   const fleet = currentDashboard?.fleet || [];
+  const canManage = Boolean(currentDashboard?.permissions?.canAccessKame);
 
   if (citizenFleetNode) {
     citizenFleetNode.innerHTML = fleet.length
@@ -192,6 +193,10 @@ function renderFleet() {
   }
 
   if (employeeFleetNode) {
+    if (!canManage) {
+      employeeFleetNode.innerHTML = "";
+      return;
+    }
     employeeFleetNode.innerHTML = fleet.length
       ? fleet.map((item) => createFleetCard(item, true)).join("")
       : '<div class="kame-empty">No hay autos cargados en la flota actual.</div>';
@@ -265,6 +270,10 @@ function buildEmployeeActions(item) {
 
 function renderEmployeeRequests(items = []) {
   if (!employeeRequestsNode) return;
+  if (!currentDashboard?.permissions?.canAccessKame) {
+    employeeRequestsNode.innerHTML = "";
+    return;
+  }
   const filtered = employeePlateFilter
     ? items.filter((item) => String(item.plate || "").toLowerCase().includes(employeePlateFilter.toLowerCase()))
     : items;

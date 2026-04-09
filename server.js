@@ -62,6 +62,16 @@ const DEFAULT_BANK_BALANCE = 5_000_000;
 const SALARY_BASE = 250_000;
 const SALARY_TAX = 35_000;
 const SALARY_NET = SALARY_BASE - SALARY_TAX;
+const SALARY_TAX_BRACKETS = [
+  { from: 0, to: 908_469, factor: 0, deduction: 0 },
+  { from: 908_469.01, to: 2_018_820, factor: 0.04, deduction: 36_338.76 },
+  { from: 2_018_820.01, to: 3_364_700, factor: 0.08, deduction: 117_091.56 },
+  { from: 3_364_700.01, to: 4_710_580, factor: 0.135, deduction: 302_150.06 },
+  { from: 4_710_580.01, to: 6_056_460, factor: 0.23, deduction: 749_655.16 },
+  { from: 6_056_460.01, to: 8_075_280, factor: 0.304, deduction: 1_197_833.2 },
+  { from: 8_075_280.01, to: 10_094_100, factor: 0.35, deduction: 1_569_296.08 },
+  { from: 10_094_100.01, to: Number.POSITIVE_INFINITY, factor: 0.4, deduction: 2_074_001.08 },
+];
 const SALARY_COOLDOWN_MS = 15 * 24 * 60 * 60 * 1000;
 const VEHICLE_INSCRIPTION_MIN = 45_000;
 const VEHICLE_PLATE_FEE = 38_000;
@@ -1047,46 +1057,92 @@ function createUserSession(user) {
   return sessionId;
 }
 
-function resolveSalaryProfile(roleNames = [], roleIds = []) {
+function calculateSalaryTax(base) {
+  const taxable = Math.max(0, Number(base || 0));
+  const bracket =
+    SALARY_TAX_BRACKETS.find((item) => taxable >= item.from && taxable <= item.to) ||
+    SALARY_TAX_BRACKETS[SALARY_TAX_BRACKETS.length - 1];
+  const tax = taxable * Number(bracket.factor || 0) - Number(bracket.deduction || 0);
+  return Math.max(0, Math.round(tax));
+}
+
+function collectSalaryEntries(roleNames = [], roleIds = []) {
   const normalizedRoles = roleNames.map((role) => normalizeLookup(role));
   const normalizedRoleIds = roleIds.map((roleId) => String(roleId || "").trim()).filter(Boolean);
-  let bestMatch = null;
+  const entries = [];
+  const seen = new Set();
 
   const overrides = readSalaryRoleOverrides();
   for (const override of overrides) {
-    if (!normalizedRoleIds.includes(String(override.role_id || "").trim())) continue;
-    if (!bestMatch || Number(override.base || 0) > Number(bestMatch.base || 0)) {
-      bestMatch = {
-        rank: String(override.rank || override.role_name || "Cargo personalizado"),
-        base: Number(override.base || 0),
-      };
-    }
+    const roleId = String(override.role_id || "").trim();
+    if (!roleId || !normalizedRoleIds.includes(roleId)) continue;
+    const key = `override:${roleId}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    entries.push({
+      rank: String(override.rank || override.role_name || "Cargo personalizado"),
+      base: Number(override.base || 0),
+      source: "override",
+    });
   }
 
   for (const role of normalizedRoles) {
     const profile = SALARY_ROLE_MAP.get(role);
     if (!profile) continue;
-    if (!bestMatch || Number(profile.base || 0) > Number(bestMatch.base || 0)) {
-      bestMatch = profile;
-    }
+    const key = `map:${role}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    entries.push({
+      rank: String(profile.rank || role),
+      base: Number(profile.base || 0),
+      source: "map",
+    });
   }
 
   for (const role of normalizedRoles) {
     for (const matcher of SALARY_ROLE_MATCHERS) {
       if (!role.includes(normalizeLookup(matcher.match))) continue;
-      if (!bestMatch || Number(matcher.base || 0) > Number(bestMatch.base || 0)) {
-        bestMatch = matcher;
-      }
+      const key = `match:${matcher.match}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      entries.push({
+        rank: String(matcher.rank || matcher.match),
+        base: Number(matcher.base || 0),
+        source: "match",
+      });
     }
   }
 
-  const base = Number(bestMatch?.base || SALARY_BASE);
-  const tax = Math.min(SALARY_TAX, base);
+  return entries.filter((entry) => Number(entry.base || 0) > 0);
+}
+
+function resolveSalaryProfile(roleNames = [], roleIds = []) {
+  const entries = collectSalaryEntries(roleNames, roleIds);
+  if (!entries.length) {
+    const base = Number(SALARY_BASE);
+    const tax = calculateSalaryTax(base);
+    return {
+      rank: "Sin cargo asignado",
+      base,
+      tax,
+      net: Math.max(0, base - tax),
+      roles: [],
+    };
+  }
+
+  const base = entries.reduce((total, entry) => total + Number(entry.base || 0), 0);
+  const tax = calculateSalaryTax(base);
+  const rank =
+    entries.length === 1
+      ? entries[0].rank
+      : `Multiples cargos (${entries.length})`;
+
   return {
-    rank: bestMatch?.rank || "Sin cargo asignado",
+    rank,
     base,
     tax,
     net: Math.max(0, base - tax),
+    roles: entries.map((entry) => ({ rank: entry.rank, base: entry.base })),
   };
 }
 
@@ -1097,6 +1153,7 @@ function applySalaryProfile(bank, roleNames = [], roleIds = []) {
     base: salary.base,
     tax: salary.tax,
     net: salary.net,
+    roles: salary.roles || [],
   };
   return bank.salary;
 }
@@ -1208,8 +1265,8 @@ function createDefaultBankRecord(userId, allRecords) {
     casino_balance: 0,
     salary: {
       base: SALARY_BASE,
-      tax: SALARY_TAX,
-      net: SALARY_NET,
+      tax: calculateSalaryTax(SALARY_BASE),
+      net: Math.max(0, SALARY_BASE - calculateSalaryTax(SALARY_BASE)),
     },
     last_salary_claim_at: 0,
   };
@@ -1467,8 +1524,8 @@ function ensureBankRecordShape(bank, allRecords) {
     bank.salary = {
       rank: "Sin cargo asignado",
       base: SALARY_BASE,
-      tax: SALARY_TAX,
-      net: SALARY_NET,
+      tax: calculateSalaryTax(SALARY_BASE),
+      net: Math.max(0, SALARY_BASE - calculateSalaryTax(SALARY_BASE)),
     };
     changed = true;
   }
@@ -3633,6 +3690,23 @@ const server = http.createServer(async (request, response) => {
       }
 
       const claim = bank.pending_claims[claimIndex];
+      const isVehicle = (claim.category || "vehiculos") === "vehiculos";
+      const customColor = String(incoming.vehicle_color || "").trim();
+      const customPlate = normalizeVehiclePlate(incoming.vehicle_plate || "");
+      if (isVehicle) {
+        if (!customColor) {
+          sendJson(response, 400, { error: "vehicle_color_required" });
+          return;
+        }
+        if (!customPlate) {
+          sendJson(response, 400, { error: "invalid_plate_format" });
+          return;
+        }
+        if (isPlateInUse(bankRecords, customPlate)) {
+          sendJson(response, 400, { error: "plate_in_use" });
+          return;
+        }
+      }
       bank.pending_claims.splice(claimIndex, 1);
       bank.inventory.push({
         id: crypto.randomBytes(8).toString("hex"),
@@ -3642,7 +3716,9 @@ const server = http.createServer(async (request, response) => {
         image: claim.image,
         price: Number(claim.price || 0),
         category: claim.category || "vehiculos",
-        vehicle_record: (claim.category || "vehiculos") === "vehiculos" ? createVehicleRecord(Number(claim.price || 0)) : null,
+        vehicle_record: isVehicle
+          ? createVehicleRecord(Number(claim.price || 0), { color: customColor, plate: customPlate })
+          : null,
         purchased_at: new Date().toISOString(),
         source: "admin_grant_claim",
       });

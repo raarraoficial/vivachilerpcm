@@ -554,7 +554,16 @@ function renderPendingClaims(items = []) {
             <p>${item.description || "Entrega administrativa pendiente."}</p>
             <p class="transaction-item-meta">Asignado el ${formatDateTime(item.granted_at)}</p>
             <div class="portal-actions">
-              <button type="button" class="portal-button primary" data-claim-store-item="${item.id}">Reclamar item</button>
+              <button
+                type="button"
+                class="portal-button primary"
+                data-claim-store-item="${item.id}"
+                data-claim-name="${String(item.name || "").replace(/"/g, "&quot;")}"
+                data-claim-description="${String(item.description || "").replace(/"/g, "&quot;")}"
+                data-claim-image="${String(item.image || "").replace(/"/g, "&quot;")}"
+                data-claim-price="${Number(item.price || 0)}"
+                data-claim-category="${String(item.category || "vehiculos").replace(/"/g, "&quot;")}"
+              >Reclamar item</button>
             </div>
           </div>
         </article>
@@ -563,26 +572,18 @@ function renderPendingClaims(items = []) {
     .join("");
 
   storeClaimsGridNode.querySelectorAll("[data-claim-store-item]").forEach((button) => {
-    button.addEventListener("click", async () => {
-      try {
-        const response = await fetch("/api/store/claim", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ claim_id: button.dataset.claimStoreItem }),
-        });
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.error || "claim_failed");
-        renderBank(data.bank);
-        playPurchaseSound();
-        showPurchaseTicket(`Reclamaste ${data.claimed_item?.name || "tu item"} correctamente.`);
-        setFeedback(bankActionFeedback, `Entrega reclamada: ${data.claimed_item?.name || "item"}.`, false);
-      } catch (error) {
-        const messageMap = {
-          claim_not_found: "Esa entrega ya no esta disponible.",
-          bank_not_found: "Primero debes crear tu cuenta bancaria.",
-        };
-        setFeedback(bankActionFeedback, messageMap[error.message] || "No se pudo reclamar el item.", true);
-      }
+    button.addEventListener("click", () => {
+      const item = {
+        id: button.dataset.claimStoreItem,
+        name: button.dataset.claimName,
+        description: button.dataset.claimDescription,
+        image: button.dataset.claimImage,
+        price: Number(button.dataset.claimPrice || 0),
+        category: button.dataset.claimCategory || "vehiculos",
+        claim_id: button.dataset.claimStoreItem,
+        source: "admin_claim",
+      };
+      openStoreConfirmation(item);
     });
   });
 }
@@ -1310,15 +1311,40 @@ storeConfirmButton?.addEventListener("click", async () => {
   if (!pendingStoreItem) return;
 
   try {
-    const payload = { item_id: pendingStoreItem.id };
-    if (String(pendingStoreItem.category || "vehiculos").toLowerCase() === "vehiculos") {
-      payload.vehicle_color = String(storeConfirmationColorInput?.value || "").trim();
-      payload.vehicle_plate = String(storeConfirmationPlateInput?.value || "").trim();
+    const isVehicle = String(pendingStoreItem.category || "vehiculos").toLowerCase() === "vehiculos";
+    const vehiclePayload = isVehicle
+      ? {
+          vehicle_color: String(storeConfirmationColorInput?.value || "").trim(),
+          vehicle_plate: String(storeConfirmationPlateInput?.value || "").trim(),
+        }
+      : {};
+
+    if (pendingStoreItem.claim_id) {
+      const response = await fetch("/api/store/claim", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          claim_id: pendingStoreItem.claim_id,
+          ...vehiclePayload,
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "claim_failed");
+      renderBank(data.bank);
+      playPurchaseSound();
+      showPurchaseTicket(`Reclamaste ${data.claimed_item?.name || "tu item"} correctamente.`);
+      setFeedback(bankActionFeedback, `Entrega reclamada: ${data.claimed_item?.name || "item"}.`, false);
+      closeStoreConfirmation();
+      return;
     }
+
     const response = await fetch("/api/store/buy", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
+      body: JSON.stringify({
+        item_id: pendingStoreItem.id,
+        ...vehiclePayload,
+      }),
     });
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || "buy_failed");
@@ -1335,6 +1361,7 @@ storeConfirmButton?.addEventListener("click", async () => {
       vehicle_color_required: "Debes elegir un color para el vehiculo.",
       invalid_plate_format: "La patente debe tener formato ABC-123.",
       plate_in_use: "Esa patente ya esta en uso.",
+      claim_not_found: "Esa entrega ya no esta disponible.",
     };
     if (storeConfirmationDescription) {
       storeConfirmationDescription.textContent = messageMap[error.message] || "No se pudo completar la compra.";
