@@ -10,6 +10,7 @@ const adminBalanceForm = document.querySelector("[data-admin-balance-form]");
 const adminBulkBalanceForm = document.querySelector("[data-admin-bulk-balance-form]");
 const adminSalaryRoleForm = document.querySelector("[data-admin-salary-role-form]");
 const adminSalaryRoleList = document.querySelector("[data-admin-salary-role-list]");
+const adminSalaryRoleCatalog = document.querySelector("[data-admin-salary-role-catalog]");
 const adminIdentityForm = document.querySelector("[data-admin-identity-form]");
 const adminDeleteForm = document.querySelector("[data-admin-delete-form]");
 const adminStoreForm = document.querySelector("[data-admin-store-form]");
@@ -78,12 +79,50 @@ function renderSalaryRoleOverrides(items = []) {
         const data = await parseJsonSafe(response);
         if (!response.ok) throw new Error(data.error || "salary_role_delete_failed");
         renderSalaryRoleOverrides(data.items || []);
+        renderSalaryRoleCatalog(data.catalog || []);
         setFeedback("Sueldo por rol eliminado correctamente.", "success");
       } catch {
         setFeedback("No se pudo quitar el sueldo por rol.", "error");
       }
     });
   });
+}
+
+function renderSalaryRoleCatalog(items = []) {
+  if (!adminSalaryRoleCatalog) return;
+  if (!items.length) {
+    adminSalaryRoleCatalog.innerHTML = "<p class=\"admin-user\">Todavia no hay roles con sueldos registrados.</p>";
+    return;
+  }
+
+  adminSalaryRoleCatalog.innerHTML = items
+    .map((item) => {
+      const label = escapeHtml(item.label || "Cargo");
+      const amount = Number(item.base || 0).toLocaleString("es-CL");
+      const source = escapeHtml(item.source || "sistema");
+      const roleInfo = item.role_id
+        ? `ID: ${escapeHtml(item.role_id)}`
+        : item.role_name
+          ? `Rol: ${escapeHtml(item.role_name)}`
+          : "Rol del sistema";
+      return `
+        <article class="admin-store-item admin-salary-role-item">
+          <div class="admin-store-item-content">
+            <div class="admin-store-item-summary">
+              <div>
+                <h3>${label}</h3>
+                <p>${roleInfo}</p>
+                <p><strong>$${amount}</strong></p>
+              </div>
+              <div class="admin-store-item-actions">
+                <span class="admin-pill">${source}</span>
+              </div>
+            </div>
+          </div>
+        </article>
+      `;
+    })
+    .join("");
 }
 
 function setAdminTab(tabName) {
@@ -407,6 +446,7 @@ async function loadSession() {
     fillMaintenanceForm(payload.maintenance || {});
     renderStoreItems(payload.storeItems || []);
     renderSalaryRoleOverrides(payload.salaryRoleOverrides || []);
+    renderSalaryRoleCatalog(payload.salaryRoleCatalog || []);
     if (adminTabButtons.length) {
       const activeButton = Array.from(adminTabButtons).find((button) => button.classList.contains("is-active"));
       setAdminTab(activeButton?.dataset.adminTabButton || adminTabButtons[0].dataset.adminTabButton);
@@ -618,6 +658,7 @@ adminSalaryRoleForm?.addEventListener("submit", async (event) => {
     const data = await parseJsonSafe(response);
     if (!response.ok) throw new Error(data.error || "salary_role_failed");
     renderSalaryRoleOverrides(data.items || []);
+    renderSalaryRoleCatalog(data.catalog || []);
     adminSalaryRoleForm.reset();
     setFeedback("Sueldo por ID de rol guardado correctamente.", "success");
   } catch {

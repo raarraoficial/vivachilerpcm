@@ -582,6 +582,59 @@ function writeSalaryRoleOverrides(items) {
   writeState("salary_role_overrides", items);
 }
 
+function buildSalaryRoleCatalog() {
+  const overrides = readSalaryRoleOverrides();
+  const catalog = [];
+  const seen = new Set();
+
+  overrides.forEach((item) => {
+    const base = Number(item.base || 0);
+    if (!base) return;
+    const label = String(item.rank || item.role_name || "Cargo personalizado");
+    const key = `override:${label}:${base}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    catalog.push({
+      label,
+      base,
+      source: "override",
+      role_id: String(item.role_id || ""),
+    });
+  });
+
+  SALARY_ROLE_MAP.forEach((value, key) => {
+    const base = Number(value.base || 0);
+    if (!base) return;
+    const label = String(value.rank || key);
+    const dedupeKey = `map:${label}:${base}`;
+    if (seen.has(dedupeKey)) return;
+    seen.add(dedupeKey);
+    catalog.push({
+      label,
+      base,
+      source: "map",
+      role_name: key,
+    });
+  });
+
+  SALARY_ROLE_MATCHERS.forEach((matcher) => {
+    const base = Number(matcher.base || 0);
+    if (!base) return;
+    const label = String(matcher.rank || matcher.match);
+    const dedupeKey = `matcher:${label}:${base}`;
+    if (seen.has(dedupeKey)) return;
+    seen.add(dedupeKey);
+    catalog.push({
+      label,
+      base,
+      source: "matcher",
+      role_name: matcher.match,
+    });
+  });
+
+  return catalog.sort((a, b) => Number(b.base || 0) - Number(a.base || 0));
+}
+
 function hydrateKameFleetImages(items) {
   const storeItems = readStoreItems();
   return items.map((item) => {
@@ -1850,6 +1903,7 @@ const server = http.createServer(async (request, response) => {
       storeItems: readStoreItems(),
       maintenance: readMaintenanceState(),
       salaryRoleOverrides: readSalaryRoleOverrides(),
+      salaryRoleCatalog: buildSalaryRoleCatalog(),
     });
     return;
   }
@@ -2510,7 +2564,7 @@ const server = http.createServer(async (request, response) => {
         items.unshift(nextItem);
       }
       writeSalaryRoleOverrides(items);
-      sendJson(response, 200, { ok: true, items });
+      sendJson(response, 200, { ok: true, items, catalog: buildSalaryRoleCatalog() });
     } catch {
       sendJson(response, 400, { error: "invalid_payload" });
     }
@@ -2536,7 +2590,7 @@ const server = http.createServer(async (request, response) => {
       const items = readSalaryRoleOverrides();
       const nextItems = items.filter((item) => String(item.role_id || "").trim() !== roleId);
       writeSalaryRoleOverrides(nextItems);
-      sendJson(response, 200, { ok: true, items: nextItems });
+      sendJson(response, 200, { ok: true, items: nextItems, catalog: buildSalaryRoleCatalog() });
     } catch {
       sendJson(response, 400, { error: "invalid_payload" });
     }
