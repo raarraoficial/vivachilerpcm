@@ -52,11 +52,18 @@ const USER_SESSIONS = new Map();
 const STATE_CACHE = new Map();
 const STATE_PERSIST_QUEUES = new Map();
 const OAUTH_RATE_LIMITS = new Map();
-const OAUTH_EXCHANGE_MIN_INTERVAL_MS = 2000;
+const OAUTH_EXCHANGE_MIN_INTERVAL_MS = 6500;
 const OAUTH_QUEUE_MAX = 100;
 let OAUTH_LAST_EXCHANGE_AT = 0;
 let OAUTH_QUEUE_SIZE = 0;
 let OAUTH_QUEUE = Promise.resolve();
+const GUILD_ROLES_CACHE_TTL_MS = 10 * 60 * 1000;
+const GUILD_MEMBER_CACHE_TTL_MS = 45 * 1000;
+let GUILD_ROLES_CACHE = {
+  expiresAt: 0,
+  items: null,
+};
+const GUILD_MEMBER_CACHE = new Map();
 const STATS_TOKEN = String(process.env.STATS_BOT_TOKEN || "").trim();
 const DEFAULT_BANK_BALANCE = 5_000_000;
 const SALARY_BASE = 250_000;
@@ -1035,13 +1042,33 @@ async function exchangeDiscordCode(code, redirectUri) {
     redirect_uri: redirectUri,
   });
 
-  return discordFetch("https://discord.com/api/oauth2/token", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body,
-  }, "discord_token_exchange");
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    const response = await fetch("https://discord.com/api/oauth2/token", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body,
+    });
+
+    if (response.ok) {
+      return response.json();
+    }
+
+    const text = await response.text();
+    if (response.status === 429 && attempt < 2) {
+      const retryAfterHeader = Number(response.headers.get("retry-after"));
+      const retryAfterMs = Number.isFinite(retryAfterHeader) && retryAfterHeader > 0
+        ? Math.ceil(retryAfterHeader * 1000)
+        : 12000 + (attempt * 4000);
+      await new Promise((resolve) => setTimeout(resolve, retryAfterMs));
+      continue;
+    }
+
+    throw new Error(`discord_token_exchange_failed:${response.status}:${text}`);
+  }
+
+  throw new Error("discord_token_exchange_failed:retry_exhausted");
 }
 
 async function fetchDiscordUser(accessToken) {
@@ -1053,19 +1080,41 @@ async function fetchDiscordUser(accessToken) {
 }
 
 async function fetchGuildRoles() {
-  return discordFetch(`https://discord.com/api/guilds/${env.discordGuildId}/roles`, {
+  if (GUILD_ROLES_CACHE.items && GUILD_ROLES_CACHE.expiresAt > Date.now()) {
+    return GUILD_ROLES_CACHE.items;
+  }
+
+  const roles = await discordFetch(`https://discord.com/api/guilds/${env.discordGuildId}/roles`, {
     headers: {
       Authorization: `Bot ${env.discordBotToken}`,
     },
   }, "discord_fetch_roles");
+
+  GUILD_ROLES_CACHE = {
+    items: roles,
+    expiresAt: Date.now() + GUILD_ROLES_CACHE_TTL_MS,
+  };
+  return roles;
 }
 
 async function fetchGuildMember(userId) {
-  return discordFetch(`https://discord.com/api/guilds/${env.discordGuildId}/members/${userId}`, {
+  const cacheKey = String(userId || "").trim();
+  const cached = GUILD_MEMBER_CACHE.get(cacheKey);
+  if (cached && cached.expiresAt > Date.now()) {
+    return cached.item;
+  }
+
+  const member = await discordFetch(`https://discord.com/api/guilds/${env.discordGuildId}/members/${userId}`, {
     headers: {
       Authorization: `Bot ${env.discordBotToken}`,
     },
   }, "discord_fetch_member");
+
+  GUILD_MEMBER_CACHE.set(cacheKey, {
+    item: member,
+    expiresAt: Date.now() + GUILD_MEMBER_CACHE_TTL_MS,
+  });
+  return member;
 }
 
 async function verifyAllowedRole(userId) {
