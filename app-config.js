@@ -1,7 +1,7 @@
 const currentOrigin = window.location.origin;
 const isRenderFrontend = /vivachilerpcm\.onrender\.com$/i.test(window.location.hostname);
 const defaultAppBase = isRenderFrontend ? "https://vivachilerpcm.onrender.com" : currentOrigin;
-const defaultBackendBase = isRenderFrontend ? "https://vivachile-backend.onrender.com" : "";
+const defaultBackendBase = isRenderFrontend ? "https://vivachile-backend2.onrender.com" : "";
 
 window.VCRP_CONFIG = Object.assign(
   {
