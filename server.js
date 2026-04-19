@@ -1147,8 +1147,33 @@ function getAdminSession(request) {
     cookies.vcrp_admin_session ||
     String(request.headers["x-vcrp-admin-session"] || "").trim() ||
     String(requestUrl.searchParams.get("admin_session") || "").trim();
-  if (!sessionId) return null;
-  return ADMIN_SESSIONS.get(sessionId) || null;
+  if (sessionId) {
+    const directSession = ADMIN_SESSIONS.get(sessionId) || null;
+    if (directSession) {
+      return directSession;
+    }
+  }
+
+  const portalSession = getUserSession(request);
+  if (!portalSession) return null;
+
+  const portalRoleNames = Array.isArray(portalSession.user?.role_names)
+    ? portalSession.user.role_names.map((role) => normalizeLookup(role))
+    : [];
+  if (!hasAllowedAdminRole(portalRoleNames)) {
+    return null;
+  }
+
+  return {
+    user: {
+      id: portalSession.user.id,
+      username: portalSession.user.username,
+      global_name: portalSession.user.global_name || portalSession.user.username,
+      role_names: portalSession.user.role_names || [],
+      via_portal_bypass: true,
+    },
+    createdAt: portalSession.createdAt,
+  };
 }
 
 function getUserSession(request) {
@@ -1291,9 +1316,12 @@ async function fetchGuildMember(userId) {
 
 async function verifyAllowedRole(userId) {
   const roleNames = (await fetchMemberRoles(userId)).map((role) => role.name);
+  return hasAllowedAdminRole(roleNames);
+}
+
+function hasAllowedAdminRole(roleNames = []) {
   const extraRoles = ["director ejecutivo", "director operativo"].map((role) => normalizeLookup(role));
   const allowedRoles = [...env.allowedRoleNames, ...extraRoles];
-
   return allowedRoles.some((name) => roleNames.includes(name));
 }
 
