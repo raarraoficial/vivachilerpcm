@@ -1123,8 +1123,20 @@ function getOAuthCooldownSeconds() {
   return remaining > 0 ? Math.ceil(remaining / 1000) : 0;
 }
 
+function normalizeRetryAfterSeconds(value, fallbackSeconds = 12) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed) || parsed <= 0) {
+    return fallbackSeconds;
+  }
+
+  // Algunos proveedores devuelven milisegundos o valores absurdos. Aqui los
+  // llevamos a una ventana razonable para no dejar a la gente "atrapada".
+  const seconds = parsed > 1000 ? Math.ceil(parsed / 1000) : Math.ceil(parsed);
+  return Math.max(5, Math.min(25, seconds));
+}
+
 function markOAuthDiscordCooldown(retryAfterSeconds = 12) {
-  const cooldownMs = (Math.max(5, Number(retryAfterSeconds) || 12) + 4) * 1000;
+  const cooldownMs = (normalizeRetryAfterSeconds(retryAfterSeconds, 12) + 4) * 1000;
   OAUTH_DISCORD_COOLDOWN_UNTIL = Math.max(OAUTH_DISCORD_COOLDOWN_UNTIL, Date.now() + cooldownMs);
 }
 
@@ -1198,11 +1210,9 @@ async function exchangeDiscordCode(code, redirectUri) {
   const text = await response.text();
   if (response.status === 429) {
     const error = new Error(`discord_token_exchange_failed:${response.status}:${text}`);
-    const retryAfterHeader = Number(response.headers.get("retry-after"));
+    const retryAfterHeader = response.headers.get("retry-after");
     error.code = "discord_token_exchange_rate_limited";
-    error.retryAfter = Number.isFinite(retryAfterHeader) && retryAfterHeader > 0
-      ? Math.max(5, Math.ceil(retryAfterHeader))
-      : 12;
+    error.retryAfter = normalizeRetryAfterSeconds(retryAfterHeader, 12);
     markOAuthDiscordCooldown(error.retryAfter);
     throw error;
   }
