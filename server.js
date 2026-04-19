@@ -987,6 +987,133 @@ function clearCookie(response, name) {
   response.setHeader("Set-Cookie", parts.join("; "));
 }
 
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+function sendOAuthWaitPage(response, options = {}) {
+  const retryAfter = Math.max(3, Number(options.retryAfter || 10));
+  const title = escapeHtml(options.title || "Estamos completando tu acceso");
+  const message = escapeHtml(options.message || "Discord esta tardando un poco en responder. Reintentaremos automaticamente.");
+  const retryUrl = escapeHtml(options.retryUrl || "/");
+  const html = `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${title}</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #07111a;
+      --panel: rgba(12, 22, 34, 0.92);
+      --line: rgba(255,255,255,0.12);
+      --text: #eef4fa;
+      --muted: #b7c5d4;
+      --accent: #6dd3ff;
+      --accent-strong: #1ba6e2;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      font-family: Arial, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(109,211,255,0.14), transparent 26%),
+        linear-gradient(135deg, #07111a 0%, #02060b 100%);
+      color: var(--text);
+    }
+    .card {
+      width: min(100%, 520px);
+      padding: 28px;
+      border-radius: 24px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      box-shadow: 0 24px 64px rgba(0,0,0,0.4);
+    }
+    h1 {
+      margin: 0 0 14px;
+      font-size: clamp(1.9rem, 5vw, 2.4rem);
+      line-height: 1.05;
+    }
+    p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.75;
+      font-size: 1rem;
+    }
+    .timer {
+      margin-top: 18px;
+      color: var(--accent);
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+    .actions {
+      margin-top: 22px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0 18px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      color: var(--text);
+      text-decoration: none;
+    }
+    .primary {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
+      color: #03121b;
+      border-color: transparent;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>${title}</h1>
+    <p>${message}</p>
+    <p class="timer">Reintentando en <span id="oauth-countdown">${retryAfter}</span> segundos...</p>
+    <div class="actions">
+      <a class="primary" href="${retryUrl}">Reintentar ahora</a>
+    </div>
+  </main>
+  <script>
+    (function () {
+      var remaining = ${retryAfter};
+      var countdownNode = document.getElementById("oauth-countdown");
+      var tick = function () {
+        remaining -= 1;
+        if (countdownNode && remaining >= 0) countdownNode.textContent = String(remaining);
+        if (remaining <= 0) {
+          window.location.replace(window.location.href);
+          return;
+        }
+        window.setTimeout(tick, 1000);
+      };
+      window.setTimeout(tick, 1000);
+    })();
+  </script>
+</body>
+</html>`;
+
+  response.statusCode = 200;
+  response.setHeader("Content-Type", "text/html; charset=utf-8");
+  response.end(html);
+}
+
 function getAdminSession(request) {
   const cookies = parseCookies(request);
   const requestUrl = new URL(request.url, env.publicBaseUrl || `http://localhost:${PORT}`);
@@ -1042,33 +1169,30 @@ async function exchangeDiscordCode(code, redirectUri) {
     redirect_uri: redirectUri,
   });
 
-  for (let attempt = 0; attempt < 3; attempt += 1) {
-    const response = await fetch("https://discord.com/api/oauth2/token", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body,
-    });
+  const response = await fetch("https://discord.com/api/oauth2/token", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body,
+  });
 
-    if (response.ok) {
-      return response.json();
-    }
-
-    const text = await response.text();
-    if (response.status === 429 && attempt < 2) {
-      const retryAfterHeader = Number(response.headers.get("retry-after"));
-      const retryAfterMs = Number.isFinite(retryAfterHeader) && retryAfterHeader > 0
-        ? Math.ceil(retryAfterHeader * 1000)
-        : 12000 + (attempt * 4000);
-      await new Promise((resolve) => setTimeout(resolve, retryAfterMs));
-      continue;
-    }
-
-    throw new Error(`discord_token_exchange_failed:${response.status}:${text}`);
+  if (response.ok) {
+    return response.json();
   }
 
-  throw new Error("discord_token_exchange_failed:retry_exhausted");
+  const text = await response.text();
+  if (response.status === 429) {
+    const error = new Error(`discord_token_exchange_failed:${response.status}:${text}`);
+    const retryAfterHeader = Number(response.headers.get("retry-after"));
+    error.code = "discord_token_exchange_rate_limited";
+    error.retryAfter = Number.isFinite(retryAfterHeader) && retryAfterHeader > 0
+      ? Math.max(5, Math.ceil(retryAfterHeader))
+      : 12;
+    throw error;
+  }
+
+  throw new Error(`discord_token_exchange_failed:${response.status}:${text}`);
 }
 
 async function fetchDiscordUser(accessToken) {
@@ -4973,6 +5097,15 @@ const server = http.createServer(async (request, response) => {
       setCookie(response, "vcrp_admin_session", sessionId, { sameSite: cookieOptions.sameSite, secure: cookieOptions.secure, maxAge: 60 * 60 * 8 });
       redirect(response, `${env.frontendOrigin || env.publicBaseUrl}/admin.html?admin_session=${encodeURIComponent(sessionId)}`);
     } catch (error) {
+      if (error?.code === "discord_token_exchange_rate_limited") {
+        sendOAuthWaitPage(response, {
+          title: "Discord esta saturado por un momento",
+          message: "Ya recibimos tu autorizacion, pero Discord puso una pausa breve al intercambio de sesion. Vamos a reintentar solos en unos segundos.",
+          retryAfter: error.retryAfter || 12,
+          retryUrl: request.url || "/auth/discord/callback",
+        });
+        return;
+      }
       if (error?.code === "oauth_queue_overflow" || error?.message === "oauth_queue_overflow") {
         response.setHeader("Retry-After", "5");
         sendText(response, 429, "Hay demasiadas personas iniciando sesion. Espera unos segundos e intenta otra vez.");
@@ -5057,6 +5190,15 @@ const server = http.createServer(async (request, response) => {
       setCookie(response, "vcrp_user_session", sessionId, { sameSite: cookieOptions.sameSite, secure: cookieOptions.secure, maxAge: 60 * 60 * 8 });
       redirect(response, `${env.frontendOrigin || env.publicBaseUrl}/portal.html?portal_session=${encodeURIComponent(sessionId)}`);
     } catch (error) {
+      if (error?.code === "discord_token_exchange_rate_limited") {
+        sendOAuthWaitPage(response, {
+          title: "Estamos terminando tu ingreso",
+          message: "Discord puso una pausa breve al login del portal. Te dejamos en una lista de espera y vamos a reintentarlo automaticamente.",
+          retryAfter: error.retryAfter || 12,
+          retryUrl: request.url || "/auth/discord/portal-callback",
+        });
+        return;
+      }
       if (error?.code === "oauth_queue_overflow" || error?.message === "oauth_queue_overflow") {
         response.setHeader("Retry-After", "5");
         sendText(response, 429, "Hay demasiadas personas iniciando sesion. Espera unos segundos e intenta otra vez.");
