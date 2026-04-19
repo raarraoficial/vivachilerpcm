@@ -54,9 +54,13 @@ const STATE_PERSIST_QUEUES = new Map();
 const OAUTH_RATE_LIMITS = new Map();
 const OAUTH_EXCHANGE_MIN_INTERVAL_MS = 6500;
 const OAUTH_QUEUE_MAX = 100;
+const OAUTH_PREAUTH_QUEUE_THRESHOLD = 6;
+const OAUTH_EXCHANGE_CACHE_TTL_MS = 30 * 1000;
 let OAUTH_LAST_EXCHANGE_AT = 0;
 let OAUTH_QUEUE_SIZE = 0;
 let OAUTH_QUEUE = Promise.resolve();
+let OAUTH_DISCORD_COOLDOWN_UNTIL = 0;
+const OAUTH_EXCHANGE_CACHE = new Map();
 const GUILD_ROLES_CACHE_TTL_MS = 10 * 60 * 1000;
 const GUILD_MEMBER_CACHE_TTL_MS = 45 * 1000;
 let GUILD_ROLES_CACHE = {
@@ -1114,6 +1118,16 @@ function sendOAuthWaitPage(response, options = {}) {
   response.end(html);
 }
 
+function getOAuthCooldownSeconds() {
+  const remaining = OAUTH_DISCORD_COOLDOWN_UNTIL - Date.now();
+  return remaining > 0 ? Math.ceil(remaining / 1000) : 0;
+}
+
+function markOAuthDiscordCooldown(retryAfterSeconds = 12) {
+  const cooldownMs = (Math.max(5, Number(retryAfterSeconds) || 12) + 4) * 1000;
+  OAUTH_DISCORD_COOLDOWN_UNTIL = Math.max(OAUTH_DISCORD_COOLDOWN_UNTIL, Date.now() + cooldownMs);
+}
+
 function getAdminSession(request) {
   const cookies = parseCookies(request);
   const requestUrl = new URL(request.url, env.publicBaseUrl || `http://localhost:${PORT}`);
@@ -1189,10 +1203,34 @@ async function exchangeDiscordCode(code, redirectUri) {
     error.retryAfter = Number.isFinite(retryAfterHeader) && retryAfterHeader > 0
       ? Math.max(5, Math.ceil(retryAfterHeader))
       : 12;
+    markOAuthDiscordCooldown(error.retryAfter);
     throw error;
   }
 
   throw new Error(`discord_token_exchange_failed:${response.status}:${text}`);
+}
+
+async function exchangeDiscordCodeCached(code, redirectUri) {
+  const cacheKey = `${redirectUri}:${code}`;
+  const cached = OAUTH_EXCHANGE_CACHE.get(cacheKey);
+  if (cached && cached.expiresAt > Date.now()) {
+    return cached.promise;
+  }
+
+  const promise = exchangeDiscordCode(code, redirectUri).finally(() => {
+    setTimeout(() => {
+      const latest = OAUTH_EXCHANGE_CACHE.get(cacheKey);
+      if (latest && latest.promise === promise) {
+        OAUTH_EXCHANGE_CACHE.delete(cacheKey);
+      }
+    }, OAUTH_EXCHANGE_CACHE_TTL_MS);
+  });
+
+  OAUTH_EXCHANGE_CACHE.set(cacheKey, {
+    expiresAt: Date.now() + OAUTH_EXCHANGE_CACHE_TTL_MS,
+    promise,
+  });
+  return promise;
 }
 
 async function fetchDiscordUser(accessToken) {
@@ -5044,6 +5082,17 @@ const server = http.createServer(async (request, response) => {
       return;
     }
 
+    const cooldownSeconds = getOAuthCooldownSeconds();
+    if (cooldownSeconds || OAUTH_QUEUE_SIZE >= OAUTH_PREAUTH_QUEUE_THRESHOLD) {
+      sendOAuthWaitPage(response, {
+        title: "Estamos preparando tu acceso",
+        message: "En este momento estamos regulando los ingresos para no saturar el login con Discord. Apenas se despeje, te enviaremos automaticamente.",
+        retryAfter: cooldownSeconds || 8,
+        retryUrl: request.url || "/auth/discord/login",
+      });
+      return;
+    }
+
     const state = crypto.createHmac("sha256", env.sessionSecret).update(String(Date.now())).digest("hex");
     const cookieOptions = getCookieSecurityOptions();
     setCookie(response, "vcrp_oauth_state", state, { sameSite: cookieOptions.sameSite, secure: cookieOptions.secure, maxAge: 600 });
@@ -5076,7 +5125,7 @@ const server = http.createServer(async (request, response) => {
         return;
       }
 
-      const tokenData = await enqueueOAuthExchange(() => exchangeDiscordCode(code, env.discordRedirectUri));
+      const tokenData = await enqueueOAuthExchange(() => exchangeDiscordCodeCached(code, env.discordRedirectUri));
       const user = await fetchDiscordUser(tokenData.access_token);
       const allowed = await verifyAllowedRole(user.id);
 
@@ -5128,6 +5177,17 @@ const server = http.createServer(async (request, response) => {
       return;
     }
 
+    const cooldownSeconds = getOAuthCooldownSeconds();
+    if (cooldownSeconds || OAUTH_QUEUE_SIZE >= OAUTH_PREAUTH_QUEUE_THRESHOLD) {
+      sendOAuthWaitPage(response, {
+        title: "Estamos preparando tu ingreso",
+        message: "Hay bastante movimiento iniciando sesion con Discord. Esperaremos un poco aqui para que no se corte tu acceso al portal.",
+        retryAfter: cooldownSeconds || 8,
+        retryUrl: request.url || "/auth/discord/portal-login",
+      });
+      return;
+    }
+
     const state = crypto.createHmac("sha256", env.sessionSecret).update(`portal:${Date.now()}`).digest("hex");
     const cookieOptions = getCookieSecurityOptions();
     setCookie(response, "vcrp_portal_oauth_state", state, { sameSite: cookieOptions.sameSite, secure: cookieOptions.secure, maxAge: 600 });
@@ -5160,7 +5220,7 @@ const server = http.createServer(async (request, response) => {
         return;
       }
 
-      const tokenData = await enqueueOAuthExchange(() => exchangeDiscordCode(code, env.discordPortalRedirectUri));
+      const tokenData = await enqueueOAuthExchange(() => exchangeDiscordCodeCached(code, env.discordPortalRedirectUri));
       const user = await fetchDiscordUser(tokenData.access_token);
       const roles = env.discordBotToken && env.discordGuildId ? await fetchMemberRoles(user.id).catch(() => []) : [];
       const roleNames = roles.map((role) => role.name);
