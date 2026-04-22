@@ -4962,16 +4962,23 @@ const server = http.createServer(async (request, response) => {
       return;
     }
 
+    const userId = String(session.user.id || "").trim();
+    if (!userId) {
+      sendJson(response, 400, { error: "invalid_user_id" });
+      return;
+    }
+
     const bankRecords = readBankRecords();
-    const bank = bankRecords[session.user.id] || null;
+    let bank = bankRecords[userId] || null;
+    
     if (bank) {
       const roleContext = await resolveSessionRoleContext(session);
       const changed = ensureBankRecordShape(bank, bankRecords);
       applySalaryProfile(bank, roleContext.names, roleContext.ids);
       if (changed) {
-        bankRecords[session.user.id] = bank;
+        bankRecords[userId] = bank;
+        writeBankRecords(bankRecords);
       }
-      writeBankRecords(bankRecords);
     }
 
     if (bank) {
@@ -4979,7 +4986,7 @@ const server = http.createServer(async (request, response) => {
       if (overdueLoan && !overdueLoan.overdue_notified_at) {
         overdueLoan.overdue_notified_at = new Date().toISOString();
         writeBankRecords(bankRecords);
-        pushNotification(session.user.id, {
+        pushNotification(userId, {
           kind: "credit",
           title: "Credito atrasado",
           message: "Tu credito esta atrasado. Si no regularizas el pago, podrias enfrentar una demanda.",
@@ -5014,13 +5021,13 @@ const server = http.createServer(async (request, response) => {
       }
 
       const bankRecords = readBankRecords();
-    if (bankRecords[session.user.id]) {
-      ensureBankRecordShape(bankRecords[session.user.id], bankRecords);
-      const roleContext = await resolveSessionRoleContext(session);
-      applySalaryProfile(bankRecords[session.user.id], roleContext.names, roleContext.ids);
-      writeBankRecords(bankRecords);
-      sendJson(response, 200, { ok: true, bank: serializeBank(bankRecords[session.user.id]), existing: true });
-      return;
+      if (bankRecords[session.user.id]) {
+        ensureBankRecordShape(bankRecords[session.user.id], bankRecords);
+        const roleContext = await resolveSessionRoleContext(session);
+        applySalaryProfile(bankRecords[session.user.id], roleContext.names, roleContext.ids);
+        writeBankRecords(bankRecords);
+        sendJson(response, 200, { ok: true, bank: serializeBank(bankRecords[session.user.id]), existing: true });
+        return;
       }
 
       const bank = {
