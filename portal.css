@@ -480,6 +480,30 @@ body {
   margin-top: 6px;
 }
 
+.portal-login-divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 26px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.portal-login-divider::before,
+.portal-login-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.portal-login-code-form {
+  grid-template-columns: 1fr;
+  margin-top: 18px;
+}
+
 .portal-home-head {
   display: flex;
   align-items: flex-start;

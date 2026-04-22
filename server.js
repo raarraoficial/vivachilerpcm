@@ -46,6 +46,7 @@ const KAME_FLEET_PATH = path.join(DATA_ROOT, "kame-fleet.json");
 const USER_SESSIONS_PATH = path.join(DATA_ROOT, "user-sessions.json");
 const MAINTENANCE_PATH = path.join(DATA_ROOT, "maintenance.json");
 const SALARY_ROLE_OVERRIDES_PATH = path.join(DATA_ROOT, "salary-role-overrides.json");
+const PORTAL_ACCESS_CODES_PATH = path.join(DATA_ROOT, "portal-access-codes.json");
 const STORE_UPLOADS_DIR = path.join(ROOT, "assets", "tienda", "uploads");
 const ADMIN_SESSIONS = new Map();
 const USER_SESSIONS = new Map();
@@ -342,6 +343,7 @@ const STATE_DEFINITIONS = {
   store_items: { path: STORE_ITEMS_PATH, fallback: () => ([]) },
   secondhand_market: { path: SECONDHAND_MARKET_PATH, fallback: () => ([]) },
   salary_role_overrides: { path: SALARY_ROLE_OVERRIDES_PATH, fallback: () => ([]) },
+  portal_access_codes: { path: PORTAL_ACCESS_CODES_PATH, fallback: () => ([]) },
 };
 
 function hydrateUserSessionsFromStore() {
@@ -591,6 +593,65 @@ function readSalaryRoleOverrides() {
 
 function writeSalaryRoleOverrides(items) {
   writeState("salary_role_overrides", items);
+}
+
+function readPortalAccessCodes() {
+  const payload = readState("portal_access_codes");
+  return Array.isArray(payload) ? payload : [];
+}
+
+function writePortalAccessCodes(items) {
+  writeState("portal_access_codes", items);
+}
+
+function buildPortalPermissions(roleNames = []) {
+  return {
+    canModerateMarket: roleNames.includes(env.departmentAdminRoleName),
+    canAccessStaff: roleNames.includes(env.departmentAdminRoleName),
+    canManageBank: roleNames.includes(env.bankRoleName),
+    canAccessKame: roleNames.includes(env.kameRoleName),
+    canReceiveEmergencyAlerts: true,
+    isCarabineros: roleNames.includes(env.carabinerosRoleName),
+    isPdi: roleNames.includes(env.pdiRoleName),
+    isCarabinerosAdmin: roleNames.includes(env.carabinerosAdminRoleName),
+    isPdiAdmin: roleNames.includes(env.pdiAdminRoleName),
+  };
+}
+
+function serializePortalAccessCode(item) {
+  return {
+    id: String(item.id || ""),
+    code: String(item.code || ""),
+    discord_user_id: String(item.discord_user_id || ""),
+    label: String(item.label || ""),
+    note: String(item.note || ""),
+    created_at: String(item.created_at || ""),
+    redeemed_at: String(item.redeemed_at || ""),
+    redeemed_by: String(item.redeemed_by || ""),
+    revoked_at: String(item.revoked_at || ""),
+  };
+}
+
+async function createPortalSessionFromDiscordUserId(discordUserId) {
+  const member = await fetchGuildMember(discordUserId);
+  const user = member?.user || {};
+  const roles = env.discordBotToken && env.discordGuildId ? await fetchMemberRoles(discordUserId).catch(() => []) : [];
+  const roleNames = roles.map((role) => role.name);
+  const roleIds = roles.map((role) => role.id);
+  const sessionId = createUserSession({
+    id: String(discordUserId || "").trim(),
+    username: String(user.username || member?.nick || discordUserId),
+    global_name: String(user.global_name || user.username || member?.nick || discordUserId),
+    avatar: String(user.avatar || ""),
+    role_names: roleNames,
+    role_ids: roleIds,
+    permissions: buildPortalPermissions(roleNames),
+  });
+
+  return {
+    sessionId,
+    user: USER_SESSIONS.get(sessionId)?.user || null,
+  };
 }
 
 function buildSalaryRoleCatalog() {
@@ -2153,7 +2214,84 @@ const server = http.createServer(async (request, response) => {
       maintenance: readMaintenanceState(),
       salaryRoleOverrides: readSalaryRoleOverrides(),
       salaryRoleCatalog: buildSalaryRoleCatalog(),
+      portalAccessCodes: readPortalAccessCodes().map(serializePortalAccessCode),
     });
+    return;
+  }
+
+  if (url.pathname === "/api/admin/portal-access-codes" && request.method === "POST") {
+    const session = getAdminSession(request);
+    if (!session) {
+      sendJson(response, 401, { error: "unauthorized" });
+      return;
+    }
+
+    try {
+      const rawBody = await readRequestBody(request);
+      const payload = JSON.parse(rawBody || "{}");
+      const discordUserId = String(payload.discord_user_id || "").trim();
+      const label = String(payload.label || "").trim();
+      const note = String(payload.note || "").trim();
+      if (!/^\d{5,30}$/.test(discordUserId)) {
+        sendJson(response, 400, { error: "invalid_discord_user_id" });
+        return;
+      }
+
+      await fetchGuildMember(discordUserId);
+
+      const accessCodes = readPortalAccessCodes();
+      const entry = {
+        id: crypto.randomUUID(),
+        code: crypto.randomBytes(4).toString("hex").toUpperCase(),
+        discord_user_id: discordUserId,
+        label,
+        note,
+        created_at: new Date().toISOString(),
+        created_by: session.user.id,
+        redeemed_at: "",
+        redeemed_by: "",
+        revoked_at: "",
+      };
+      accessCodes.unshift(entry);
+      writePortalAccessCodes(accessCodes);
+      sendJson(response, 200, {
+        ok: true,
+        item: serializePortalAccessCode(entry),
+        items: accessCodes.map(serializePortalAccessCode),
+      });
+    } catch {
+      sendJson(response, 400, { error: "invalid_payload" });
+    }
+    return;
+  }
+
+  if (url.pathname === "/api/admin/portal-access-codes/delete" && request.method === "POST") {
+    const session = getAdminSession(request);
+    if (!session) {
+      sendJson(response, 401, { error: "unauthorized" });
+      return;
+    }
+
+    try {
+      const rawBody = await readRequestBody(request);
+      const payload = JSON.parse(rawBody || "{}");
+      const entryId = String(payload.id || "").trim();
+      const accessCodes = readPortalAccessCodes();
+      const nextItems = accessCodes.map((item) => {
+        if (String(item.id || "") !== entryId) return item;
+        return {
+          ...item,
+          revoked_at: new Date().toISOString(),
+        };
+      });
+      writePortalAccessCodes(nextItems);
+      sendJson(response, 200, {
+        ok: true,
+        items: nextItems.map(serializePortalAccessCode),
+      });
+    } catch {
+      sendJson(response, 400, { error: "invalid_payload" });
+    }
     return;
   }
 
@@ -2863,6 +3001,46 @@ const server = http.createServer(async (request, response) => {
       permissions: session.user.permissions || {},
       notifications: listNotificationsForUser(session.user.id, session.user.permissions || {}),
     });
+    return;
+  }
+
+  if (url.pathname === "/api/portal/access-code-login" && request.method === "POST") {
+    try {
+      const rawBody = await readRequestBody(request);
+      const payload = JSON.parse(rawBody || "{}");
+      const incomingCode = String(payload.code || "").trim().toUpperCase();
+      if (!incomingCode) {
+        sendJson(response, 400, { error: "invalid_access_code" });
+        return;
+      }
+
+      const accessCodes = readPortalAccessCodes();
+      const entry = accessCodes.find((item) => String(item.code || "").trim().toUpperCase() === incomingCode);
+      if (!entry || entry.revoked_at || entry.redeemed_at) {
+        sendJson(response, 404, { error: "access_code_not_found" });
+        return;
+      }
+
+      const portalSession = await createPortalSessionFromDiscordUserId(entry.discord_user_id);
+      const cookieOptions = getCookieSecurityOptions();
+      setCookie(response, "vcrp_user_session", portalSession.sessionId, {
+        sameSite: cookieOptions.sameSite,
+        secure: cookieOptions.secure,
+        maxAge: 60 * 60 * 8,
+      });
+
+      entry.redeemed_at = new Date().toISOString();
+      entry.redeemed_by = portalSession.user?.id || entry.discord_user_id;
+      writePortalAccessCodes(accessCodes);
+
+      sendJson(response, 200, {
+        ok: true,
+        session_id: portalSession.sessionId,
+        user: portalSession.user,
+      });
+    } catch (error) {
+      sendJson(response, 400, { error: error?.message || "access_code_login_failed" });
+    }
     return;
   }
 
@@ -5270,17 +5448,7 @@ const server = http.createServer(async (request, response) => {
         avatar: user.avatar || "",
         role_names: roleNames,
         role_ids: roleIds,
-        permissions: {
-          canModerateMarket: roleNames.includes(env.departmentAdminRoleName),
-          canAccessStaff: roleNames.includes(env.departmentAdminRoleName),
-          canManageBank: roleNames.includes(env.bankRoleName),
-          canAccessKame: roleNames.includes(env.kameRoleName),
-          canReceiveEmergencyAlerts: true,
-          isCarabineros: roleNames.includes(env.carabinerosRoleName),
-          isPdi: roleNames.includes(env.pdiRoleName),
-          isCarabinerosAdmin: roleNames.includes(env.carabinerosAdminRoleName),
-          isPdiAdmin: roleNames.includes(env.pdiAdminRoleName),
-        },
+        permissions: buildPortalPermissions(roleNames),
       });
 
       clearCookie(response, "vcrp_portal_oauth_state");

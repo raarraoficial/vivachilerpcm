@@ -11,6 +11,8 @@ const adminBulkBalanceForm = document.querySelector("[data-admin-bulk-balance-fo
 const adminSalaryRoleForm = document.querySelector("[data-admin-salary-role-form]");
 const adminSalaryRoleList = document.querySelector("[data-admin-salary-role-list]");
 const adminSalaryRoleCatalog = document.querySelector("[data-admin-salary-role-catalog]");
+const adminPortalAccessForm = document.querySelector("[data-admin-portal-access-form]");
+const adminPortalAccessList = document.querySelector("[data-admin-portal-access-list]");
 const adminIdentityForm = document.querySelector("[data-admin-identity-form]");
 const adminDeleteForm = document.querySelector("[data-admin-delete-form]");
 const adminStoreForm = document.querySelector("[data-admin-store-form]");
@@ -123,6 +125,68 @@ function renderSalaryRoleCatalog(items = []) {
       `;
     })
     .join("");
+}
+
+function renderPortalAccessCodes(items = []) {
+  if (!adminPortalAccessList) return;
+  const activeItems = items.filter((item) => !item.revoked_at && !item.redeemed_at);
+  if (!activeItems.length) {
+    adminPortalAccessList.innerHTML = "<p class=\"admin-user\">Todavia no hay codigos activos de contingencia.</p>";
+    return;
+  }
+
+  adminPortalAccessList.innerHTML = activeItems
+    .map(
+      (item) => `
+        <article class="admin-store-item admin-salary-role-item">
+          <div class="admin-store-item-content">
+            <div class="admin-store-item-summary">
+              <div>
+                <h3>Codigo ${escapeHtml(item.code || "")}</h3>
+                <p>Discord ID: ${escapeHtml(item.discord_user_id || "")}</p>
+                <p>Referencia: ${escapeHtml(item.label || "Sin nombre")}</p>
+                <p>Nota: ${escapeHtml(item.note || "Sin nota")}</p>
+              </div>
+              <div class="admin-store-item-actions">
+                <button type="button" class="admin-button secondary" data-portal-access-copy="${escapeHtml(item.code || "")}">Copiar</button>
+                <button type="button" class="admin-button secondary" data-portal-access-delete="${escapeHtml(item.id || "")}">Revocar</button>
+              </div>
+            </div>
+          </div>
+        </article>
+      `
+    )
+    .join("");
+
+  adminPortalAccessList.querySelectorAll("[data-portal-access-copy]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const code = button.dataset.portalAccessCopy || "";
+      try {
+        await navigator.clipboard.writeText(code);
+        setFeedback(`Codigo ${code} copiado.`, "success");
+      } catch {
+        setFeedback(`Copia manual este codigo: ${code}`, "success");
+      }
+    });
+  });
+
+  adminPortalAccessList.querySelectorAll("[data-portal-access-delete]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      try {
+        const response = await fetch("/api/admin/portal-access-codes/delete", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: button.dataset.portalAccessDelete }),
+        });
+        const data = await parseJsonSafe(response);
+        if (!response.ok) throw new Error(data.error || "portal_access_delete_failed");
+        renderPortalAccessCodes(data.items || []);
+        setFeedback("Codigo revocado correctamente.", "success");
+      } catch {
+        setFeedback("No se pudo revocar el codigo.", "error");
+      }
+    });
+  });
 }
 
 function setAdminTab(tabName) {
@@ -447,6 +511,7 @@ async function loadSession() {
     renderStoreItems(payload.storeItems || []);
     renderSalaryRoleOverrides(payload.salaryRoleOverrides || []);
     renderSalaryRoleCatalog(payload.salaryRoleCatalog || []);
+    renderPortalAccessCodes(payload.portalAccessCodes || []);
     if (adminTabButtons.length) {
       const activeButton = Array.from(adminTabButtons).find((button) => button.classList.contains("is-active"));
       setAdminTab(activeButton?.dataset.adminTabButton || adminTabButtons[0].dataset.adminTabButton);
@@ -508,6 +573,31 @@ adminAnnouncementForm?.addEventListener("submit", async (event) => {
     setFeedback("Anuncio enviado correctamente.", "success");
   } catch {
     setFeedback("No se pudo enviar el anuncio.", "error");
+  }
+});
+
+adminPortalAccessForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const payload = {
+    discord_user_id: adminPortalAccessForm.elements.discord_user_id.value.trim(),
+    label: adminPortalAccessForm.elements.label.value.trim(),
+    note: adminPortalAccessForm.elements.note.value.trim(),
+  };
+
+  try {
+    const response = await fetch("/api/admin/portal-access-codes", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    const data = await parseJsonSafe(response);
+    if (!response.ok) throw new Error(data.error || "portal_access_create_failed");
+    adminPortalAccessForm.reset();
+    renderPortalAccessCodes(data.items || []);
+    setFeedback(`Codigo creado: ${data.item?.code || ""}`, "success");
+  } catch {
+    setFeedback("No se pudo crear el codigo de acceso.", "error");
   }
 });
 

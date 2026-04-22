@@ -6,6 +6,8 @@ const createView = document.querySelector("[data-portal-create]");
 const appView = document.querySelector("[data-portal-app]");
 const identityForm = document.querySelector("[data-identity-form]");
 const feedbackNode = document.querySelector("[data-portal-feedback]");
+const portalAccessCodeForm = document.querySelector("[data-portal-access-code-form]");
+const portalLoginFeedbackNode = document.querySelector("[data-portal-login-feedback]");
 const portalUserNode = document.querySelector("[data-portal-user]");
 const portalContentNode = document.querySelector(".portal-content");
 const logoutButtons = document.querySelectorAll("[data-portal-logout]");
@@ -1157,6 +1159,35 @@ identityForm?.addEventListener("submit", async (event) => {
     await loadPortalSession();
   } catch {
     setFeedback(feedbackNode, "No se pudo crear el DNI.", true);
+  }
+});
+
+portalAccessCodeForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const payload = {
+    code: portalAccessCodeForm.elements.code.value.trim(),
+  };
+
+  try {
+    const response = await fetch("/api/portal/access-code-login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "portal_access_code_failed");
+    if (data.session_id) {
+      try {
+        window.localStorage.setItem("vcrp_user_session", data.session_id);
+      } catch {}
+      document.cookie = `vcrp_user_session=${encodeURIComponent(data.session_id)}; Path=/; SameSite=Lax; Secure`;
+    }
+    portalAccessCodeForm.reset();
+    setFeedback(portalLoginFeedbackNode, "Codigo aceptado. Entrando al portal...");
+    await loadPortalSession();
+  } catch {
+    setFeedback(portalLoginFeedbackNode, "No se pudo validar el codigo. Revisa que siga activo.", true);
   }
 });
 

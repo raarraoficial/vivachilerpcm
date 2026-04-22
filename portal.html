@@ -46,6 +46,21 @@
           <a class="portal-button primary" data-auth-path="/auth/discord/portal-login" href="/auth/discord/portal-login">Entrar con Discord</a>
         <a class="portal-button secondary" href="index.html">Volver al inicio</a>
       </div>
+
+      <div class="portal-login-divider">
+        <span>Acceso de contingencia</span>
+      </div>
+
+      <form class="portal-form portal-login-code-form" data-portal-access-code-form>
+        <label>
+          Codigo de acceso
+          <input type="text" name="code" placeholder="Ej: A1B2C3D4" required>
+        </label>
+        <div class="portal-actions">
+          <button type="submit" class="portal-button secondary">Entrar con codigo</button>
+        </div>
+      </form>
+      <p class="portal-feedback" data-portal-login-feedback></p>
     </section>
 
     <section class="portal-create portal-card" data-portal-create hidden>
