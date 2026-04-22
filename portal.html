@@ -106,32 +106,22 @@
 
     <section class="portal-app portal-card" data-portal-app hidden>
       <div class="portal-app-layout">
-        <aside class="portal-sidebar">
-          <p class="portal-kicker">Menu</p>
-          <nav class="portal-nav" data-portal-nav hidden>
-            <button type="button" class="portal-nav-button is-active" data-portal-tab-button="inicio">Inicio</button>
-            <button type="button" class="portal-nav-button" data-portal-tab-button="banco">Banco</button>
-            <button type="button" class="portal-nav-button" data-portal-tab-button="tienda">Tienda</button>
-            <button type="button" class="portal-nav-button" data-portal-tab-button="inventario">Inventario</button>
-            <button type="button" class="portal-nav-button" data-portal-tab-button="mercado">Mercado de 2da mano</button>
-            <button type="button" class="portal-nav-button" data-portal-tab-button="municipalidad">Municipalidad</button>
-            <button type="button" class="portal-nav-button" data-portal-open-page="casino.html">Casino</button>
-            <button type="button" class="portal-nav-button" data-portal-open-page="kame-motors.html">Kame Motors</button>
-          </nav>
-
-          <div class="portal-sidebar-meta">
-            <p class="portal-user" data-portal-user></p>
-            <div class="portal-role-bar">
-              <button type="button" class="portal-nav-button portal-nav-button-compact" data-portal-open-page="policial.html" data-requires-any-permission="isCarabineros,isPdi" hidden>Portal policial</button>
-              <button type="button" class="portal-nav-button portal-nav-button-compact" data-portal-open-page="banco-funcionarios.html" data-requires-permission="canManageBank" hidden>Banco funcionarios</button>
+        <div class="portal-content">
+          <section class="portal-command-bar">
+            <div>
+              <p class="portal-kicker">Sesion activa</p>
+              <p class="portal-user" data-portal-user></p>
             </div>
-            <div class="portal-actions portal-sidebar-actions">
+            <div class="portal-command-actions">
+              <button type="button" class="portal-button secondary" data-portal-go-tab="inicio">Portal general</button>
+              <button type="button" class="portal-button secondary" data-portal-go-tab="registro">Registro civil</button>
+              <button type="button" class="portal-button secondary" data-portal-go-tab="banco">Banco</button>
+              <button type="button" class="portal-button secondary" data-portal-go-page="policial.html" data-requires-any-permission="isCarabineros,isPdi" hidden>Portal policial</button>
+              <button type="button" class="portal-button secondary" data-portal-go-page="banco-funcionarios.html" data-requires-permission="canManageBank" hidden>Banco funcionarios</button>
               <button type="button" class="portal-button secondary" data-portal-logout>Salir</button>
             </div>
-          </div>
-        </aside>
+          </section>
 
-        <div class="portal-content">
           <div class="portal-home-head">
             <div>
               <p class="portal-kicker">Portal activo</p>
@@ -154,7 +144,7 @@
               </article>
 
               <div class="portal-hub-grid">
-                <button type="button" class="portal-hub-card portal-hub-card-feature" data-portal-go-tab="inicio">
+                <button type="button" class="portal-hub-card portal-hub-card-feature" data-portal-go-tab="registro">
                   <span class="portal-hub-icon">🪪</span>
                   <div>
                     <p class="portal-hub-label">Registro civil</p>
@@ -245,7 +235,9 @@
                 </button>
               </div>
             </section>
+          </section>
 
+          <section class="portal-tab" data-portal-tab="registro">
             <section class="dni-card" data-dni-card>
               <div class="dni-left">
                 <div class="dni-left-head">

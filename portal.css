@@ -318,20 +318,7 @@ body {
 }
 
 .portal-app-layout {
-  display: grid;
-  grid-template-columns: 240px minmax(0, 1fr);
-  gap: 24px;
-}
-
-.portal-sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  padding-right: 10px;
-}
-
-.portal-sidebar-meta {
-  margin-top: auto;
+  display: block;
 }
 
 .portal-role-bar {
@@ -344,14 +331,39 @@ body {
   background: rgba(255, 255, 255, 0.03);
 }
 
-.portal-sidebar-actions {
-  flex-direction: column;
-}
-
 .portal-nav-button-compact {
   min-height: 42px;
   padding: 0 14px;
   font-size: 0.94rem;
+}
+
+.portal-command-bar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 24px;
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.portal-command-bar .portal-kicker {
+  margin-bottom: 6px;
+}
+
+.portal-user {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--text);
+}
+
+.portal-command-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
 }
 
 .portal-content {
@@ -1752,12 +1764,13 @@ body {
     align-items: flex-start;
   }
 
-  .portal-sidebar {
-    padding-right: 0;
+  .portal-command-bar {
+    flex-direction: column;
+    align-items: stretch;
   }
 
-  .portal-sidebar-actions {
-    flex-direction: row;
+  .portal-command-actions {
+    justify-content: flex-start;
   }
 
   .dni-card {
@@ -1879,14 +1892,6 @@ body {
 
   .portal-home-head {
     margin-bottom: 16px;
-  }
-
-  .portal-sidebar {
-    gap: 14px;
-  }
-
-  .portal-sidebar-actions {
-    flex-direction: column;
   }
 
   .dni-card {

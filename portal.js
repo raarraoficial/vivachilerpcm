@@ -412,23 +412,27 @@ function setActiveTab(tabName) {
     portalContentNode.classList.add("is-switching");
   }
 
-  document.querySelectorAll("[data-portal-tab-button]").forEach((button) => {
-    button.classList.toggle("is-active", button.dataset.portalTabButton === tabName);
-  });
-  if (sectionTitle) {
-    sectionTitle.textContent =
-      tabName === "banco"
-        ? "Banco"
-        : tabName === "tienda"
-          ? "Tienda"
-          : tabName === "inventario"
-            ? "Inventario"
-            : tabName === "mercado"
-              ? "Mercado de 2da mano"
-              : tabName === "municipalidad"
-                ? "Municipalidad de Providencia"
-            : "Inicio";
-  }
+    document.querySelectorAll("[data-portal-tab-button]").forEach((button) => {
+      button.classList.toggle("is-active", button.dataset.portalTabButton === tabName);
+    });
+    if (sectionTitle) {
+      sectionTitle.textContent =
+        tabName === "inicio"
+          ? "Portal general"
+          : tabName === "registro"
+            ? "Registro civil"
+            : tabName === "banco"
+              ? "Banco"
+              : tabName === "tienda"
+                ? "Tienda"
+                : tabName === "inventario"
+                  ? "Inventario"
+                  : tabName === "mercado"
+                    ? "Mercado de 2da mano"
+                    : tabName === "municipalidad"
+                      ? "Municipalidad de Providencia"
+                      : "Portal general";
+    }
 
   if (tabName === "banco") {
     setActiveBankSubtab("resumen");
