@@ -5,6 +5,7 @@ const adminForm = document.querySelector("[data-admin-form]");
 const adminAnnouncementForm = document.querySelector("[data-admin-announcement-form]");
 const adminEmergencyForm = document.querySelector("[data-admin-emergency-form]");
 const adminEmergencyFormAlt = document.querySelector("[data-admin-emergency-form-alt]");
+const adminOauthResetForm = document.querySelector("[data-admin-oauth-reset-form]");
 const adminMaintenanceForm = document.querySelector("[data-admin-maintenance-form]");
 const adminBalanceForm = document.querySelector("[data-admin-balance-form]");
 const adminBulkBalanceForm = document.querySelector("[data-admin-bulk-balance-form]");
@@ -637,6 +638,21 @@ adminEmergencyFormAlt?.addEventListener("submit", async (event) => {
     setFeedback("Alerta de emergencia enviada correctamente.", "success");
   } catch {
     setFeedback("No se pudo enviar la alerta de emergencia.", "error");
+  }
+});
+
+adminOauthResetForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  try {
+    const response = await fetch("/api/admin/oauth/reset", {
+      method: "POST",
+    });
+    const data = await parseJsonSafe(response);
+    if (!response.ok) throw new Error(data.error || "oauth_reset_failed");
+    setFeedback("Estado del OAuth reiniciado correctamente.", "success");
+  } catch {
+    setFeedback("No se pudo reiniciar el estado del OAuth.", "error");
   }
 });
 

@@ -1201,6 +1201,20 @@ function markOAuthDiscordCooldown(retryAfterSeconds = 12) {
   OAUTH_DISCORD_COOLDOWN_UNTIL = Math.max(OAUTH_DISCORD_COOLDOWN_UNTIL, Date.now() + cooldownMs);
 }
 
+function resetOAuthFlowState() {
+  OAUTH_RATE_LIMITS.clear();
+  OAUTH_LAST_EXCHANGE_AT = 0;
+  OAUTH_QUEUE_SIZE = 0;
+  OAUTH_QUEUE = Promise.resolve();
+  OAUTH_DISCORD_COOLDOWN_UNTIL = 0;
+  OAUTH_EXCHANGE_CACHE.clear();
+  GUILD_ROLES_CACHE = {
+    expiresAt: 0,
+    items: null,
+  };
+  GUILD_MEMBER_CACHE.clear();
+}
+
 function getAdminSession(request) {
   const cookies = parseCookies(request);
   const requestUrl = new URL(request.url, env.publicBaseUrl || `http://localhost:${PORT}`);
@@ -2216,6 +2230,18 @@ const server = http.createServer(async (request, response) => {
       salaryRoleCatalog: buildSalaryRoleCatalog(),
       portalAccessCodes: readPortalAccessCodes().map(serializePortalAccessCode),
     });
+    return;
+  }
+
+  if (url.pathname === "/api/admin/oauth/reset" && request.method === "POST") {
+    const session = getAdminSession(request);
+    if (!session) {
+      sendJson(response, 401, { error: "unauthorized" });
+      return;
+    }
+
+    resetOAuthFlowState();
+    sendJson(response, 200, { ok: true });
     return;
   }
 
