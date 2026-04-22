@@ -1460,10 +1460,23 @@ document.querySelectorAll("[data-portal-tab-button]").forEach((button) => {
   });
 });
 
+document.querySelectorAll("[data-portal-go-tab]").forEach((button) => {
+  button.addEventListener("click", () => {
+    setActiveTab(button.dataset.portalGoTab);
+  });
+});
+
 document.querySelectorAll("[data-portal-open-page]").forEach((button) => {
   button.addEventListener("click", () => {
     showPortalLoader(600);
     window.location.href = button.dataset.portalOpenPage;
+  });
+});
+
+document.querySelectorAll("[data-portal-go-page]").forEach((button) => {
+  button.addEventListener("click", () => {
+    showPortalLoader(600);
+    window.location.href = button.dataset.portalGoPage;
   });
 });
 

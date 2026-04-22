@@ -135,11 +135,117 @@
           <div class="portal-home-head">
             <div>
               <p class="portal-kicker">Portal activo</p>
-              <h2 data-portal-section-title>Inicio</h2>
+              <h2 data-portal-section-title>Portal general</h2>
             </div>
           </div>
 
           <section class="portal-tab is-active" data-portal-tab="inicio">
+            <section class="portal-hub">
+              <article class="portal-hub-hero portal-hub-card portal-hub-card-primary">
+                <div class="portal-hub-card-copy">
+                  <p class="portal-kicker">Portal general</p>
+                  <h3>Accesos principales</h3>
+                  <p>Elige tu siguiente paso dentro del servidor. Registro Civil y Banco quedan al frente, y el resto de servicios sigue a un click.</p>
+                </div>
+                <div class="portal-hub-hero-art" aria-hidden="true">
+                  <span class="portal-hub-orb"></span>
+                  <span class="portal-hub-grid"></span>
+                </div>
+              </article>
+
+              <div class="portal-hub-grid">
+                <button type="button" class="portal-hub-card portal-hub-card-feature" data-portal-go-tab="inicio">
+                  <span class="portal-hub-icon">🪪</span>
+                  <div>
+                    <p class="portal-hub-label">Registro civil</p>
+                    <h3>Tu DNI y datos personales</h3>
+                    <p>Revisa tu carnet, RUN, documento, nacionalidad y toda tu informacion registrada.</p>
+                  </div>
+                </button>
+
+                <button type="button" class="portal-hub-card portal-hub-card-feature portal-hub-card-bank" data-portal-go-tab="banco">
+                  <span class="portal-hub-icon">🏦</span>
+                  <div>
+                    <p class="portal-hub-label">Banco</p>
+                    <h3>Banco de Chile digital</h3>
+                    <p>Resumen, transferencias, credito, sueldo y movimientos con una vista tipo banca real.</p>
+                  </div>
+                </button>
+
+                <button type="button" class="portal-hub-card portal-hub-card-utility" data-portal-go-tab="tienda">
+                  <span class="portal-hub-icon">🛍️</span>
+                  <div>
+                    <p class="portal-hub-label">Tienda</p>
+                    <h3>Compras oficiales</h3>
+                    <p>Vehiculos, licencias y articulos especiales.</p>
+                  </div>
+                </button>
+
+                <button type="button" class="portal-hub-card portal-hub-card-utility" data-portal-go-tab="inventario">
+                  <span class="portal-hub-icon">📦</span>
+                  <div>
+                    <p class="portal-hub-label">Inventario</p>
+                    <h3>Tus pertenencias</h3>
+                    <p>Vehiculos, estados, retenciones y articulos reclamados.</p>
+                  </div>
+                </button>
+
+                <button type="button" class="portal-hub-card portal-hub-card-utility" data-portal-go-tab="mercado">
+                  <span class="portal-hub-icon">🏷️</span>
+                  <div>
+                    <p class="portal-hub-label">Mercado</p>
+                    <h3>2da mano y Yapo</h3>
+                    <p>Publicaciones, ventas y seguimiento de articulos.</p>
+                  </div>
+                </button>
+
+                <button type="button" class="portal-hub-card portal-hub-card-utility" data-portal-go-tab="municipalidad">
+                  <span class="portal-hub-icon">🏛️</span>
+                  <div>
+                    <p class="portal-hub-label">Municipalidad</p>
+                    <h3>Pagos y corrales</h3>
+                    <p>Multas, antecedentes y tramites municipales pendientes.</p>
+                  </div>
+                </button>
+
+                <button type="button" class="portal-hub-card portal-hub-card-utility" data-portal-go-page="casino.html">
+                  <span class="portal-hub-icon">🎰</span>
+                  <div>
+                    <p class="portal-hub-label">Casino</p>
+                    <h3>Mesas y maquinas</h3>
+                    <p>Accede al casino del servidor desde una entrada dedicada.</p>
+                  </div>
+                </button>
+
+                <button type="button" class="portal-hub-card portal-hub-card-utility" data-portal-go-page="kame-motors.html">
+                  <span class="portal-hub-icon">🔧</span>
+                  <div>
+                    <p class="portal-hub-label">Kame Motors</p>
+                    <h3>Taller y arriendos</h3>
+                    <p>Solicita servicios, revisiones y acceso al taller automotriz.</p>
+                  </div>
+                </button>
+
+                <button type="button" class="portal-hub-card portal-hub-card-utility" data-portal-go-page="policial.html" data-requires-any-permission="isCarabineros,isPdi" hidden>
+                  <span class="portal-hub-icon">🚓</span>
+                  <div>
+                    <p class="portal-hub-label">Portal policial</p>
+                    <h3>Operativo institucional</h3>
+                    <p>Busqueda, vehiculos, multas y antecedentes.</p>
+                  </div>
+                </button>
+
+                <button type="button" class="portal-hub-card portal-hub-card-utility" data-portal-go-page="banco-funcionarios.html" data-requires-permission="canManageBank" hidden>
+                  <span class="portal-hub-icon">💼</span>
+                  <div>
+                    <p class="portal-hub-label">Banco funcionarios</p>
+                    <h3>Gestion interna</h3>
+                    <p>Creditos, evaluaciones y bandeja de funcionarios.</p>
+                  </div>
+                </button>
+              </div>
+            </section>
+
             <section class="dni-card" data-dni-card>
               <div class="dni-left">
                 <div class="dni-left-head">
@@ -204,6 +310,18 @@
 
           <section class="portal-tab" data-portal-tab="banco">
             <div class="bank-layout">
+              <section class="bank-hero">
+                <div class="bank-hero-copy">
+                  <p class="portal-kicker">Banco de Chile</p>
+                  <h3>Tu banca digital del servidor</h3>
+                  <p>Una vista inspirada en banca real para revisar saldos, administrar transferencias, credito y sueldo desde un solo lugar.</p>
+                </div>
+                <div class="bank-hero-art" aria-hidden="true">
+                  <span class="bank-hero-chip"></span>
+                  <span class="bank-hero-ring"></span>
+                </div>
+              </section>
+
               <section class="portal-card bank-create" data-bank-create hidden>
                 <p class="portal-kicker">Primer acceso bancario</p>
                 <h3>Crea tu cuenta bancaria</h3>
